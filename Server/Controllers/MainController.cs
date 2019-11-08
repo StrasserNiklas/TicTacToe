@@ -33,7 +33,7 @@ namespace Server.Controllers
         [HttpGet("{id}", Name = "Get")]
         public string Get(int id)
         {
-            return "value";
+            return "valueXD";
         }
 
         // POST: api/Main/players
