@@ -6,10 +6,13 @@ namespace Server.Services
 {
     public class MainService : IMainService
     {
+        private int incrementedId = 0;
         private readonly List<Player> players = new List<Player>();
 
         public Task<Player> AddPlayer(Player player)
         {
+            player.PlayerId = this.incrementedId;
+            this.incrementedId++;
             this.players.Add(player);
             return Task.FromResult(player);
         }

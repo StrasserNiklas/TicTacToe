@@ -13,13 +13,12 @@ namespace Server.Models
         private string hash;
         private int playerId;
 
-        public Player(string playerName, int id)
+        public Player(string playerName)
         {
             var time = DateTime.Now;
 
             this.Hash = $"{time.ToString()}{playerName}";
             this.PlayerName = playerName;
-            this.PlayerId = id;
             this.MarkedPositions = new List<int>();
         }
 

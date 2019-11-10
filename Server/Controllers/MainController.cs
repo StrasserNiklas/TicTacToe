@@ -14,14 +14,11 @@ namespace Server.Controllers
     public class MainController : ControllerBase
     {
         private readonly IMainService mainService;
-        private int incrementedId;
 
         public MainController(IMainService main)
         {
             this.mainService = main;
-            this.incrementedId = 0;
         }
-
 
         // GET: api/Main
         [HttpGet]
@@ -41,11 +38,8 @@ namespace Server.Controllers
         [HttpPost("players/add", Name = "Post")]
         public async Task<ActionResult<List<Player>>> Post([FromBody] string playerName)
         {
-            Player player = new Player(playerName, this.incrementedId);
+            Player player = new Player(playerName);
             await this.mainService.AddPlayer(player);
-
-
-            this.incrementedId++;
 
             return Ok(this.mainService.GetPlayers());
         }
