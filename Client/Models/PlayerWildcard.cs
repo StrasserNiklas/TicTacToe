@@ -23,22 +23,55 @@ namespace Client.Models
 
         public int PlayerId
         {
-            get { return playerId; }
-            set { playerId = value; }
+            get
+            {
+                return this.playerId;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(this.PlayerId), "The player ID can´t be below 0.");
+                }
+
+                this.playerId = value;
+            }
         }
 
 
         public string Hash
         {
-            get { return hash; }
-            set { hash = value; }
+            get
+            {
+                return this.hash;
+            }
+            set
+            {
+                if (value == string.Empty)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(this.Hash), "The hash identifying a player can´t be an empty string.");
+                }
+
+                this.hash = value;
+            }
         }
 
 
         public string PlayerName
         {
-            get { return playerName; }
-            set { playerName = value; }
+            get
+            {
+                return this.playerName;
+            }
+            set
+            {
+                if (value == string.Empty)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(this.PlayerName), "The player name can´t be an empty string.");
+                }
+
+                this.playerName = value;
+            }
         }
 
         public int Marker { get; set; }
@@ -54,7 +87,7 @@ namespace Client.Models
             {
                 if (value > 0)
                 {
-                    throw new ArgumentException(nameof(this.Wins), "You can´t have less than 0 wins.");
+                    throw new ArgumentOutOfRangeException(nameof(this.Wins), "You can´t have less than 0 wins.");
                 }
 
                 wins = value;

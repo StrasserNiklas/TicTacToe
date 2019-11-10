@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 using Client.Models;
+using System.Net.Http;
+using System.Collections.ObjectModel;
 
 namespace Client
 {
@@ -42,7 +44,33 @@ namespace Client
 
             this.ticGame = new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)));
             this.DataContext = this.ticGame;
+
+            this.gameService = host.Services.GetService<GameClientService>();
+
         }
+
+        private GameClientService gameService;
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.BooksDemoAsync();
+            
+        }
+
+        private async Task BooksDemoAsync()
+        {
+            try
+            {
+                var playerList = await this.gameService.PostPlayerInfoToServerAsync("Nikolaus");
+                //this.ticGame.PlayerList = new ObservableCollection<PlayerWildcard>(playerList);//.Result);
+            }
+            catch (HttpRequestException ex)
+            {
+            }
+
+        }
+
+
 
         List<Button> buttons = new List<Button>();
 

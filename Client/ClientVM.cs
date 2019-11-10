@@ -1,4 +1,7 @@
-﻿using Client.ViewModels;
+﻿using Client.Models;
+using Client.ViewModels;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Client
 {
@@ -65,7 +68,20 @@ namespace Client
             this.CurrentGame = game;
             //this.LocalGameSelected = true;
             //this.OnlineGameSelected = false;
+            this.PlayerList = new ObservableCollection<PlayerWildcard>();
         }
+
+        private ObservableCollection<PlayerWildcard> playerList;
+
+        public ObservableCollection<PlayerWildcard> PlayerList
+        {
+            get { return playerList; }
+            set 
+            { 
+                playerList = value;
+            }
+        }
+
 
         public GameVM CurrentGame { get; set; }
     }

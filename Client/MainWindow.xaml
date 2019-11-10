@@ -50,8 +50,8 @@
 
         <!-- Server information -->
         <!--Visibility="{Binding OnlineGameSelected, Converter={StaticResource booleanToVisibilityConverter}}"-->
-        <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3"
-                >
+        <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3">
+            <Button Margin="10" Content="Connect to server" Click="Button_Click"/>
         </Border>
 
         <!-- Online players list view and connection -->
@@ -60,7 +60,7 @@
                 <Label Content="Players online:" Style="{StaticResource labelStyle}" />
 
                 <!--Current online player -->
-                <ListView Margin="5,5" Name="functionsListView"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black">
+                <ListView Margin="5,5" Name="functionsListView"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black" ItemsSource="{Binding PlayerList}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" Width="Auto">
