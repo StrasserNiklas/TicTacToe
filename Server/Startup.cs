@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Server.Services;
 
 namespace Server
@@ -28,6 +29,19 @@ namespace Server
         {
             services.AddControllers();
             services.AddSingleton<IMainService, MainService>();
+
+            services.AddSwaggerGen(options =>
+            {
+                // options.IncludeXmlComments("../docs/BooksServiceSample.xml");
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "TicTacToe Service API",
+                    Version = "v1",
+                    Description = "TicTacToe service",
+                    Contact = new OpenApiContact { Name = "Niklas Strasser, Felix Brandstetter, Yannick Gruber" },
+                    License = new OpenApiLicense { Name = "MIT License" }
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +57,10 @@ namespace Server
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "TicTacToe Services"));
 
             app.UseEndpoints(endpoints =>
             {

@@ -14,11 +14,12 @@ namespace Server.Controllers
     public class MainController : ControllerBase
     {
         private readonly IMainService mainService;
-        private int incrementedId = 1;
+        private int incrementedId;
 
         public MainController(IMainService main)
         {
             this.mainService = main;
+            this.incrementedId = 0;
         }
 
 
