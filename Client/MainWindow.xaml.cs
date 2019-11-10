@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http;
+using Client.Models;
 
 namespace Client
 {
@@ -23,6 +27,16 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
+
+            IHost host = Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddHttpClient("TicTacToeGame", client =>
+                    {
+                        client.BaseAddress = new Uri("https://localhost:5001");
+                    }).AddTypedClient<GameClientService>();
+
+                }).Build();
         }
     }
 }
