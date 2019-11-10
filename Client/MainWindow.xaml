@@ -31,8 +31,10 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!-- Changing between local and online play -->
-        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource borderStyle}" Margin="3">
+        <!-- Changing between local and online play 
+        Not used as of now!
+        -->
+        <Border Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource borderStyle}" Margin="3">
             <StackPanel Orientation="Horizontal">
                 <Button MaxHeight="25" Width="70" Height="30"  Content="Local game" Margin="4"
                         Style="{StaticResource buttonRoundCorner2}" Command="{Binding LocalGameButtonPressed}"
@@ -47,13 +49,13 @@
         </Border>
 
         <!-- Server information -->
+        <!--Visibility="{Binding OnlineGameSelected, Converter={StaticResource booleanToVisibilityConverter}}"-->
         <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3"
-                Visibility="{Binding OnlineGameSelected, Converter={StaticResource booleanToVisibilityConverter}}">
+                >
         </Border>
 
         <!-- Online players list view and connection -->
-        <Border MinWidth="130" Grid.Row="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" 
-                Visibility="{Binding OnlineGameSelected, Converter={StaticResource booleanToVisibilityConverter}}">
+        <Border MinWidth="130" Grid.Row="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" >
             <StackPanel>
                 <Label Content="Players online:" Style="{StaticResource labelStyle}" />
 

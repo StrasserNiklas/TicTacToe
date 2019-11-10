@@ -40,7 +40,7 @@ namespace Client
 
                 }).Build();
 
-            this.ticGame = new ClientVM(new Game(new Player("Nikolaus", 1), new Player("Felixitus", 2)));
+            this.ticGame = new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)));
             this.DataContext = this.ticGame;
         }
 

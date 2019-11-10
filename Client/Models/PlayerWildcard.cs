@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Client.Models
 {
-    public class Player
+    public class PlayerWildcard
     {
         private int wins;
         private string playerName;
@@ -12,7 +12,7 @@ namespace Client.Models
         private string hash;
         private int playerId;
 
-        public Player(string playerName)
+        public PlayerWildcard(string playerName)
         {
             var time = DateTime.Now;
 

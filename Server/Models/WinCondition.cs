@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Client
+namespace Server.Models
 {
     /// <summary>
     /// A win condition is based on the continuous indexes of a TicTacToe game.
