@@ -42,10 +42,14 @@ namespace Client
 
                 }).Build();
 
-            this.ticGame = new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)));
+            this.gameService = host.Services.GetService<GameClientService>();
+
+            this.ticGame = new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
             this.DataContext = this.ticGame;
 
-            this.gameService = host.Services.GetService<GameClientService>();
+
+
+            
 
         }
 

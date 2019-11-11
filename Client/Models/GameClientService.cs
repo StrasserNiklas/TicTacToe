@@ -28,6 +28,12 @@ namespace Client.Models
         //}
 
 
+        public async Task PostGameRequest(int playerId)
+        {
+            string json = JsonConvert.SerializeObject(playerId);
+            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("/api/Main/games/request", content);
+        }
 
         public async Task<IEnumerable<Player>> GetPlayerListAsync()
         {

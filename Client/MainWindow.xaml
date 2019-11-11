@@ -60,7 +60,7 @@
                 <Label Content="Players online:" Style="{StaticResource labelStyle}" />
 
                 <!--Current online player -->
-                <ListView Margin="5,5"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="0" BorderBrush="Black" ItemsSource="{Binding PlayerList}">
+                <ListView Margin="5,5"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="0" BorderBrush="Black" ItemsSource="{Binding PlayerList}" SelectedItem="{Binding SelectedPlayer, Mode=TwoWay}">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
                             <GridViewColumn Header="Name" Width="Auto"  >

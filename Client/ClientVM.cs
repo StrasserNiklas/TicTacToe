@@ -2,6 +2,7 @@
 using Client.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Client
 {
@@ -63,15 +64,34 @@ namespace Client
 
         #endregion
 
-        public ClientVM(GameVM game)
+        public ClientVM(GameVM game, GameClientService gameClientService)
         {
             this.CurrentGame = game;
             //this.LocalGameSelected = true;
             //this.OnlineGameSelected = false;
             this.PlayerList = new ObservableCollection<Player>();
+            this.gameClientService = gameClientService;
         }
 
         private ObservableCollection<Player> playerList;
+        private Player selectedPlayer;
+
+
+        private GameClientService gameClientService;
+
+        public ICommand RequestGameCommand
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+
+                });
+            }
+        }
+
+
+
 
         public ObservableCollection<Player> PlayerList
         {
@@ -83,9 +103,14 @@ namespace Client
             }
         }
 
+        public Player SelectedPlayer
+        {
+            get { return selectedPlayer; }
+            set { selectedPlayer = value; }
+        }
+
+
 
         public GameVM CurrentGame { get; set; }
     }
-
-
 }
