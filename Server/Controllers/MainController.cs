@@ -28,14 +28,7 @@ namespace Server.Controllers
             return this.mainService.GetPlayersAsync();
         }
 
-        // GET: api/Main/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "valueXD";
-        }
-
-        // POST: api/Main/players
+        // POST: api/Main/players/add
         [HttpPost("players/add", Name = "PostName")]
         public async Task<ActionResult<Player>> PostName([FromBody] string playerName)
         {
@@ -45,29 +38,50 @@ namespace Server.Controllers
             return Ok(playerInfo);
         }
 
-        // POST: api/Main/players
+        // POST: api/Main/players/alive
         [HttpPost("players/alive", Name = "PostAlive")]
         public async Task<ActionResult<IEnumerable<Player>>> PostAlive([FromBody] int playerId)
         {
             return Ok(await this.mainService.GetPlayersAsync());
         }
 
-        // POST: api/Main/players
+        // POST: api/Main/games/request
         [HttpPost("games/request", Name = "GameRequest")]
         public async Task<IActionResult> GameRequest([FromBody] GameRequest data)
         {
-
             var list = await this.mainService.GetPlayersAsync();
             var player = list.SingleOrDefault(player => player.PlayerId == data.EnemyId);
 
-
-
-            if (player == null)
+            if (player != null)
             {
-                return NotFound();
+                var existingRequest = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
+            && (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
+
+                if (existingRequest == null)
+                {
+                    this.mainService.RequestedGames.Add(new GameRequest(data.EnemyId, data.RequestPlayerId));
+                }
+
+                return Ok();
             }
 
-            return Ok();
+            return NotFound();
+        }
+
+        // POST: api/Main/games/request
+        [HttpPost("games/status", Name = "CheckForGameStatus")]
+        public async Task<ActionResult<GameStatusResponse>> CheckForGameStatus([FromBody] GameRequest data)
+        {
+            var game = this.mainService.Games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.EnemyId || game.PlayerOne.PlayerId == data.RequestPlayerId)
+            && (game.PlayerTwo.PlayerId == data.EnemyId || game.PlayerTwo.PlayerId == data.RequestPlayerId));
+
+            if (this.mainService.Games.Contains(game))
+            {
+                var status = new GameStatusResponse(game.CurrentGameStatus, game.CurrentPlayer.PlayerId);
+                return Ok(status);
+            }
+
+            return NotFound();
         }
 
         // PUT: api/Main/5
@@ -76,10 +90,17 @@ namespace Server.Controllers
         {
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// GET: api/Main/5
+        //[HttpGet("{id}", Name = "Get")]
+        //public string Get(int id)
+        //{
+        //    return "valueXD";
+        //}
+
+        //// DELETE: api/ApiWithActions/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

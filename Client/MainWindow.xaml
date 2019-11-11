@@ -51,7 +51,11 @@
         <!-- Server information -->
         <!--Visibility="{Binding OnlineGameSelected, Converter={StaticResource booleanToVisibilityConverter}}"-->
         <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3">
-            <Button Margin="10" Content="Connect to server" Click="Button_Click"/>
+            <StackPanel>
+                <TextBox Margin="10" Text="{Binding Llala, FallbackValue=Enter your name}" />
+                <Button Margin="10" Content="Connect to server" Click="Button_Click"/>
+            </StackPanel>
+            
         </Border>
 
         <!-- Online players list view and connection -->

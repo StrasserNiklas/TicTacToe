@@ -73,7 +73,9 @@ namespace Client
                 this.ticGame.ClientId = player.PlayerId;
 
 
-                var playerList = await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId);
+                var playerList = new List<Player>(await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId));
+                playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ticGame.ClientId));
+
 
                 this.ticGame.PlayerList = new ObservableCollection<Player>(playerList);//.Result);
             }
