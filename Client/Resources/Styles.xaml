@@ -12,6 +12,10 @@
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
+    <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+        <Setter Property="Visibility" Value="Collapsed" />
+    </Style>
+
     <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD" Opacity="1"/>
     <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#ffbd0a" Opacity="1" />
     <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>

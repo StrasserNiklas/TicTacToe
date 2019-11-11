@@ -63,6 +63,8 @@ namespace Client
             {
                 var list = await this.gameService.GetPlayerListAsync();
 
+
+                // hier würd daweil eine exception kommen
                 //var playerList = await this.gameService.PostPlayerInfoToServerAsync("Nikolaus");
 
                 
