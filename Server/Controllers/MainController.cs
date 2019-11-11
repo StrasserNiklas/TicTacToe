@@ -36,12 +36,12 @@ namespace Server.Controllers
 
         // POST: api/Main/players
         [HttpPost("players/add", Name = "Post")]
-        public async Task<ActionResult<List<Player>>> Post([FromBody] string playerName)
+        public async Task<ActionResult<IEnumerable<Player>>> Post([FromBody] string playerName)
         {
             Player player = new Player(playerName);
             await this.mainService.AddPlayerAsync(player);
 
-            return Ok(this.mainService.GetPlayersAsync());
+            return Ok(await this.mainService.GetPlayersAsync());
         }
 
         // PUT: api/Main/5

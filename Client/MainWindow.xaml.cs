@@ -37,7 +37,7 @@ namespace Client
                 {
                     services.AddHttpClient("TicTacToeGame", client =>
                     {
-                        client.BaseAddress = new Uri("https://localhost:5001");
+                        client.BaseAddress = new Uri("https://localhost:44384"); //changed from port 5001
                     }).AddTypedClient<GameClientService>();
 
                 }).Build();
@@ -65,15 +65,15 @@ namespace Client
         {
             try
             {
-                var list = await this.gameService.GetPlayerListAsync();
+                //var list = await this.gameService.GetPlayerListAsync();
 
 
                 // hier würd daweil eine exception kommen
-                //var playerList = await this.gameService.PostPlayerInfoToServerAsync("Nikolaus");
+                var playerList = await this.gameService.PostPlayerInfoToServerAsync("Hans");
 
                 
 
-                this.ticGame.PlayerList = new ObservableCollection<Player>(list);//.Result);
+                this.ticGame.PlayerList = new ObservableCollection<Player>(playerList);//.Result);
             }
             catch (HttpRequestException ex)
             {
