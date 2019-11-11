@@ -27,7 +27,7 @@ namespace Client.Models
         //    return books;
         //}
 
-        public async Task<PlayerWildcard> PostPlayerInfoToServerAsync(string playerName)
+        public async Task<IEnumerable<Player>> PostPlayerInfoToServerAsync(string playerName)
         {
             string json = JsonConvert.SerializeObject(playerName);
             HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -36,10 +36,16 @@ namespace Client.Models
             var returnJson = await response.Content.ReadAsStringAsync();
 
 
-            // es haut ihn hier auf beim deserialisieren von einer liste, deswegen is daweil kein IEnumerable
-            // dafür macht er jetzt einfach den namen null lol
+            // das is zu testzwecken, wollt den ganzen http overhead aus dem returnJson haben und schauen obs dann funktioniert
+            string[] test = returnJson.Split(",\"id", StringSplitOptions.None);
+            string real = test[0];
+            real += "}";
+
+
+            // es haut ihn hier auf beim deserialisieren von einer liste
+            // Wenn man nur ein einzelnes object rausholt macht er jetzt einfach den namen null lol
             // wenn er eine liste bekommt macht er td nur ein object XD
-            var playerList = JsonConvert.DeserializeObject<PlayerWildcard>(returnJson);
+            var playerList = JsonConvert.DeserializeObject<IEnumerable<Player>>(returnJson); //(real);
             return playerList;
         }
 

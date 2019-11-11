@@ -68,12 +68,12 @@ namespace Client
             this.CurrentGame = game;
             //this.LocalGameSelected = true;
             //this.OnlineGameSelected = false;
-            this.PlayerList = new ObservableCollection<PlayerWildcard>();
+            this.PlayerList = new ObservableCollection<Player>();
         }
 
-        private ObservableCollection<PlayerWildcard> playerList;
+        private ObservableCollection<Player> playerList;
 
-        public ObservableCollection<PlayerWildcard> PlayerList
+        public ObservableCollection<Player> PlayerList
         {
             get { return playerList; }
             set 

@@ -38,7 +38,6 @@ namespace Server.Models
             }
         }
 
-
         public string Hash
         {
             get
@@ -55,7 +54,6 @@ namespace Server.Models
                 this.hash = value; 
             }
         }
-
 
         public string PlayerName
         {
@@ -75,7 +73,6 @@ namespace Server.Models
         }
 
         public int Marker { get; set; }
-
 
         public int Wins
         {

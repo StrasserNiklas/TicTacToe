@@ -8,7 +8,7 @@ namespace Server.Services
 {
     public interface IMainService
     {
-        Task<IEnumerable<Player>> GetPlayers();
-        Task<Player> AddPlayer(Player player);
+        Task<IEnumerable<Player>> GetPlayersAsync();
+        Task<Player> AddPlayerAsync(Player player);
     }
 }

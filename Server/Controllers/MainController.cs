@@ -39,9 +39,9 @@ namespace Server.Controllers
         public async Task<ActionResult<List<Player>>> Post([FromBody] string playerName)
         {
             Player player = new Player(playerName);
-            await this.mainService.AddPlayer(player);
+            await this.mainService.AddPlayerAsync(player);
 
-            return Ok(this.mainService.GetPlayers());
+            return Ok(this.mainService.GetPlayersAsync());
         }
 
         // PUT: api/Main/5
