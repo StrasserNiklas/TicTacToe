@@ -35,13 +35,35 @@ namespace Server.Controllers
         }
 
         // POST: api/Main/players
-        [HttpPost("players/add", Name = "Post")]
-        public async Task<ActionResult<IEnumerable<Player>>> Post([FromBody] string playerName)
+        [HttpPost("players/add", Name = "PostName")]
+        public async Task<ActionResult<Player>> PostName([FromBody] string playerName)
         {
             Player player = new Player(playerName);
-            await this.mainService.AddPlayerAsync(player);
+            var playerInfo = await this.mainService.AddPlayerAsync(player);
 
+            return Ok(playerInfo);
+        }
+
+        // POST: api/Main/players
+        [HttpPost("players/alive", Name = "PostAlive")]
+        public async Task<ActionResult<IEnumerable<Player>>> PostAlive([FromBody] int playerId)
+        {
             return Ok(await this.mainService.GetPlayersAsync());
+        }
+
+        // POST: api/Main/players
+        [HttpPost("games/request", Name = "GameRequest")]
+        public async Task<IActionResult> GameRequest([FromBody] int playerID)
+        {
+            var list = await this.mainService.GetPlayersAsync();
+            var player = list.SingleOrDefault(player => player.PlayerId == playerID);
+
+            if (player == null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
 
         // PUT: api/Main/5
