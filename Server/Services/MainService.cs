@@ -6,8 +6,8 @@ namespace Server.Services
 {
     public class MainService : IMainService
     {
-        private int incrementedId = 0;
-        private readonly List<Player> players = new List<Player>() { new  Player("felix") };
+        private int incrementedId = 1;
+        private readonly List<Player> players = new List<Player>() { new Player("felix") { PlayerId = 999 } };
 
         public Task<Player> AddPlayerAsync(Player player)
         {

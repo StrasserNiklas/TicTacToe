@@ -75,7 +75,7 @@
                     </ListView.View>
                 </ListView>
 
-                <Button Style="{StaticResource buttonRoundCorner}" Margin="5">
+                <Button Style="{StaticResource buttonRoundCorner}" Margin="5" Command="{Binding RequestGameCommand}">
                     <TextBlock Margin="5,0,5,0" Text="Play with selected player" FontWeight="Medium"/>
                 </Button>
             </StackPanel>

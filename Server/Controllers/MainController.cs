@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GameLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.Models;
@@ -53,10 +54,13 @@ namespace Server.Controllers
 
         // POST: api/Main/players
         [HttpPost("games/request", Name = "GameRequest")]
-        public async Task<IActionResult> GameRequest([FromBody] int playerID)
+        public async Task<IActionResult> GameRequest([FromBody] GameRequest data)
         {
+
             var list = await this.mainService.GetPlayersAsync();
-            var player = list.SingleOrDefault(player => player.PlayerId == playerID);
+            var player = list.SingleOrDefault(player => player.PlayerId == data.EnemyId);
+
+
 
             if (player == null)
             {

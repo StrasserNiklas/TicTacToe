@@ -1,5 +1,6 @@
 ﻿using Client.Models;
 using Client.ViewModels;
+using GameLibrary;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -75,8 +76,6 @@ namespace Client
 
         private ObservableCollection<Player> playerList;
         private Player selectedPlayer;
-
-
         private GameClientService gameClientService;
 
         public ICommand RequestGameCommand
@@ -85,11 +84,21 @@ namespace Client
             {
                 return new Command(obj =>
                 {
-
+                    if (this.SelectedPlayer != null)
+                    {
+                        this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer.PlayerId, this.ClientId));
+                    }
                 });
             }
         }
 
+        private int clientId;
+
+        public int ClientId
+        {
+            get { return clientId; }
+            set { clientId = value; }
+        }
 
 
 

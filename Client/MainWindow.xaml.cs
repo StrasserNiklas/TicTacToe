@@ -70,6 +70,8 @@ namespace Client
 
                 // hier würd daweil eine exception kommen
                 var player = await this.gameService.PostPlayerInfoToServerAsync("Hans");
+                this.ticGame.ClientId = player.PlayerId;
+
 
                 var playerList = await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId);
 
