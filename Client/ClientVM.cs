@@ -79,6 +79,7 @@ namespace Client
             set 
             { 
                 playerList = value;
+                this.FireOnPropertyChanged();
             }
         }
 

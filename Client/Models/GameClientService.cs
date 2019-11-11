@@ -27,6 +27,17 @@ namespace Client.Models
         //    return books;
         //}
 
+
+
+        public async Task<IEnumerable<Player>> GetPlayerListAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/Main");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var players = JsonConvert.DeserializeObject<IEnumerable<Player>>(json);
+            return players;
+        }
+
         public async Task<IEnumerable<Player>> PostPlayerInfoToServerAsync(string playerName)
         {
             string json = JsonConvert.SerializeObject(playerName);

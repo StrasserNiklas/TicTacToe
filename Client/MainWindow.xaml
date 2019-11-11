@@ -60,13 +60,13 @@
                 <Label Content="Players online:" Style="{StaticResource labelStyle}" />
 
                 <!--Current online player -->
-                <ListView Margin="5,5" Name="functionsListView"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black" ItemsSource="{Binding PlayerList}">
+                <ListView Margin="5,5"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black" ItemsSource="{Binding PlayerList}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" Width="Auto">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="Test" />
+                                        <TextBlock Text="{Binding PlayerName}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

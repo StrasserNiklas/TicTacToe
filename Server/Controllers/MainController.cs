@@ -20,11 +20,11 @@ namespace Server.Controllers
             this.mainService = main;
         }
 
-        // GET: api/Main
+        // GET: api/Main/players
         [HttpGet]
-        public IEnumerable<string> Get()
+        public Task<IEnumerable<Player>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return this.mainService.GetPlayersAsync();
         }
 
         // GET: api/Main/5

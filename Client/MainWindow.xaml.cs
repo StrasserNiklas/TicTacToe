@@ -61,8 +61,13 @@ namespace Client
         {
             try
             {
-                var playerList = await this.gameService.PostPlayerInfoToServerAsync("Nikolaus");
-                //this.ticGame.PlayerList = new ObservableCollection<PlayerWildcard>(playerList);//.Result);
+                var list = await this.gameService.GetPlayerListAsync();
+
+                //var playerList = await this.gameService.PostPlayerInfoToServerAsync("Nikolaus");
+
+                
+
+                this.ticGame.PlayerList = new ObservableCollection<Player>(list);//.Result);
             }
             catch (HttpRequestException ex)
             {
