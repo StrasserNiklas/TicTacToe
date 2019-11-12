@@ -89,7 +89,7 @@ namespace Client
 
         /// <summary>
         /// This command is used when a game element button is clicked.
-        /// Updates the game status and after 5 turns, checks if a win condition has been met.
+        /// Checks if the player is allowed to place his sign and sends the information to the server.
         /// </summary>
         public ICommand PlayerClick
         {
@@ -101,11 +101,9 @@ namespace Client
                     //{
                     var cell = (GameCellVM)obj;
 
-
-                    
-
                     if (this.INDEXEXGAMETEST[cell.Index] == 0)
                     {
+                        var x = cell.CellBackground;
                         cell.PlayerMark = 1;
 
                         //this.gameClientService.

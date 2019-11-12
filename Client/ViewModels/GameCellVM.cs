@@ -36,13 +36,13 @@ namespace Client.ViewModels
                     case 1:
                         var brush = new ImageBrush();
                         brush.ImageSource = new BitmapImage(new Uri("Images/O.png", UriKind.Relative));
-                        this.CellBackground = brush;
+                        this.CellBackground = new SolidColorBrush(Colors.Green);//brush;
                         break;
 
                     case 2:
                         var brush1 = new ImageBrush();
                         brush1.ImageSource = new BitmapImage(new Uri("Images/X.png", UriKind.Relative));
-                        this.CellBackground = brush1;
+                        this.CellBackground = new SolidColorBrush(Colors.Green);//brush1;
                         break;
 
                     default:

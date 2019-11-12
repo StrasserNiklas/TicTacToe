@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Client.Resources">
 
     <Style x:Key="elementButton" TargetType="Button">
-        <Setter Property="Background" Value="White" />
+        <!--<Setter Property="Background" Value="White" />-->
         <Setter Property="Margin" Value="6" />
     </Style>
 

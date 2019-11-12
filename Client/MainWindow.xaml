@@ -189,15 +189,18 @@
 
         <!-- Game field -->
         <Border Margin="3" Grid.Row="2" Grid.Column="0" Style="{StaticResource borderStyle}" MinWidth="150">
-            <ItemsControl Background="#ffedbd" ItemsSource="{Binding Game.GameCells}">
+            <ItemsControl x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding Game.GameCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                        <UniformGrid Background="Transparent" Columns="3" />
+                        <UniformGrid Columns="3" />
                     </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" Command="{Binding PlayerClick}" />
+                        <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" 
+                                Background="{Binding CellBackground}"
+                                Command="{Binding ElementName=gameCells, Path=DataContext.PlayerClick}"
+                                CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -115,7 +115,7 @@ namespace Client
         /// This command is used when a game element button is clicked.
         /// Updates the game status and after 5 turns, checks if a win condition has been met.
         /// </summary>
-        public ICommand PlayerClick
+        public ICommand PlayerClickOld
         {
             get
             {
