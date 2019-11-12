@@ -44,12 +44,12 @@ namespace Client
 
             this.gameService = host.Services.GetService<GameClientService>();
 
-            this.ticGame = new ClientVM(
-                new GameVM(new PlayerVM(new Player("Nikolaus")), new PlayerVM(new Player("Felixitus"))), this.gameService);//new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
+            this.ticGame = new ClientVM(new GameVM
+                (new PlayerVM(new Player("Nikolaus")), 
+                 new PlayerVM(new Player("Felixitus"))), this.gameService);//new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
+            
             this.DataContext = this.ticGame;
-
             this.ticGame.ClientPlayer = new PlayerVM(new Player("player"));
-
         }
 
         private GameClientService gameService;
@@ -67,17 +67,11 @@ namespace Client
         {
             try
             {
-                //var list = await this.gameService.GetPlayerListAsync();
-
-
-                // hier würd daweil eine exception kommen
                 var player = await this.gameService.PostPlayerInfoToServerAsync("Hans");
                 this.ticGame.ClientPlayer = new PlayerVM(player);
 
-
                 var playerList = new List<Player>(await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId));
                 playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ticGame.ClientPlayer.Player.PlayerId));
-
 
                 this.ticGame.PlayerList = new ObservableCollection<Player>(playerList);//.Result);
 
@@ -89,59 +83,62 @@ namespace Client
         }
 
 
+        #region OldLocalGameStuff
 
         List<Button> buttons = new List<Button>();
 
-        /// <summary>
-        /// This method changes the background of the game element buttons if neccessary.
-        /// </summary>
-        /// <param name="sender">The button representing a void space, a "X" or a "O".</param>
-        /// <param name="e">The event args.</param>
-        private void GameElementClick(object sender, RoutedEventArgs e)
-        {
-            // only allowed when the game is running
-            if (!this.ticGame.CurrentGame.GameOver)
-            {
-                var button = (Button)sender;
+        ///// <summary>
+        ///// This method changes the background of the game element buttons if neccessary.
+        ///// </summary>
+        ///// <param name="sender">The button representing a void space, a "X" or a "O".</param>
+        ///// <param name="e">The event args.</param>
+        //private void GameElementClick(object sender, RoutedEventArgs e)
+        //{
+        //    // only allowed when the game is running
+        //    if (!this.ticGame.CurrentGame.GameOver)
+        //    {
+        //        var button = (Button)sender;
 
-                // add the button to the list so it can be reset later
-                if (!this.buttons.Contains(button))
-                {
-                    this.buttons.Add(button);
-                }
+        //        // add the button to the list so it can be reset later
+        //        if (!this.buttons.Contains(button))
+        //        {
+        //            this.buttons.Add(button);
+        //        }
 
-                // get the game index the button is representating
-                var commandParameter = int.Parse((string)button.CommandParameter);
+        //        // get the game index the button is representating
+        //        var commandParameter = int.Parse((string)button.CommandParameter);
 
-                if (this.ticGame.CurrentGame.CurrentPlayer == this.ticGame.CurrentGame.PlayerOne && this.ticGame.CurrentGame.CurrentGameStatus[commandParameter] == 0)
-                {
-                    var brush = new ImageBrush();
-                    brush.ImageSource = new BitmapImage(new Uri("Images/O.png", UriKind.Relative));
-                    button.Background = brush;
-                    return;
-                }
+        //        if (this.ticGame.CurrentGame.CurrentPlayer == this.ticGame.CurrentGame.PlayerOne && this.ticGame.CurrentGame.CurrentGameStatus[commandParameter] == 0)
+        //        {
+        //            var brush = new ImageBrush();
+        //            brush.ImageSource = new BitmapImage(new Uri("Images/O.png", UriKind.Relative));
+        //            button.Background = brush;
+        //            return;
+        //        }
 
-                if (this.ticGame.CurrentGame.CurrentPlayer == this.ticGame.CurrentGame.PlayerTwo && this.ticGame.CurrentGame.CurrentGameStatus[commandParameter] == 0)
-                {
-                    var brush = new ImageBrush();
-                    brush.ImageSource = new BitmapImage(new Uri("Images/X.png", UriKind.Relative));
-                    button.Background = brush;
-                    return;
-                }
-            }
-        }
+        //        if (this.ticGame.CurrentGame.CurrentPlayer == this.ticGame.CurrentGame.PlayerTwo && this.ticGame.CurrentGame.CurrentGameStatus[commandParameter] == 0)
+        //        {
+        //            var brush = new ImageBrush();
+        //            brush.ImageSource = new BitmapImage(new Uri("Images/X.png", UriKind.Relative));
+        //            button.Background = brush;
+        //            return;
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// When the "New game" button is pressed, this method resets the background of the buttons representing the game elements.
-        /// </summary>
-        /// <param name="sender">The "New game" button.</param>
-        /// <param name="e">The event args.</param>
-        private void NewGameButtonClick(object sender, RoutedEventArgs e)
-        {
-            foreach (var button in this.buttons)
-            {
-                button.Background = new SolidColorBrush(Colors.White);
-            }
-        }
+        ///// <summary>
+        ///// When the "New game" button is pressed, this method resets the background of the buttons representing the game elements.
+        ///// </summary>
+        ///// <param name="sender">The "New game" button.</param>
+        ///// <param name="e">The event args.</param>
+        //private void NewGameButtonClick(object sender, RoutedEventArgs e)
+        //{
+        //    foreach (var button in this.buttons)
+        //    {
+        //        button.Background = new SolidColorBrush(Colors.White);
+        //    }
+        //}
+
+        #endregion
     }
 }

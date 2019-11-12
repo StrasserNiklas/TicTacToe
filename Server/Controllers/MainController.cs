@@ -42,8 +42,9 @@ namespace Server.Controllers
         [HttpGet("players/{id}", Name = "GetAlive")]
         public async Task<ActionResult<IEnumerable<Player>>> GetAlive(int playerId)//([FromBody] int playerId)
         {
-            var existingRequest = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == playerId));
+            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.EnemyId == playerId));
 
+            //hier weiter logic
 
             return Ok(await this.mainService.GetPlayersAsync());
         }
@@ -60,12 +61,12 @@ namespace Server.Controllers
             //    var existingRequestFromRequestingPlayer = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
             //&& (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
 
-                var existingRequest = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
+                var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
             && (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
 
                 if (existingRequest == null)
                 {
-                    this.mainService.RequestedGames.Add(new GameRequest(data.EnemyId, data.RequestPlayerId));
+                    var request = await this.mainService.AddGameRequestAsync(new GameRequest(data.EnemyId, data.RequestPlayerId));
                 }
 
                 return Ok();
@@ -78,10 +79,12 @@ namespace Server.Controllers
         [HttpPost("games/status", Name = "CheckForGameStatus")]
         public async Task<ActionResult<GameStatusResponse>> CheckForGameStatus([FromBody] GameRequest data)
         {
-            var game = this.mainService.Games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.EnemyId || game.PlayerOne.PlayerId == data.RequestPlayerId)
+            var games = new List<Game>(await this.mainService.GetGamesAsync());
+
+            var game = games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.EnemyId || game.PlayerOne.PlayerId == data.RequestPlayerId)
             && (game.PlayerTwo.PlayerId == data.EnemyId || game.PlayerTwo.PlayerId == data.RequestPlayerId));
 
-            if (this.mainService.Games.Contains(game))
+            if (games.Contains(game))
             {
                 var status = new GameStatusResponse(game.CurrentGameStatus, game.CurrentPlayer.PlayerId);
                 return Ok(status);

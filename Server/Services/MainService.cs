@@ -13,10 +13,6 @@ namespace Server.Services
         private readonly List<Game> games = new List<Game>();
         private readonly List<GameRequest> gameRequests = new List<GameRequest>();
 
-        public List<Game> Games => this.games;
-
-        public List<GameRequest> RequestedGames => this.gameRequests;
-
         public Task<Player> AddPlayerAsync(Player player)
         {
             player.PlayerId = this.incrementedId;
@@ -28,6 +24,22 @@ namespace Server.Services
         public Task<IEnumerable<Player>> GetPlayersAsync()
         {
             return Task.FromResult<IEnumerable<Player>>(this.players);
+        }
+
+        public Task<IEnumerable<GameRequest>> GetGameRequestsAsync()
+        {
+            return Task.FromResult<IEnumerable<GameRequest>>(this.gameRequests);
+        }
+
+        public Task<IEnumerable<Game>> GetGamesAsync()
+        {
+            return Task.FromResult<IEnumerable<Game>>(this.games);
+        }
+
+        public Task<GameRequest> AddGameRequestAsync(GameRequest gameRequest)
+        {
+            this.gameRequests.Add(gameRequest);
+            return Task.FromResult(gameRequest);
         }
     }
 }
