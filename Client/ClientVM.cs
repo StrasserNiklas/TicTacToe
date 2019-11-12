@@ -77,6 +77,8 @@ namespace Client
         private ObservableCollection<Player> playerList;
         private Player selectedPlayer;
         private GameClientService gameClientService;
+        private int clientId;
+
 
         public ICommand RequestGameCommand
         {
@@ -86,19 +88,21 @@ namespace Client
                 {
                     if (this.SelectedPlayer != null)
                     {
-                        this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer.PlayerId, this.ClientId));
+                        this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer.PlayerId, this.ClientPlayer.Player.PlayerId));
                     }
                 });
             }
         }
 
-        private int clientId;
 
-        public int ClientId
+        private PlayerVM clientPlayer;
+
+        public PlayerVM ClientPlayer
         {
-            get { return clientId; }
-            set { clientId = value; }
+            get { return clientPlayer; }
+            set { clientPlayer = value; }
         }
+
 
 
 

@@ -1,4 +1,5 @@
-﻿using Client.ViewModels;
+﻿using Client.Models;
+using Client.ViewModels;
 using System;
 using System.Collections.Generic;
 
@@ -10,11 +11,38 @@ namespace Client
 
         public string PlayerName
         {
-            get { return playerName; }
-            set { playerName = value; }
+            get 
+            { 
+                return this.player.PlayerName; 
+            }
+            set 
+            { 
+                this.player.PlayerName = value;
+                this.FireOnPropertyChanged();
+            }
         }
 
-        public int Marker { get; set; }
+        public PlayerVM(Player player)
+        {
+            this.Player = player;
+        }
+
+        private Player player;
+
+        public Player Player
+        {
+            get
+            { 
+                return player; 
+            }
+
+            set
+            { 
+                player = value; 
+            }
+        }
+
+
 
         private int wins;
 
@@ -31,13 +59,6 @@ namespace Client
             }
         }
 
-
-        public PlayerVM(string playerName, int marker)
-        {
-            this.playerName = playerName;
-            this.markedPositions = new List<int>();
-            this.Marker = marker;
-        }
 
         private List<int> markedPositions;
 

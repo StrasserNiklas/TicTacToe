@@ -44,12 +44,8 @@ namespace Client
 
             this.gameService = host.Services.GetService<GameClientService>();
 
-            this.ticGame = new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
+            //this.ticGame = new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
             this.DataContext = this.ticGame;
-
-
-
-            
 
         }
 
@@ -70,11 +66,11 @@ namespace Client
 
                 // hier würd daweil eine exception kommen
                 var player = await this.gameService.PostPlayerInfoToServerAsync("Hans");
-                this.ticGame.ClientId = player.PlayerId;
+                this.ticGame.ClientPlayer = new PlayerVM(player);
 
 
                 var playerList = new List<Player>(await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId));
-                playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ticGame.ClientId));
+                playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ticGame.ClientPlayer.Player.PlayerId));
 
 
                 this.ticGame.PlayerList = new ObservableCollection<Player>(playerList);//.Result);

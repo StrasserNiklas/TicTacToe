@@ -54,6 +54,9 @@ namespace Server.Controllers
 
             if (player != null)
             {
+            //    var existingRequestFromRequestingPlayer = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
+            //&& (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
+
                 var existingRequest = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
             && (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
 

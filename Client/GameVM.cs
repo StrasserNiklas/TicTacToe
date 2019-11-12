@@ -130,7 +130,7 @@ namespace Client
 
 
 
-                            this.indexedGame[index] = this.CurrentPlayer.Marker;
+                            //this.indexedGame[index] = this.CurrentPlayer.Marker;
                             this.CurrentPlayer.MarkedPositions.Add(index);
                             this.gameTurns++;
 
