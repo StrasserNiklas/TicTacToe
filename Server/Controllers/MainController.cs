@@ -40,13 +40,8 @@ namespace Server.Controllers
 
         // POST: api/Main/players/alive
         [HttpGet("players/{id}", Name = "GetAlive")]
-        public async Task<ActionResult<PlayerServerStatus>> GetAlive(int playerId)//([FromBody] int playerId)
+        public async Task<ActionResult<PlayerServerStatus>> GetAlive(int id)//([FromBody] int playerId)
         {
-            // HACK PLEASE SEND HALP
-            var x = Request.Path.Value;
-            var y = x.Split('/');
-            var id = int.Parse(y.Last());
-
             var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy.PlayerId == id));
 
             var list = new List<Player>(await this.mainService.GetPlayersAsync());
