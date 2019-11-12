@@ -20,6 +20,8 @@ namespace GameLibrary
         {
         }
 
+        public bool Declined { get; set; }
+
         public int RequestID { get; }
 
         public Player RequestPlayer { get; set; }

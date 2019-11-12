@@ -77,9 +77,14 @@ namespace Client
                 if (status.RequestingPlayer != null)
                 {
                     // VM hier setzen für View!
-                    this.client.RequestingPlayer = status.RequestingPlayer;
+                    this.client.RequestingOrEnemyPlayer = status.RequestingPlayer;
                     this.client.GameWasRequested = true;
                     this.client.RequestID = status.RequestID;
+                }
+
+                if (status.StatusMessage != string.Empty)
+                {
+                    this.client.StatusMessage = status.StatusMessage;
                 }
 
 
@@ -97,15 +102,21 @@ namespace Client
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            // exception wenn öfter ein player requested wird
             var status = await this.gameService.GetPlayerListAndPostAliveAsync(this.client.ClientPlayer.Player.PlayerId);
 
 
             if (status.RequestingPlayer != null)
             {
                 // VM hier setzen für View!
-                this.client.RequestingPlayer = status.RequestingPlayer;
+                this.client.RequestingOrEnemyPlayer = status.RequestingPlayer;
                 this.client.GameWasRequested = true;
                 this.client.RequestID = status.RequestID;
+            }
+
+            if (status.StatusMessage != string.Empty)
+            {
+                this.client.StatusMessage = status.StatusMessage;
             }
         }
 

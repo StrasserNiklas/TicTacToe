@@ -13,6 +13,8 @@ namespace GameLibrary
         {
         }
 
+        public string StatusMessage { get; set; }
+
         public int RequestID { get; set; }
 
         public Player RequestingPlayer { get; set; }

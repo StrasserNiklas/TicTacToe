@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Client
@@ -90,15 +91,37 @@ namespace Client
             this.GameWasRequested = false;
         }
 
-        private Player requestingPlayer;
+        private Player requestingorEnemyPlayer;
 
         public int RequestID { get; set; }
 
-        public Player RequestingPlayer
+        public Player RequestingOrEnemyPlayer
         {
-            get { return requestingPlayer; }
-            set { requestingPlayer = value; this.FireOnPropertyChanged(); }
+            get { return requestingorEnemyPlayer; }
+            set { requestingorEnemyPlayer = value; this.FireOnPropertyChanged(); }
         }
+
+        private string statusMessage;
+
+        public string StatusMessage
+        {
+            get { return statusMessage; }
+            set 
+            { 
+                statusMessage = value; 
+                this.FireOnPropertyChanged();
+
+                if (value != string.Empty)
+                {
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(7000);
+                        this.StatusMessage = string.Empty;
+                    });
+                }
+            }
+        }
+
 
         private bool gameWasRequested;
 
@@ -115,10 +138,10 @@ namespace Client
                 return new Command(obj =>
                 {
                     this.GameWasRequested = false;
-                    this.RequestingPlayer = default;
+                    this.RequestingOrEnemyPlayer = default;
 
                     //delete request on server
-                    this.gameClientService.RemoveGameRequest(this.RequestID);
+                    this.gameClientService.DeclineGameRequest(this.RequestID);
                     this.RequestID = 0;
                 });
             }

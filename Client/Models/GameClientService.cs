@@ -25,7 +25,7 @@ namespace Client.Models
             var response = await _httpClient.PostAsync("/api/Main/games/request", content);
         }
 
-        public async Task RemoveGameRequest(int gameRequestId)
+        public async Task DeclineGameRequest(int gameRequestId)
         {
             var response = await _httpClient.PutAsync($"/api/Main/games/request/{gameRequestId}", null);
             response.EnsureSuccessStatusCode();

@@ -42,18 +42,33 @@ namespace Server.Controllers
         [HttpGet("players/{id}", Name = "GetAlive")]
         public async Task<ActionResult<PlayerServerStatus>> GetAlive(int id)//([FromBody] int playerId)
         {
-            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy.PlayerId == id));
+            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestPlayer.PlayerId == id || request.Enemy.PlayerId == id);
 
             var list = new List<Player>(await this.mainService.GetPlayersAsync());
 
             var status = new PlayerServerStatus(list);
 
-            if (existingRequest != null)
+            if (existingRequest != null && existingRequest.Declined == false)
             {
                 status.RequestingPlayer = existingRequest.RequestPlayer;
                 status.RequestID = existingRequest.RequestID;
             }
-            
+
+            // if a request has been declined, remove it and notify the player if he was the one requesting it
+            else if (existingRequest != null && existingRequest.Declined)
+            {
+                var player = list.SingleOrDefault(i => i.PlayerId == id);
+
+                if (player != null && player.PlayerId == existingRequest.RequestPlayer.PlayerId)
+                {
+                    await this.mainService.RemoveRequestAsync(existingRequest);
+
+                    status.StatusMessage = $"{existingRequest.Enemy.PlayerName} has declined.";
+                }
+
+                //now notify player pls :)))
+            }
+
             return Ok(status);
         }
 
@@ -103,14 +118,15 @@ namespace Server.Controllers
         }
 
         // PUT: api/Main/games/request
-        [HttpPut("games/request/{id}", Name = "DeleteRequest")]
-        public async Task<IActionResult> DeleteRequest(int id)
+        [HttpPut("games/request/{id}", Name = "DeclineRequest")]
+        public async Task<IActionResult> DeclineRequest(int id)
         {
             var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestID == id );
 
             if (existingRequest != null)
             {
-                await this.mainService.RemoveRequestAsync(existingRequest);
+                existingRequest.Declined = true;
+                //await this.mainService.RemoveRequestAsync(existingRequest);
                 return Ok();
             }
 
