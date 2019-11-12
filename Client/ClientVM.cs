@@ -1,6 +1,7 @@
 ﻿using Client.Models;
 using Client.ViewModels;
 using GameLibrary;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -66,6 +67,15 @@ namespace Client
 
         #endregion
 
+
+        private ObservableCollection<Player> playerList;
+        private Player selectedPlayer;
+        private GameClientService gameClientService;
+        private int clientId;
+        private bool gameIsActive;
+        private PlayerVM clientPlayer;
+        private bool clientConnected;
+
         public ClientVM(GameVM game, GameClientService gameClientService)
         {
             this.CurrentGame = game;
@@ -74,18 +84,13 @@ namespace Client
             this.PlayerList = new ObservableCollection<Player>();
             this.gameClientService = gameClientService;
             this.ClientConnected = false;
+            this.GameIsActive = false;
         }
 
-        private ObservableCollection<Player> playerList;
-        private Player selectedPlayer;
-        private GameClientService gameClientService;
-        private int clientId;
-
+        public GameVM CurrentGame { get; set; }
         private GameVVM game = new GameVVM();
-
         public GameVVM Game => this.game;
-
-        private int[] INDEXEXGAMETEST = new int[8];
+        private int[] INDEXEXGAMETEST = new int[9];
 
         /// <summary>
         /// This command is used when a game element button is clicked.
@@ -147,6 +152,10 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// This command is used when the player using the client requests a game with another online player.
+        /// A game request will be sent to the server containing the id of the enemy player and the id of the client player.
+        /// </summary>
         public ICommand RequestGameCommand
         {
             get
@@ -161,13 +170,15 @@ namespace Client
             }
         }
 
-        private bool clientConnected;
-
+        
+        /// <summary>
+        /// Gets or sets a value indicating whether the player using the client connected to the server.
+        /// </summary>
         public bool ClientConnected
         {
             get 
             { 
-                return clientConnected; 
+                return this.clientConnected; 
             }
             set 
             {
@@ -176,37 +187,66 @@ namespace Client
              }
         }
 
-
-
-        private PlayerVM clientPlayer;
-
+        /// <summary>
+        /// Gets or sets the player that is using the client.
+        /// </summary>
         public PlayerVM ClientPlayer
         {
-            get { return clientPlayer; }
-            set { clientPlayer = value; }
-        }
-
-
-
-
-        public ObservableCollection<Player> PlayerList
-        {
-            get { return playerList; }
+            get 
+            { 
+                return clientPlayer; 
+            }
             set 
             { 
-                playerList = value;
+                clientPlayer = value ?? throw new ArgumentNullException(nameof(this.ClientPlayer), "The client player can´t be null.");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a game with another player is currently in progress.
+        /// </summary>
+        public bool GameIsActive
+        {
+            get
+            {
+                return this.gameIsActive;
+            }
+            set
+            {
+                this.gameIsActive = value;
                 this.FireOnPropertyChanged();
             }
         }
 
-        public Player SelectedPlayer
+        /// <summary>
+        /// Gets or sets the list of currently online players.
+        /// </summary>
+        public ObservableCollection<Player> PlayerList
         {
-            get { return selectedPlayer; }
-            set { selectedPlayer = value; }
+            get
+            { 
+                return this.playerList; 
+            }
+            set 
+            { 
+                this.playerList = value;
+                this.FireOnPropertyChanged();
+            }
         }
 
-
-
-        public GameVM CurrentGame { get; set; }
+        /// <summary>
+        /// Gets or sets the currently selected player in the online player list.
+        /// </summary>
+        public Player SelectedPlayer
+        {
+            get 
+            { 
+                return this.selectedPlayer; 
+            }
+            set 
+            { 
+                selectedPlayer = value; 
+            }
+        }
     }
 }

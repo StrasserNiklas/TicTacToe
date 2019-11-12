@@ -20,7 +20,6 @@
         </ResourceDictionary>
     </Window.Resources>
 
-
     <!-- Main grid -->
     <Grid>
         <Grid.RowDefinitions>
@@ -36,7 +35,7 @@
         <!-- Changing between local and online play 
         Not used as of now!
         -->
-        <Border Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource borderStyle}" Margin="3">
+        <!--<Border Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource borderStyle}" Margin="3">
             <StackPanel Orientation="Horizontal">
                 <Button MaxHeight="25" Width="70" Height="30"  Content="Local game" Margin="4"
                         Style="{StaticResource buttonRoundCorner2}" Command="{Binding LocalGameButtonPressed}"
@@ -48,7 +47,7 @@
                         Command="{Binding OnlineGameButtonPressed}" 
                         IsEnabled="{Binding LocalGameSelected}"/>
             </StackPanel>
-        </Border>
+        </Border>-->
 
         <!-- Server information -->
         <!--Visibility="{Binding OnlineGameSelected, Converter={StaticResource booleanToVisibilityConverter}}"-->
@@ -100,7 +99,7 @@
         <!-- Current game information MAIN -->
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="65" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="80" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -108,7 +107,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Current player information  -->
-            <Border Margin="3" Style="{StaticResource borderStyle}" Background="AliceBlue">
+            <Border Height="65" Margin="3" Style="{StaticResource borderStyle}" Background="AliceBlue">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition MinHeight="30" />
@@ -157,19 +156,11 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
+                    <!-- Current player labels -->
                     <Label Grid.Row="0" Content="{Binding CurrentGame.CurrentPlayer.PlayerName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource labelStyle}"  />
-                    <Label Grid.Row="0" Grid.Column="1" Content="'s turn"  Margin="-6,0,0,0" VerticalAlignment="Center" FontWeight="Bold" >
-                        <Label.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentGame.GameOver}" Value="False">
-                                        <!--<Setter Property="IsEnabled" Value="True" />-->
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-
-                        </Label.Style>
-                    </Label>
+                    <Label Grid.Row="0" Grid.Column="1" Content="'s turn"  Margin="-6,0,0,0" 
+                           VerticalAlignment="Center" FontWeight="Bold" 
+                           Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
                     <!-- New game button -->
                     <Button Grid.Row="1" 

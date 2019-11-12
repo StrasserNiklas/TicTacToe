@@ -4,6 +4,13 @@ using System.Windows.Media.Imaging;
 
 namespace Client.ViewModels
 {
+    /// <summary>
+    /// Represents a single cell of the tic tac toe game with an index and a background.
+    /// 
+    /// [O X O]               [0 1 2]
+    /// [X O O] -> indexed -> [3 4 5]
+    /// [O X O]               [6 7 8]    
+    /// </summary>
     public class GameCellVM : BaseVM
     {
         private int playerMark;
@@ -15,15 +22,21 @@ namespace Client.ViewModels
             this.PlayerMark = playerMark;
         }
 
+
+        /// <summary>
+        /// Gets the game index the cell is representing.
+        /// </summary>
         public int Index { get; }
 
-
-
+        /// <summary>
+        /// Gets or sets the player mark the cell is representing.
+        /// Based on the mark, the background of the cell will be set to a different background.
+        /// </summary>
         public int PlayerMark
         {
             get 
             { 
-                return playerMark;
+                return this.playerMark;
             }
             set 
             {
@@ -36,21 +49,27 @@ namespace Client.ViewModels
                     case 1:
                         var brush = new ImageBrush();
                         brush.ImageSource = new BitmapImage(new Uri("Images/O.png", UriKind.Relative));
-                        this.CellBackground = new SolidColorBrush(Colors.Green);//brush;
+                        this.CellBackground = brush;
                         break;
 
                     case 2:
                         var brush1 = new ImageBrush();
                         brush1.ImageSource = new BitmapImage(new Uri("Images/X.png", UriKind.Relative));
-                        this.CellBackground = new SolidColorBrush(Colors.Green);//brush1;
+                        this.CellBackground = brush1;
                         break;
 
                     default:
                         break;
                 }
+
+                this.playerMark = value;
             }
         }
 
+
+        /// <summary>
+        /// Gets or sets the background of the game cell that will represent a button.
+        /// </summary>
         public Brush CellBackground
         {
             get 
