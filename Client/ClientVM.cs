@@ -87,7 +87,7 @@ namespace Client
             this.GameIsActive = false;
 
 
-            this.GameWasRequested = true;
+            this.GameWasRequested = false;
         }
 
         private Player requestingPlayer;

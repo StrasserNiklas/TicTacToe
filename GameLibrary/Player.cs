@@ -21,6 +21,10 @@ namespace GameLibrary
             this.MarkedPositions = new List<int>();
         }
 
+        public Player()
+        {
+        }
+
         public int PlayerId
         {
             get

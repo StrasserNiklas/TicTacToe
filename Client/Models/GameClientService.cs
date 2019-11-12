@@ -31,7 +31,7 @@ namespace Client.Models
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<PlayerServerStatus> PostAliveAndGetPlayerListAsync(int playerId)
+        public async Task<PlayerServerStatus> GetPlayerListAndPostAliveAsync(int playerId)
         {
             //string json = JsonConvert.SerializeObject(playerId);
             //HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");

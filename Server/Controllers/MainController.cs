@@ -42,7 +42,12 @@ namespace Server.Controllers
         [HttpGet("players/{id}", Name = "GetAlive")]
         public async Task<ActionResult<PlayerServerStatus>> GetAlive(int playerId)//([FromBody] int playerId)
         {
-            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy.PlayerId == playerId));
+            // HACK PLEASE SEND HALP
+            var x = Request.Path.Value;
+            var y = x.Split('/');
+            var id = int.Parse(y.Last());
+
+            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy.PlayerId == id));
 
             var list = new List<Player>(await this.mainService.GetPlayersAsync());
 

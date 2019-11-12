@@ -68,10 +68,10 @@ namespace Client
         {
             try
             {
-                var player = await this.gameService.PostPlayerInfoToServerAsync("Hans");
+                var player = await this.gameService.PostPlayerInfoToServerAsync(this.client.ClientPlayer.PlayerName);
                 this.client.ClientPlayer = new PlayerVM(player);
 
-                var status = await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId);
+                var status = await this.gameService.GetPlayerListAndPostAliveAsync(player.PlayerId);
 
 
                 if (status.RequestingPlayer != null)
@@ -95,6 +95,19 @@ namespace Client
 
         }
 
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var status = await this.gameService.GetPlayerListAndPostAliveAsync(this.client.ClientPlayer.Player.PlayerId);
+
+
+            if (status.RequestingPlayer != null)
+            {
+                // VM hier setzen für View!
+                this.client.RequestingPlayer = status.RequestingPlayer;
+                this.client.GameWasRequested = true;
+                this.client.RequestID = status.RequestID;
+            }
+        }
 
         #region OldLocalGameStuff
 
@@ -153,5 +166,7 @@ namespace Client
         //}
 
         #endregion
+
+        
     }
 }
