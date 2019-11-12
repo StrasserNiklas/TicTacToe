@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
-namespace Client.Models
+namespace Server.Models
 {
-    public class Player
+    public class PlayerPlaceholder1
     {
         private int wins;
         private string playerName;
@@ -12,7 +12,7 @@ namespace Client.Models
         private string hash;
         private int playerId;
 
-        public Player(string playerName)
+        public PlayerPlaceholder1(string playerName)
         {
             var time = DateTime.Now;
 
@@ -23,43 +23,43 @@ namespace Client.Models
 
         public int PlayerId
         {
-            get
-            {
-                return this.playerId;
+            get 
+            { 
+                return this.playerId; 
             }
-            set
+            set 
             {
                 if (value < 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(this.PlayerId), "The player ID can´t be below 0.");
                 }
 
-                this.playerId = value;
+                this.playerId = value; 
             }
         }
 
         public string Hash
         {
             get
-            {
-                return this.hash;
+            { 
+                return this.hash; 
             }
-            set
+            set 
             {
                 if (value == string.Empty)
                 {
                     throw new ArgumentOutOfRangeException(nameof(this.Hash), "The hash identifying a player can´t be an empty string.");
                 }
 
-                this.hash = value;
+                this.hash = value; 
             }
         }
 
         public string PlayerName
         {
-            get
-            {
-                return this.playerName;
+            get 
+            { 
+                return this.playerName; 
             }
             set
             {
@@ -68,7 +68,7 @@ namespace Client.Models
                     throw new ArgumentOutOfRangeException(nameof(this.PlayerName), "The player name can´t be an empty string.");
                 }
 
-                this.playerName = value;
+                this.playerName = value; 
             }
         }
 

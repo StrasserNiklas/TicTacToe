@@ -8,16 +8,16 @@ namespace Server.Models
 {
     public class Game
     {
-        private Player playerTwo;
-        private Player playerOne;
+        private PlayerPlaceholder1 playerTwo;
+        private PlayerPlaceholder1 playerOne;
         private string endGameMessage;
-        private Player currentPlayer;
+        private PlayerPlaceholder1 currentPlayer;
         private int gameTurns = 0;
         private List<WinCondition> winConditions;
         private int[] indexedGame = new int[9];
         private bool gameOver;
 
-        public Game(Player one, Player two)
+        public Game(PlayerPlaceholder1 one, PlayerPlaceholder1 two)
         {
             this.winConditions = new List<WinCondition>()
             {
@@ -145,7 +145,7 @@ namespace Server.Models
             }
         }
 
-        public Player CurrentPlayer
+        public PlayerPlaceholder1 CurrentPlayer
         {
             get
             {
@@ -157,7 +157,7 @@ namespace Server.Models
             }
         }
 
-        public Player PlayerOne
+        public PlayerPlaceholder1 PlayerOne
         {
             get
             {
@@ -170,7 +170,7 @@ namespace Server.Models
             }
         }
 
-        public Player PlayerTwo
+        public PlayerPlaceholder1 PlayerTwo
         {
             get
             {

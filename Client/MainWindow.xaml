@@ -55,16 +55,18 @@
             <StackPanel>
                 <DockPanel>
                     <TextBlock Margin="5,10,0,10" Text="Your name: " />
-                    <TextBlock Margin="0,10,0,10" Text="{Binding ClientPlayer.PlayerName}" 
+                    <TextBlock Margin="0,10,0,10" Text="{Binding ClientPlayer.PlayerName}" FontWeight="Bold"
                            Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
                     <TextBox Margin="10" Text="{Binding ClientPlayer.PlayerName, FallbackValue=Enter your name}" 
                          Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanConverter}}"/>
                 </DockPanel>
                 
                 <Button Margin="10" Content="Connect to server" Click="Button_Click" Style="{StaticResource buttonRoundCorner}"
-                        Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanConverter}}"/>
-                <TextBlock Margin="10" Text="Server status: Connected" FontWeight="Bold" HorizontalAlignment="Left" 
+                        Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanConverter}}" Background="#ffd769"/>
+                <TextBlock Margin="10" Text="Server status: Connected" FontWeight="Bold" HorizontalAlignment="Left" Foreground="Green"
                            Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                <TextBlock Text="Choose a player name and connect to the server to play against others." TextWrapping="Wrap" Width="160" FontWeight="Bold" TextAlignment="Center"
+                           Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanConverter}}"/>
             </StackPanel>
             
         </Border>
@@ -90,7 +92,7 @@
                     </ListView.View>
                 </ListView>
 
-                <Button Style="{StaticResource buttonRoundCorner}" Margin="5" Command="{Binding RequestGameCommand}">
+                <Button Style="{StaticResource buttonRoundCorner}" Background="#ffd769" Margin="5" Command="{Binding RequestGameCommand}">
                     <TextBlock Margin="5,0,5,0" Text="Play with selected player" FontWeight="Medium"/>
                 </Button>
             </StackPanel>
@@ -153,26 +155,61 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
                     <!-- Current player labels -->
-                    <Label Grid.Row="0" Content="{Binding CurrentGame.CurrentPlayer.PlayerName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource labelStyle}"  />
+                    <Label Grid.Row="0" Content="{Binding CurrentGame.CurrentPlayer.PlayerName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource labelStyle}"
+                           Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"/>
                     <Label Grid.Row="0" Grid.Column="1" Content="'s turn"  Margin="-6,0,0,0" 
                            VerticalAlignment="Center" FontWeight="Bold" 
                            Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
-                    <!-- New game button -->
+                    <Label Content="{Binding RequestingPlayer.PlayerName}" Style="{StaticResource labelStyle}"
+                           Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                    <Label Grid.Row="1" Grid.Column="1" Content="wants to play with you" Style="{StaticResource labelStyle}"
+                           Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
+
+                    <!-- Accept button -->
                     <Button Grid.Row="1" 
                             Grid.Column="2" 
+                            MaxHeight="25" 
+                            Background="#aee024"
+                            Width="70"
+                            Style="{StaticResource buttonRoundCorner2}"
+                            Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Accept" Margin="4" 
+                            IsEnabled="True"
+                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
+                            Command="{Binding AcceptCommand}"
+                             />
+                    
+                    <!-- Decline button -->
+                    <Button Grid.Row="1" 
+                            Grid.Column="3" 
+                            MaxHeight="25" 
+                            Background="#fc5d5d"
+                            Width="70"
+                            Style="{StaticResource buttonRoundCorner2}"
+                            Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Decline" Margin="4" 
+                            IsEnabled="True"
+                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
+                            Command="{Binding DeclineCommand}"
+                             />
+                    
+                    <!-- New game button -->
+                    <Button Grid.Row="1" 
+                            Grid.Column="4" 
                             Grid.ColumnSpan="2"
                             MaxHeight="25" 
                             Width="70"
                             Style="{StaticResource buttonRoundCorner}"
                             Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="New Game" Margin="4" 
                             IsEnabled="{Binding CurrentGame.GameOver}"
-                            Command="{Binding CurrentGame.NewGameCommand}"
-                            Click="NewGameButtonClick" />
+                            Command="{Binding CurrentGame.NewGameCommand}" Background="#ffd769"
+                            Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"
+                             />
                     <Label Grid.ColumnSpan="4" HorizontalAlignment="Left" Foreground="Green" FontSize="15"  Grid.Row="1" Content="{Binding CurrentGame.EndMessage}" Style="{StaticResource labelStyle}"/>
                 </Grid>
             </Border>

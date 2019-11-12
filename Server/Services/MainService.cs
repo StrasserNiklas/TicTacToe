@@ -41,5 +41,11 @@ namespace Server.Services
             this.gameRequests.Add(gameRequest);
             return Task.FromResult(gameRequest);
         }
+
+        public Task<GameRequest> RemoveRequestAsync(GameRequest gameRequest)
+        {
+            this.gameRequests.Remove(gameRequest);
+            return Task.FromResult(gameRequest);
+        }
     }
 }

@@ -40,13 +40,21 @@ namespace Server.Controllers
 
         // POST: api/Main/players/alive
         [HttpGet("players/{id}", Name = "GetAlive")]
-        public async Task<ActionResult<IEnumerable<Player>>> GetAlive(int playerId)//([FromBody] int playerId)
+        public async Task<ActionResult<PlayerServerStatus>> GetAlive(int playerId)//([FromBody] int playerId)
         {
-            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.EnemyId == playerId));
+            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy.PlayerId == playerId));
 
-            //hier weiter logic
+            var list = new List<Player>(await this.mainService.GetPlayersAsync());
 
-            return Ok(await this.mainService.GetPlayersAsync());
+            var status = new PlayerServerStatus(list);
+
+            if (existingRequest != null)
+            {
+                status.RequestingPlayer = existingRequest.RequestPlayer;
+                status.RequestID = existingRequest.RequestID;
+            }
+            
+            return Ok(status);
         }
 
         // POST: api/Main/games/request
@@ -54,19 +62,19 @@ namespace Server.Controllers
         public async Task<IActionResult> GameRequest([FromBody] GameRequest data)
         {
             var list = await this.mainService.GetPlayersAsync();
-            var player = list.SingleOrDefault(player => player.PlayerId == data.EnemyId);
+            var player = list.SingleOrDefault(player => player.PlayerId == data.Enemy.PlayerId);
 
             if (player != null)
             {
             //    var existingRequestFromRequestingPlayer = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
             //&& (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
 
-                var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
-            && (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
+                var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy == data.Enemy || request.Enemy == data.RequestPlayer)
+            && (request.RequestPlayer == data.Enemy || request.RequestPlayer == data.RequestPlayer));
 
                 if (existingRequest == null)
                 {
-                    var request = await this.mainService.AddGameRequestAsync(new GameRequest(data.EnemyId, data.RequestPlayerId));
+                    var request = await this.mainService.AddGameRequestAsync(new GameRequest(data.Enemy, data.RequestPlayer));
                 }
 
                 return Ok();
@@ -75,14 +83,15 @@ namespace Server.Controllers
             return NotFound();
         }
 
+        //this should be a Get based on a game id
         // POST: api/Main/games/request
         [HttpPost("games/status", Name = "CheckForGameStatus")]
         public async Task<ActionResult<GameStatusResponse>> CheckForGameStatus([FromBody] GameRequest data)
         {
             var games = new List<Game>(await this.mainService.GetGamesAsync());
 
-            var game = games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.EnemyId || game.PlayerOne.PlayerId == data.RequestPlayerId)
-            && (game.PlayerTwo.PlayerId == data.EnemyId || game.PlayerTwo.PlayerId == data.RequestPlayerId));
+            var game = games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.Enemy.PlayerId || game.PlayerOne.PlayerId == data.RequestPlayer.PlayerId)
+            && (game.PlayerTwo.PlayerId == data.Enemy.PlayerId || game.PlayerTwo.PlayerId == data.RequestPlayer.PlayerId));
 
             if (games.Contains(game))
             {
@@ -93,11 +102,27 @@ namespace Server.Controllers
             return NotFound();
         }
 
-        // PUT: api/Main/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT: api/Main/games/request
+        [HttpPut("games/request/{id}", Name = "DeleteRequest")]
+        public async Task<IActionResult> DeleteRequest(int id)
         {
+            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestID == id );
+
+            if (existingRequest != null)
+            {
+                await this.mainService.RemoveRequestAsync(existingRequest);
+                return Ok();
+            }
+
+            return NotFound();
         }
+
+        // PUT: api/Main/games/request
+        //[HttpPut("games/request/{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+
+        //}
 
         //// GET: api/Main/5
         //[HttpGet("{id}", Name = "Get")]

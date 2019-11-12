@@ -25,7 +25,13 @@ namespace Client.Models
             var response = await _httpClient.PostAsync("/api/Main/games/request", content);
         }
 
-        public async Task<IEnumerable<Player>> PostAliveAndGetPlayerListAsync(int playerId)
+        public async Task RemoveGameRequest(int gameRequestId)
+        {
+            var response = await _httpClient.PutAsync($"/api/Main/games/request/{gameRequestId}", null);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<PlayerServerStatus> PostAliveAndGetPlayerListAsync(int playerId)
         {
             //string json = JsonConvert.SerializeObject(playerId);
             //HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -33,7 +39,7 @@ namespace Client.Models
             var response = await _httpClient.GetAsync($"/api/Main/players/{playerId}");
             response.EnsureSuccessStatusCode();
             var returnJson = await response.Content.ReadAsStringAsync();
-            var players = JsonConvert.DeserializeObject<IEnumerable<Player>>(returnJson);
+            var players = JsonConvert.DeserializeObject<PlayerServerStatus>(returnJson);
             return players;
         }
 

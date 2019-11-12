@@ -85,7 +85,59 @@ namespace Client
             this.gameClientService = gameClientService;
             this.ClientConnected = false;
             this.GameIsActive = false;
+
+
+            this.GameWasRequested = true;
         }
+
+        private Player requestingPlayer;
+
+        public int RequestID { get; set; }
+
+        public Player RequestingPlayer
+        {
+            get { return requestingPlayer; }
+            set { requestingPlayer = value; this.FireOnPropertyChanged(); }
+        }
+
+        private bool gameWasRequested;
+
+        public bool GameWasRequested
+        {
+            get { return gameWasRequested; }
+            set { gameWasRequested = value; this.FireOnPropertyChanged(); }
+        }
+
+        public ICommand DeclineCommand
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+                    this.GameWasRequested = false;
+                    this.RequestingPlayer = default;
+
+                    //delete request on server
+                    this.gameClientService.RemoveGameRequest(this.RequestID);
+                    this.RequestID = 0;
+                });
+            }
+        }
+
+        public ICommand AcceptCommand
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+                    // affirm request
+                    // make new game
+                    // delete the old request
+                });
+            }
+        }
+
+
 
         public GameVM CurrentGame { get; set; }
         private GameVVM game = new GameVVM();
@@ -108,10 +160,24 @@ namespace Client
 
                     if (this.INDEXEXGAMETEST[cell.Index] == 0)
                     {
-                        var x = cell.CellBackground;
-                        cell.PlayerMark = 1;
+                        
+                        cell.PlayerMark = 1; // oder was auch immer XDDDDDDDDDDDDDD
 
-                        //this.gameClientService.
+                        // this.gameClientService.SendGameUpdate =>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                         //this.indexedGame[index] = this.CurrentPlayer.Marker;
                         //this.CurrentPlayer.MarkedPositions.Add(index);
@@ -164,7 +230,7 @@ namespace Client
                 {
                     if (this.SelectedPlayer != null)
                     {
-                        this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer.PlayerId, this.ClientPlayer.Player.PlayerId));
+                        this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
                     }
                 });
             }

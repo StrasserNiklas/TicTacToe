@@ -18,6 +18,7 @@ using Microsoft.Extensions.Http;
 using Client.Models;
 using System.Net.Http;
 using System.Collections.ObjectModel;
+using GameLibrary;
 
 namespace Client
 {
@@ -26,7 +27,7 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ClientVM ticGame;
+        private ClientVM client;
 
         public MainWindow()
         {
@@ -44,12 +45,12 @@ namespace Client
 
             this.gameService = host.Services.GetService<GameClientService>();
 
-            this.ticGame = new ClientVM(new GameVM
+            this.client = new ClientVM(new GameVM
                 (new PlayerVM(new Player("Nikolaus")), 
                  new PlayerVM(new Player("Felixitus"))), this.gameService);//new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
             
-            this.DataContext = this.ticGame;
-            this.ticGame.ClientPlayer = new PlayerVM(new Player("player"));
+            this.DataContext = this.client;
+            this.client.ClientPlayer = new PlayerVM(new Player("player"));
         }
 
         private GameClientService gameService;
@@ -59,7 +60,7 @@ namespace Client
             //await this.BooksDemoAsync();
             var task = Task.Run(() => this.BooksDemoAsync());
 
-            this.ticGame.ClientConnected = true;
+            this.client.ClientConnected = true;
             
         }
 
@@ -68,12 +69,24 @@ namespace Client
             try
             {
                 var player = await this.gameService.PostPlayerInfoToServerAsync("Hans");
-                this.ticGame.ClientPlayer = new PlayerVM(player);
+                this.client.ClientPlayer = new PlayerVM(player);
 
-                var playerList = new List<Player>(await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId));
-                playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ticGame.ClientPlayer.Player.PlayerId));
+                var status = await this.gameService.PostAliveAndGetPlayerListAsync(player.PlayerId);
 
-                this.ticGame.PlayerList = new ObservableCollection<Player>(playerList);//.Result);
+
+                if (status.RequestingPlayer != null)
+                {
+                    // VM hier setzen für View!
+                    this.client.RequestingPlayer = status.RequestingPlayer;
+                    this.client.GameWasRequested = true;
+                    this.client.RequestID = status.RequestID;
+                }
+
+
+                var playerList = new List<Player>(status.Players);
+                playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.client.ClientPlayer.Player.PlayerId));
+
+                this.client.PlayerList = new ObservableCollection<Player>(playerList);//.Result);
 
             }
             catch (HttpRequestException ex)

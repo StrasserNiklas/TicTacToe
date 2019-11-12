@@ -6,19 +6,25 @@ namespace GameLibrary
     public class GameRequest
     {
         [JsonConstructor]
-        public GameRequest(int enemyId, int requestPlayerId)
+        public GameRequest(Player enemy, Player requestPlayer)
         {
-            this.EnemyId = enemyId; 
-            this.RequestPlayerId = requestPlayerId;
+            this.Enemy = enemy; 
+            this.RequestPlayer = requestPlayer;
+
+            Random r = new Random();
+
+            this.RequestID = r.Next(999, 1234567) + r.Next(999, 1234567);
         }
 
         public GameRequest()
         {
         }
 
-        public int RequestPlayerId { get; set; }
+        public int RequestID { get; }
 
-        public int EnemyId { get; set; }
+        public Player RequestPlayer { get; set; }
+
+        public Player Enemy { get; set; }
 
     }
 }
