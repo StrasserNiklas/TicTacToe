@@ -3,6 +3,7 @@ using Client.ViewModels;
 using GameLibrary;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Client
@@ -84,7 +85,70 @@ namespace Client
 
         public GameVVM Game => this.game;
 
-        
+        private int[] INDEXEXGAMETEST = new int[8];
+
+        /// <summary>
+        /// This command is used when a game element button is clicked.
+        /// Updates the game status and after 5 turns, checks if a win condition has been met.
+        /// </summary>
+        public ICommand PlayerClick
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+                    //if (!this.GameOver)
+                    //{
+                    var cell = (GameCellVM)obj;
+
+
+                    
+
+                    if (this.INDEXEXGAMETEST[cell.Index] == 0)
+                    {
+                        cell.PlayerMark = 1;
+
+                        //this.gameClientService.
+
+                        //this.indexedGame[index] = this.CurrentPlayer.Marker;
+                        //this.CurrentPlayer.MarkedPositions.Add(index);
+                        //this.gameTurns++;
+
+                        // an server
+
+                        //if (this.gameTurns > 4 && !this.GameOver)
+                        //{
+                        //    bool check = this.CheckForWin();
+
+                        //    if (check)
+                        //    {
+                        //        this.GameOver = true;
+                        //        this.CurrentPlayer.Wins++;
+                        //        this.EndMessage = $"{this.CurrentPlayer.PlayerName} wins!";
+                        //    }
+
+                        //    if (this.gameTurns == 9 && !this.GameOver)
+                        //    {
+                        //        this.EndMessage = $"It´s a draw!";
+                        //        this.GameOver = true;
+                        //    }
+                        //}
+
+
+                        //if (this.CurrentPlayer == this.playerOne)
+                        //{
+                        //    this.CurrentPlayer = this.playerTwo;
+                        //}
+                        //else
+                        //{
+                        //    this.CurrentPlayer = this.playerOne;
+                        //}
+                    }
+                    //}
+                });
+            }
+        }
+
         public ICommand RequestGameCommand
         {
             get

@@ -197,7 +197,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" Command="{Binding CurrentGame.PlayerClick}" />
+                            <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" Command="{Binding PlayerClick}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
