@@ -44,16 +44,22 @@ namespace Client
 
             this.gameService = host.Services.GetService<GameClientService>();
 
-            //this.ticGame = new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
+            this.ticGame = new ClientVM(
+                new GameVM(new PlayerVM(new Player("Nikolaus")), new PlayerVM(new Player("Felixitus"))), this.gameService);//new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
             this.DataContext = this.ticGame;
+
+            this.ticGame.ClientPlayer = new PlayerVM(new Player("player"));
 
         }
 
         private GameClientService gameService;
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.BooksDemoAsync();
+            //await this.BooksDemoAsync();
+            var task = Task.Run(() => this.BooksDemoAsync());
+
+            this.ticGame.ClientConnected = true;
             
         }
 
@@ -74,6 +80,7 @@ namespace Client
 
 
                 this.ticGame.PlayerList = new ObservableCollection<Player>(playerList);//.Result);
+
             }
             catch (HttpRequestException ex)
             {

@@ -27,9 +27,10 @@ namespace Client.Models
 
         public async Task<IEnumerable<Player>> PostAliveAndGetPlayerListAsync(int playerId)
         {
-            string json = JsonConvert.SerializeObject(playerId);
-            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("/api/Main/players/alive", content);
+            //string json = JsonConvert.SerializeObject(playerId);
+            //HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            //var response = await _httpClient.PostAsync("/api/Main/players/alive", content);
+            var response = await _httpClient.GetAsync($"/api/Main/players/{playerId}");
             response.EnsureSuccessStatusCode();
             var returnJson = await response.Content.ReadAsStringAsync();
             var players = JsonConvert.DeserializeObject<IEnumerable<Player>>(returnJson);

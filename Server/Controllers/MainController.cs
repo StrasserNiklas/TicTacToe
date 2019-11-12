@@ -39,9 +39,12 @@ namespace Server.Controllers
         }
 
         // POST: api/Main/players/alive
-        [HttpPost("players/alive", Name = "PostAlive")]
-        public async Task<ActionResult<IEnumerable<Player>>> PostAlive([FromBody] int playerId)
+        [HttpGet("players/{id}", Name = "GetAlive")]
+        public async Task<ActionResult<IEnumerable<Player>>> GetAlive(int playerId)//([FromBody] int playerId)
         {
+            var existingRequest = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == playerId));
+
+
             return Ok(await this.mainService.GetPlayersAsync());
         }
 

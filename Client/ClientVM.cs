@@ -72,6 +72,7 @@ namespace Client
             //this.OnlineGameSelected = false;
             this.PlayerList = new ObservableCollection<Player>();
             this.gameClientService = gameClientService;
+            this.ClientConnected = false;
         }
 
         private ObservableCollection<Player> playerList;
@@ -79,7 +80,7 @@ namespace Client
         private GameClientService gameClientService;
         private int clientId;
 
-
+        
         public ICommand RequestGameCommand
         {
             get
@@ -93,6 +94,22 @@ namespace Client
                 });
             }
         }
+
+        private bool clientConnected;
+
+        public bool ClientConnected
+        {
+            get 
+            { 
+                return clientConnected; 
+            }
+            set 
+            {
+                this.clientConnected = value;
+                this.FireOnPropertyChanged();
+             }
+        }
+
 
 
         private PlayerVM clientPlayer;
