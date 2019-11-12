@@ -80,6 +80,10 @@ namespace Client
         private GameClientService gameClientService;
         private int clientId;
 
+        private GameVVM game = new GameVVM();
+
+        public GameVVM Game => this.game;
+
         
         public ICommand RequestGameCommand
         {
