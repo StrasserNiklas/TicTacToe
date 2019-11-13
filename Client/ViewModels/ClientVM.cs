@@ -12,6 +12,7 @@ namespace Client
 {
     public class ClientVM : BaseVM
     {
+        private TicTacToeGameRepresentation gameRepresentation = new TicTacToeGameRepresentation();
         private ObservableCollection<Player> playerList;
         private Player selectedPlayer;
         private GameClientService gameClientService;
@@ -31,11 +32,13 @@ namespace Client
             this.ClientConnected = false;
             this.GameIsActive = false;
             this.GameWasRequested = false;
+            this.CurrentGameId = 0;
         }
 
         public GameVM CurrentGame { get; set; }
-        private GameVVM game = new GameVVM();
-        public GameVVM Game => this.game;
+
+        public int CurrentGameId { get; private set; }
+
         private int[] INDEXEXGAMETESTDELETEASAP = new int[9];
 
         public int RequestID { get; set; }
@@ -58,6 +61,53 @@ namespace Client
                     // affirm request
                     // make new game in client and later on server
                     // delete the old request
+                });
+            }
+        }
+
+        public ICommand ConnectCommand
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+                    var backgroundTask = Task.Run(async () =>
+                    {
+                        var player = await this.gameClientService.PostPlayerInfoToServerAsync(this.ClientPlayer.PlayerName);
+                        this.ClientPlayer = new PlayerVM(player);
+
+                        while (true)
+                        {
+                            if (!this.GameIsActive)
+                            {
+                                var status = await this.gameClientService.GetPlayerListAndPostAliveAsync(player.PlayerId);
+
+                                if (status.RequestingPlayer != null)
+                                {
+                                    this.RequestingOrEnemyPlayer = status.RequestingPlayer;
+                                    this.GameWasRequested = true;
+                                    this.RequestID = status.RequestID;
+                                }
+
+                                if (status.StatusMessage != string.Empty)
+                                {
+                                    this.StatusMessage = status.StatusMessage;
+                                }
+
+
+                                var playerList = new List<Player>(status.Players);
+                                playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ClientPlayer.Player.PlayerId));
+
+                                this.PlayerList = new ObservableCollection<Player>(playerList);
+                            }
+                            else
+                            {
+                                var gameStatus = await this.gameClientService.GetGameStatusAsync(this.CurrentGameId);
+
+                                // set correspondent game logic
+                            }
+                        }
+                    });
                 });
             }
         }
@@ -309,5 +359,7 @@ namespace Client
                 selectedPlayer = value;
             }
         }
+
+        public TicTacToeGameRepresentation Game => this.gameRepresentation;
     }
 }

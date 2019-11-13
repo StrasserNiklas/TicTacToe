@@ -99,26 +99,34 @@ namespace Server.Controllers
 
         //this should be a Get based on a game id
         // POST: api/Main/games/request
-        [HttpPost("games/status", Name = "CheckForGameStatus")]
-        public async Task<ActionResult<GameStatusResponse>> CheckForGameStatus([FromBody] GameRequest data)
+        [HttpGet("games/{id}", Name = "CheckForGameStatus")]
+        public async Task<ActionResult<GameStatusResponse>> CheckForGameStatus(int id)//[FromBody] GameRequest data)
         {
             var games = new List<Game>(await this.mainService.GetGamesAsync());
 
-            var game = games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.Enemy.PlayerId || game.PlayerOne.PlayerId == data.RequestPlayer.PlayerId)
-            && (game.PlayerTwo.PlayerId == data.Enemy.PlayerId || game.PlayerTwo.PlayerId == data.RequestPlayer.PlayerId));
+            var game = games.SingleOrDefault(g => g.GameId == id);
 
-            if (games.Contains(game))
+            if (game != null)
             {
                 var status = new GameStatusResponse(game.CurrentGameStatus, game.CurrentPlayer.PlayerId);
                 return Ok(status);
             }
 
+            //var game = games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.Enemy.PlayerId || game.PlayerOne.PlayerId == data.RequestPlayer.PlayerId)
+            //&& (game.PlayerTwo.PlayerId == data.Enemy.PlayerId || game.PlayerTwo.PlayerId == data.RequestPlayer.PlayerId));
+
+            //if (games.Contains(game))
+            //{
+            //    var status = new GameStatusResponse(game.CurrentGameStatus, game.CurrentPlayer.PlayerId);
+            //    return Ok(status);
+            //}
+
             return NotFound();
         }
 
         // PUT: api/Main/games/request
-        [HttpPut("games/request/{id}", Name = "DeclineRequest")]
-        public async Task<IActionResult> DeclineRequest(int id, [FromBody] bool accept)
+        [HttpPut("games/request/{id}", Name = "DeclineOrAcceptRequest")]
+        public async Task<IActionResult> DeclineOrAcceptRequest(int id, [FromBody] bool accept)
         {
             var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestID == id );
 
@@ -133,6 +141,7 @@ namespace Server.Controllers
                 else
                 {
                     existingRequest.Accepted = true;
+                    // create game here
                     return Ok();
                 }
             }

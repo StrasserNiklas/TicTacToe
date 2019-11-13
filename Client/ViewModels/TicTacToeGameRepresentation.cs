@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Client.ViewModels
 {
-    public class GameVVM
+    public class TicTacToeGameRepresentation
     {
         private ObservableCollection<GameCellVM> gameCells;
 
-        public GameVVM()
+        public TicTacToeGameRepresentation()
         {
             this.gameCells = new ObservableCollection<GameCellVM>()
             {

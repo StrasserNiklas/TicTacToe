@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,16 +9,16 @@ namespace Server.Models
 {
     public class Game
     {
-        private PlayerPlaceholder1 playerTwo;
-        private PlayerPlaceholder1 playerOne;
+        private Player playerTwo;
+        private Player playerOne;
         private string endGameMessage;
-        private PlayerPlaceholder1 currentPlayer;
+        private Player currentPlayer;
         private int gameTurns = 0;
         private List<WinCondition> winConditions;
         private int[] indexedGame = new int[9];
         private bool gameOver;
 
-        public Game(PlayerPlaceholder1 one, PlayerPlaceholder1 two)
+        public Game(Player one, Player two)
         {
             this.winConditions = new List<WinCondition>()
             {
@@ -37,7 +38,14 @@ namespace Server.Models
             this.CurrentPlayer = this.playerOne;
             this.GameOver = false;
             this.EndMessage = string.Empty;
+
+            Random r = new Random();
+            this.GameId = r.Next(999, 1234567) + r.Next(999, 1234567);
         }
+
+        public int GameId { get; }
+
+
 
         // just a place holder for the code that checks if a player won
         private void CheckWinCodePlaceholder()
@@ -145,7 +153,7 @@ namespace Server.Models
             }
         }
 
-        public PlayerPlaceholder1 CurrentPlayer
+        public Player CurrentPlayer
         {
             get
             {
@@ -157,7 +165,7 @@ namespace Server.Models
             }
         }
 
-        public PlayerPlaceholder1 PlayerOne
+        public Player PlayerOne
         {
             get
             {
@@ -170,7 +178,7 @@ namespace Server.Models
             }
         }
 
-        public PlayerPlaceholder1 PlayerTwo
+        public Player PlayerTwo
         {
             get
             {

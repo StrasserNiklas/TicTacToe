@@ -41,10 +41,9 @@ namespace Client
                     {
                         client.BaseAddress = new Uri("https://localhost:5001"); //changed from port 5001
                     }).AddTypedClient<GameClientService>();
-
                 }).Build();
 
-            this.gameService = host.Services.GetService<GameClientService>();
+            this.gameService = host.Services.GetService<GameClientService>(); 
 
             this.client = new ClientVM(new GameVM
                 (new PlayerVM(new Player("Nikolaus")), 
@@ -101,21 +100,28 @@ namespace Client
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            // exception wenn öfter ein player requested wird
-            var status = await this.gameService.GetPlayerListAndPostAliveAsync(this.client.ClientPlayer.Player.PlayerId);
-
-
-            if (status.RequestingPlayer != null)
+            if (this.client.GameIsActive)
             {
-                // VM hier setzen für View!
-                this.client.RequestingOrEnemyPlayer = status.RequestingPlayer;
-                this.client.GameWasRequested = true;
-                this.client.RequestID = status.RequestID;
+                //var gameStatus = await this.gameService.
             }
-
-            if (status.StatusMessage != string.Empty)
+            else
             {
-                this.client.StatusMessage = status.StatusMessage;
+                // exception wenn öfter ein player requested wird
+                var status = await this.gameService.GetPlayerListAndPostAliveAsync(this.client.ClientPlayer.Player.PlayerId);
+
+
+                if (status.RequestingPlayer != null)
+                {
+                    // VM hier setzen für View!
+                    this.client.RequestingOrEnemyPlayer = status.RequestingPlayer;
+                    this.client.GameWasRequested = true;
+                    this.client.RequestID = status.RequestID;
+                }
+
+                if (status.StatusMessage != string.Empty)
+                {
+                    this.client.StatusMessage = status.StatusMessage;
+                }
             }
         }
 

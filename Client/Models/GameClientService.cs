@@ -52,5 +52,14 @@ namespace Client.Models
             var player = JsonConvert.DeserializeObject<Player>(returnJson);
             return player;
         }
+
+        public async Task<GameStatusResponse> GetGameStatusAsync(int gameId)
+        {
+            var response = await _httpClient.GetAsync($"/Main/games/{gameId}");
+            response.EnsureSuccessStatusCode();
+            var returnJson = await response.Content.ReadAsStringAsync();
+            var status = JsonConvert.DeserializeObject<GameStatusResponse>(returnJson);
+            return status;
+        }
     }
 }
