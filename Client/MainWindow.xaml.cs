@@ -45,9 +45,7 @@ namespace Client
 
             this.gameService = host.Services.GetService<GameClientService>(); 
 
-            this.client = new ClientVM(new GameVM
-                (new PlayerVM(new Player("Nikolaus")), 
-                 new PlayerVM(new Player("Felixitus"))), this.gameService);
+            this.client = new ClientVM(this.gameService);
             
             this.DataContext = this.client;
             this.client.ClientPlayer = new PlayerVM(new Player("player"));

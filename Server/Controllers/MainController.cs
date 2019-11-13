@@ -21,6 +21,8 @@ namespace Server.Controllers
             this.mainService = main;
         }
 
+        #region Players and player info HTTP
+
         // GET: api/Main/players
         [HttpGet]
         public Task<IEnumerable<Player>> Get()
@@ -71,6 +73,10 @@ namespace Server.Controllers
             return Ok(status);
         }
 
+        #endregion
+
+        #region Game Request HTTP
+
         // POST: api/Main/games/request
         [HttpPost("games/request", Name = "GameRequest")]
         public async Task<IActionResult> GameRequest([FromBody] GameRequest data)
@@ -97,10 +103,37 @@ namespace Server.Controllers
             return NotFound();
         }
 
-        //this should be a Get based on a game id
-        // POST: api/Main/games/request
+        // PUT: api/Main/games/request
+        [HttpPut("games/request/{id}", Name = "DeclineOrAcceptRequest")]
+        public async Task<IActionResult> DeclineOrAcceptRequest(int id, [FromBody] bool accept)
+        {
+            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestID == id );
+
+            if (existingRequest != null)
+            {
+                if (!accept)
+                {
+                    existingRequest.Declined = true;
+                    return Ok();
+                }
+                else
+                {
+                    existingRequest.Accepted = true;
+                    // create game here
+                    return Ok();
+                }
+            }
+
+            return NotFound();
+        }
+
+        #endregion
+
+        #region Game Status HTTP
+
+        // GET: api/Main/games/request
         [HttpGet("games/{id}", Name = "CheckForGameStatus")]
-        public async Task<ActionResult<GameStatusResponse>> CheckForGameStatus(int id)//[FromBody] GameRequest data)
+        public async Task<ActionResult<GameStatus>> CheckForGameStatus(int id)//[FromBody] GameRequest data)
         {
             var games = new List<Game>(await this.mainService.GetGamesAsync());
 
@@ -108,7 +141,7 @@ namespace Server.Controllers
 
             if (game != null)
             {
-                var status = new GameStatusResponse(game.CurrentGameStatus, game.CurrentPlayer.PlayerId);
+                var status = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.PlayerId);
                 return Ok(status);
             }
 
@@ -125,48 +158,45 @@ namespace Server.Controllers
         }
 
         // PUT: api/Main/games/request
-        [HttpPut("games/request/{id}", Name = "DeclineOrAcceptRequest")]
-        public async Task<IActionResult> DeclineOrAcceptRequest(int id, [FromBody] bool accept)
+        [HttpPut("games/{id}", Name = "UpdateGameStatus")]
+        public async Task<IActionResult> UpdateGameStatus(int id, [FromBody] GameStatus update)
         {
-            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestID == id );
+            var games = new List<Game>(await this.mainService.GetGamesAsync());
+            var game = games.SingleOrDefault(g => g.GameId == id);
 
-            if (existingRequest != null)
+            if (game != null)
             {
-                if (!accept)
+                if (game.PlayerOne.PlayerId == update.CurrentPlayerId)
                 {
-                    existingRequest.Declined = true;
-                    //await this.mainService.RemoveRequestAsync(existingRequest);
-                    return Ok();
+                    if (update.UpdatedPosition > 0 && update.UpdatedPosition < 9)
+                    {
+                        if (game.CurrentGameStatus[update.UpdatedPosition] == 0)
+                        {
+                            game.CurrentGameStatus[update.UpdatedPosition] = game.CurrentPlayer.Marker;
+                        }
+                    }
+
+                    game.CurrentPlayer = game.PlayerTwo;
                 }
-                else
+                else if (game.PlayerTwo.PlayerId == update.CurrentPlayerId)
                 {
-                    existingRequest.Accepted = true;
-                    // create game here
-                    return Ok();
+                    if (update.UpdatedPosition > 0 && update.UpdatedPosition < 9)
+                    {
+                        if (game.CurrentGameStatus[update.UpdatedPosition] == 0)
+                        {
+                            game.CurrentGameStatus[update.UpdatedPosition] = game.CurrentPlayer.Marker;
+                        }
+                    }
+
+                    game.CurrentPlayer = game.PlayerOne;
                 }
+
+                return Ok();
             }
 
             return NotFound();
         }
 
-        // PUT: api/Main/games/request
-        //[HttpPut("games/request/{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-
-        //}
-
-        //// GET: api/Main/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "valueXD";
-        //}
-
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        #endregion
     }
 }

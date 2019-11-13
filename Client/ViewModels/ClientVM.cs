@@ -24,9 +24,9 @@ namespace Client
         private string statusMessage;
         private Player requestingorEnemyPlayer;
 
-        public ClientVM(GameVM game, GameClientService gameClientService)
+        public ClientVM(GameClientService gameClientService)
         {
-            this.CurrentGame = game;
+
             this.PlayerList = new ObservableCollection<Player>();
             this.gameClientService = gameClientService;
             this.ClientConnected = false;
@@ -35,12 +35,9 @@ namespace Client
             this.CurrentGameId = 0;
         }
 
-        public GameVM CurrentGame { get; set; }
-
         public int CurrentGameId { get; private set; }
 
-        private int[] INDEXEXGAMETESTDELETEASAP = new int[9];
-
+        public GameStatus CurrentGameStatus { get; set; }
         public int RequestID { get; set; }
 
         /// <summary>
@@ -102,7 +99,7 @@ namespace Client
                             }
                             else
                             {
-                                var gameStatus = await this.gameClientService.GetGameStatusAsync(this.CurrentGameId);
+                                var gameStatus = await this.gameClientService.GetGameStatusAsync(this.CurrentGameStatus.GameId);
 
                                 // set correspondent game logic
                             }
@@ -122,66 +119,29 @@ namespace Client
             {
                 return new Command(obj =>
                 {
-                    //if (!this.GameOver)
-                    //{
-                    var cell = (GameCellVM)obj;
 
-                    if (this.INDEXEXGAMETESTDELETEASAP[cell.Index] == 0)
+                    if (this.GameIsActive && this.CurrentGameStatus != null)
                     {
+                        var cell = (GameCellVM)obj;
 
-                        cell.PlayerMark = 1; // oder was auch immer XDDDDDDDDDDDDDD
+                        if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.PlayerId) 
+                        {
 
-                        // this.gameClientService.SendGameUpdate =>
+                            cell.PlayerMark = this.ClientPlayer.Player.Marker;
 
+                            var status = new GameStatus();
+                            status.UpdatedPosition = cell.Index;
+                            status.GameId = this.CurrentGameStatus.GameId;
 
-
-
-
-
-
-
-
-
+                            this.gameClientService.UpdateGameStatusAsync(status);
 
 
 
 
-
-                        //this.indexedGame[index] = this.CurrentPlayer.Marker;
-                        //this.CurrentPlayer.MarkedPositions.Add(index);
-                        //this.gameTurns++;
-
-                        // an server
-
-                        //if (this.gameTurns > 4 && !this.GameOver)
-                        //{
-                        //    bool check = this.CheckForWin();
-
-                        //    if (check)
-                        //    {
-                        //        this.GameOver = true;
-                        //        this.CurrentPlayer.Wins++;
-                        //        this.EndMessage = $"{this.CurrentPlayer.PlayerName} wins!";
-                        //    }
-
-                        //    if (this.gameTurns == 9 && !this.GameOver)
-                        //    {
-                        //        this.EndMessage = $"It´s a draw!";
-                        //        this.GameOver = true;
-                        //    }
-                        //}
-
-
-                        //if (this.CurrentPlayer == this.playerOne)
-                        //{
-                        //    this.CurrentPlayer = this.playerTwo;
-                        //}
-                        //else
-                        //{
-                        //    this.CurrentPlayer = this.playerOne;
-                        //}
+                        }
                     }
-                    //}
+
+                    
                 });
             }
         }
@@ -360,6 +320,6 @@ namespace Client
             }
         }
 
-        public TicTacToeGameRepresentation Game => this.gameRepresentation;
+        public TicTacToeGameRepresentation GameRepresentation => this.gameRepresentation;
     }
 }

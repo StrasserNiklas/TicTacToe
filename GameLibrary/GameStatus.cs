@@ -2,19 +2,22 @@
 
 namespace GameLibrary
 {
-    public class GameStatusResponse
+    public class GameStatus
     {
         [JsonConstructor]
-        public GameStatusResponse(int[] indexedGame, int currentPlayerId)
+        public GameStatus(int[] indexedGame, int currentPlayerId)
         {
             this.IndexedGame = indexedGame;
             this.CurrentPlayerId = currentPlayerId;
         }
 
-        public GameStatusResponse()
+        public GameStatus()
         {
         }
 
+        public int UpdatedPosition { get; set; } = -1;
+
+        public int GameId { get; set; }
         public int[] IndexedGame { get; set; }
 
         public int CurrentPlayerId { get; set; }
