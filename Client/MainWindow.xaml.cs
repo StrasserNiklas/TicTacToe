@@ -28,6 +28,7 @@ namespace Client
     public partial class MainWindow : Window
     {
         private ClientVM client;
+        private GameClientService gameService;
 
         public MainWindow()
         {
@@ -47,13 +48,11 @@ namespace Client
 
             this.client = new ClientVM(new GameVM
                 (new PlayerVM(new Player("Nikolaus")), 
-                 new PlayerVM(new Player("Felixitus"))), this.gameService);//new ClientVM(new GameVM(new PlayerVM("Nikolaus", 1), new PlayerVM("Felixitus", 2)), this.gameService);
+                 new PlayerVM(new Player("Felixitus"))), this.gameService);
             
             this.DataContext = this.client;
             this.client.ClientPlayer = new PlayerVM(new Player("player"));
         }
-
-        private GameClientService gameService;
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -122,7 +121,7 @@ namespace Client
 
         #region OldLocalGameStuff
 
-        List<Button> buttons = new List<Button>();
+        //List<Button> buttons = new List<Button>();
 
         ///// <summary>
         ///// This method changes the background of the game element buttons if neccessary.

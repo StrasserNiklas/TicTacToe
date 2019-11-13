@@ -12,7 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
-                    <local:InverseBooleanToVisibilityConverter x:Key="inverseBooleanConverter" />
+                    <local:InverseBooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" />
                 </ResourceDictionary>
                 <ResourceDictionary Source="/Resources/Styles.xaml"/>
 
@@ -58,15 +58,15 @@
                     <TextBlock Margin="0,10,0,10" Text="{Binding ClientPlayer.PlayerName}" FontWeight="Bold"
                            Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
                     <TextBox Margin="10" Text="{Binding ClientPlayer.PlayerName, FallbackValue=Enter your name}" 
-                         Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanConverter}}"/>
+                         Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
                 </DockPanel>
                 
                 <Button Margin="10" Content="Connect to server" Click="Button_Click" Style="{StaticResource buttonRoundCorner}"
-                        Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanConverter}}" Background="#ffd769"/>
+                        Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}" Background="#ffd769"/>
                 <TextBlock Margin="10" Text="Server status: Connected" FontWeight="Bold" HorizontalAlignment="Left" Foreground="Green"
                            Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
                 <TextBlock Text="Choose a player name and connect to the server to play against others." TextWrapping="Wrap" Width="160" FontWeight="Bold" TextAlignment="Center"
-                           Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanConverter}}"/>
+                           Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
             </StackPanel>
             
         </Border>
@@ -174,7 +174,7 @@
                     <!-- Status message -->
                     <Label Grid.Column="3" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="Blue" HorizontalAlignment="Right"/>
 
-                    <Label Grid.Row="1" Content="{Binding RequestingPlayer.PlayerName}" Style="{StaticResource labelStyle}"
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingPlayer.PlayerName}" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
                     <Label Grid.Row="1" Grid.Column="1" Content="wants to play with you" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>

@@ -66,7 +66,7 @@ namespace Client
                 this.playerTwo = value ?? throw new ArgumentNullException(nameof(this.PlayerTwo), "Player two can´t be null.");
             }
         }
-        public List<WinCondition> WinConditions { get; set; }
+        //public List<WinCondition> WinConditions { get; set; }
         private int gameTurns = 0;
 
         private bool gameOver;
@@ -89,17 +89,17 @@ namespace Client
 
         public GameVM(PlayerVM one, PlayerVM two)
         {
-            this.WinConditions = new List<WinCondition>()
-            {
-                new WinCondition(0,3,6),
-                new WinCondition(1,4,7),
-                new WinCondition(2,5,8),
-                new WinCondition(0,1,2),
-                new WinCondition(3,4,5),
-                new WinCondition(6,7,8),
-                new WinCondition(0,4,8),
-                new WinCondition(2,4,6)
-            };
+            //this.WinConditions = new List<WinCondition>()
+            //{
+            //    new WinCondition(0,3,6),
+            //    new WinCondition(1,4,7),
+            //    new WinCondition(2,5,8),
+            //    new WinCondition(0,1,2),
+            //    new WinCondition(3,4,5),
+            //    new WinCondition(6,7,8),
+            //    new WinCondition(0,4,8),
+            //    new WinCondition(2,4,6)
+            //};
 
 
             this.playerOne = one;
@@ -138,20 +138,20 @@ namespace Client
 
                             if (this.gameTurns > 4 && !this.GameOver)
                             {
-                                bool check = this.CheckForWin();
+                                //bool check = this.CheckForWin();
 
-                                if (check)
-                                {
-                                    this.GameOver = true;
-                                    this.CurrentPlayer.Wins++;
-                                    this.EndMessage = $"{this.CurrentPlayer.PlayerName} wins!";
-                                }
+                                //if (check)
+                                //{
+                                //    this.GameOver = true;
+                                //    this.CurrentPlayer.Wins++;
+                                //    this.EndMessage = $"{this.CurrentPlayer.PlayerName} wins!";
+                                //}
 
-                                if (this.gameTurns == 9 && !this.GameOver)
-                                {
-                                    this.EndMessage = $"It´s a draw!";
-                                    this.GameOver = true;
-                                }
+                                //if (this.gameTurns == 9 && !this.GameOver)
+                                //{
+                                //    this.EndMessage = $"It´s a draw!";
+                                //    this.GameOver = true;
+                                //}
                             }
 
 
@@ -192,34 +192,34 @@ namespace Client
         /// This method iterates over the possible win conditions of the current player after he made his mark.
         /// </summary>
         /// <returns>True if a win condition has been met, false otherwise.</returns>
-        public bool CheckForWin()
-        {
-            bool isWin = false;
+        //public bool CheckForWin()
+        //{
+        //    bool isWin = false;
 
-            foreach (var condition in this.WinConditions)
-            {
-                foreach (var index in condition.Condition)
-                {
-                    if (this.CurrentPlayer.MarkedPositions.Contains(index))
-                    {
-                        isWin = true;
-                        continue;
-                    }
-                    else
-                    {
-                        isWin = false;
-                        break;
-                    }
-                }
+        //    foreach (var condition in this.WinConditions)
+        //    {
+        //        foreach (var index in condition.Condition)
+        //        {
+        //            if (this.CurrentPlayer.MarkedPositions.Contains(index))
+        //            {
+        //                isWin = true;
+        //                continue;
+        //            }
+        //            else
+        //            {
+        //                isWin = false;
+        //                break;
+        //            }
+        //        }
 
-                if (isWin)
-                {
-                    return true;
-                }
-            }
+        //        if (isWin)
+        //        {
+        //            return true;
+        //        }
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
 
 

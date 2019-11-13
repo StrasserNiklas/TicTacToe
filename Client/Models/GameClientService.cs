@@ -25,17 +25,16 @@ namespace Client.Models
             var response = await _httpClient.PostAsync("/api/Main/games/request", content);
         }
 
-        public async Task DeclineGameRequest(int gameRequestId)
+        public async Task DeclineOrAcceptGameRequest(int gameRequestId, bool accept)
         {
-            var response = await _httpClient.PutAsync($"/api/Main/games/request/{gameRequestId}", null);
+            string json = JsonConvert.SerializeObject(accept);
+            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"/api/Main/games/request/{gameRequestId}", content);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<PlayerServerStatus> GetPlayerListAndPostAliveAsync(int playerId)
         {
-            //string json = JsonConvert.SerializeObject(playerId);
-            //HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            //var response = await _httpClient.PostAsync("/api/Main/players/alive", content);
             var response = await _httpClient.GetAsync($"/api/Main/players/{playerId}");
             response.EnsureSuccessStatusCode();
             var returnJson = await response.Content.ReadAsStringAsync();

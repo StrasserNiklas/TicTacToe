@@ -12,63 +12,6 @@ namespace Client
 {
     public class ClientVM : BaseVM
     {
-        #region LocalGame - OnlineGame disabled logic
-        //private bool onlineGameSelected;
-        //private bool localGameSelected;
-
-        //public ICommand LocalGameButtonPressed
-        //{
-        //    get
-        //    {
-        //        return new Command(obj =>
-        //        {
-        //            this.LocalGameSelected = true;
-        //            this.OnlineGameSelected = false;
-        //        });
-        //    }
-        //}
-
-        //public ICommand OnlineGameButtonPressed
-        //{
-        //    get
-        //    {
-        //        return new Command(obj =>
-        //        {
-        //            this.LocalGameSelected = false;
-        //            this.OnlineGameSelected = true;
-        //        });
-        //    }
-        //}
-
-        //public bool LocalGameSelected
-        //{
-        //    get
-        //    {
-        //        return localGameSelected;
-        //    }
-        //    set
-        //    {
-        //        localGameSelected = value;
-        //        this.FireOnPropertyChanged(nameof(this.LocalGameSelected));
-        //    }
-        //}
-
-        //public bool OnlineGameSelected
-        //{
-        //    get
-        //    {
-        //        return onlineGameSelected;
-        //    }
-        //    set
-        //    {
-        //        onlineGameSelected = value;
-        //        this.FireOnPropertyChanged(nameof(this.OnlineGameSelected));
-        //    }
-        //}
-
-        #endregion
-
-
         private ObservableCollection<Player> playerList;
         private Player selectedPlayer;
         private GameClientService gameClientService;
@@ -76,96 +19,48 @@ namespace Client
         private bool gameIsActive;
         private PlayerVM clientPlayer;
         private bool clientConnected;
+        private bool gameWasRequested;
+        private string statusMessage;
+        private Player requestingorEnemyPlayer;
 
         public ClientVM(GameVM game, GameClientService gameClientService)
         {
             this.CurrentGame = game;
-            //this.LocalGameSelected = true;
-            //this.OnlineGameSelected = false;
             this.PlayerList = new ObservableCollection<Player>();
             this.gameClientService = gameClientService;
             this.ClientConnected = false;
             this.GameIsActive = false;
-
-
             this.GameWasRequested = false;
         }
 
-        private Player requestingorEnemyPlayer;
+        public GameVM CurrentGame { get; set; }
+        private GameVVM game = new GameVVM();
+        public GameVVM Game => this.game;
+        private int[] INDEXEXGAMETESTDELETEASAP = new int[9];
 
         public int RequestID { get; set; }
 
-        public Player RequestingOrEnemyPlayer
-        {
-            get { return requestingorEnemyPlayer; }
-            set { requestingorEnemyPlayer = value; this.FireOnPropertyChanged(); }
-        }
-
-        private string statusMessage;
-
-        public string StatusMessage
-        {
-            get { return statusMessage; }
-            set 
-            { 
-                statusMessage = value; 
-                this.FireOnPropertyChanged();
-
-                if (value != string.Empty)
-                {
-                    Task.Run(async () =>
-                    {
-                        await Task.Delay(7000);
-                        this.StatusMessage = string.Empty;
-                    });
-                }
-            }
-        }
-
-
-        private bool gameWasRequested;
-
-        public bool GameWasRequested
-        {
-            get { return gameWasRequested; }
-            set { gameWasRequested = value; this.FireOnPropertyChanged(); }
-        }
-
-        public ICommand DeclineCommand
-        {
-            get
-            {
-                return new Command(obj =>
-                {
-                    this.GameWasRequested = false;
-                    this.RequestingOrEnemyPlayer = default;
-
-                    //delete request on server
-                    this.gameClientService.DeclineGameRequest(this.RequestID);
-                    this.RequestID = 0;
-                });
-            }
-        }
-
+        /// <summary>
+        /// When the client accepts a game request, a correspondent http request is sent to the server.
+        /// </summary>
         public ICommand AcceptCommand
         {
             get
             {
                 return new Command(obj =>
                 {
+                    // accept request on server
+                    this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, true);
+
+                    //this.GameIsActive = true;
+
+
                     // affirm request
-                    // make new game
+                    // make new game in client and later on server
                     // delete the old request
                 });
             }
         }
-
-
-
-        public GameVM CurrentGame { get; set; }
-        private GameVVM game = new GameVVM();
-        public GameVVM Game => this.game;
-        private int[] INDEXEXGAMETEST = new int[9];
 
         /// <summary>
         /// This command is used when a game element button is clicked.
@@ -181,9 +76,9 @@ namespace Client
                     //{
                     var cell = (GameCellVM)obj;
 
-                    if (this.INDEXEXGAMETEST[cell.Index] == 0)
+                    if (this.INDEXEXGAMETESTDELETEASAP[cell.Index] == 0)
                     {
-                        
+
                         cell.PlayerMark = 1; // oder was auch immer XDDDDDDDDDDDDDD
 
                         // this.gameClientService.SendGameUpdate =>
@@ -242,6 +137,26 @@ namespace Client
         }
 
         /// <summary>
+        /// When the client declines a game request, a correspondent http request is sent to the server.
+        /// The requesting player is set to default (null) and the game request bool is set to false.
+        /// </summary>
+        public ICommand DeclineCommand
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+                    this.GameWasRequested = false;
+                    this.RequestingOrEnemyPlayer = default;
+
+                    // delete request on server
+                    this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, false);
+                    this.RequestID = 0;
+                });
+            }
+        }
+
+        /// <summary>
         /// This command is used when the player using the client requests a game with another online player.
         /// A game request will be sent to the server containing the id of the enemy player and the id of the client player.
         /// </summary>
@@ -259,7 +174,64 @@ namespace Client
             }
         }
 
-        
+        /// <summary>
+        /// Gets or sets the player that has sent a request to play with the client or is actively playing with the client.
+        /// Is set to default (null) if there is neither a request or an active game.
+        /// </summary>
+        public Player RequestingOrEnemyPlayer
+        {
+            get
+            {
+                return this.requestingorEnemyPlayer;
+            }
+            set
+            {
+                this.requestingorEnemyPlayer = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a specific status message to display in the client.
+        /// E.g. a player has declined a game request.
+        /// Disappears from the client after a set amount of time.
+        /// </summary>
+        public string StatusMessage
+        {
+            get { return statusMessage; }
+            set
+            {
+                statusMessage = value;
+                this.FireOnPropertyChanged();
+
+                if (value != string.Empty)
+                {
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(7000);
+                        this.StatusMessage = string.Empty;
+                    });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value whether a game with the client has been requested by another player.
+        /// Needed for UI representation.
+        /// </summary>
+        public bool GameWasRequested
+        {
+            get
+            {
+                return this.gameWasRequested;
+            }
+            set
+            {
+                this.gameWasRequested = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether the player using the client connected to the server.
         /// </summary>
@@ -334,7 +306,7 @@ namespace Client
             }
             set 
             { 
-                selectedPlayer = value; 
+                selectedPlayer = value;
             }
         }
     }

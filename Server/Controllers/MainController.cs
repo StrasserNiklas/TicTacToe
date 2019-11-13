@@ -53,7 +53,6 @@ namespace Server.Controllers
                 status.RequestingPlayer = existingRequest.RequestPlayer;
                 status.RequestID = existingRequest.RequestID;
             }
-
             // if a request has been declined, remove it and notify the player if he was the one requesting it
             else if (existingRequest != null && existingRequest.Declined)
             {
@@ -119,15 +118,23 @@ namespace Server.Controllers
 
         // PUT: api/Main/games/request
         [HttpPut("games/request/{id}", Name = "DeclineRequest")]
-        public async Task<IActionResult> DeclineRequest(int id)
+        public async Task<IActionResult> DeclineRequest(int id, [FromBody] bool accept)
         {
             var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestID == id );
 
             if (existingRequest != null)
             {
-                existingRequest.Declined = true;
-                //await this.mainService.RemoveRequestAsync(existingRequest);
-                return Ok();
+                if (!accept)
+                {
+                    existingRequest.Declined = true;
+                    //await this.mainService.RemoveRequestAsync(existingRequest);
+                    return Ok();
+                }
+                else
+                {
+                    existingRequest.Accepted = true;
+                    return Ok();
+                }
             }
 
             return NotFound();
