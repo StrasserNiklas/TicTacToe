@@ -17,16 +17,35 @@ namespace Server.Hubs
             this.mainService = main;
         }
 
-        public async Task GetPlayers(string requestedPlayer)
+        public async Task GetPlayers(string requestedPlayerName)
         {
-            await base.Clients.All.SendAsync("ReceivePlayersAsync", await mainService.GetPlayersAsync());
+            var allPlayers = await mainService.GetPlayersAsync();
+            // select all players except the requested one
+            // requested player should not be included in the result
+            allPlayers = allPlayers.Where(name => name.PlayerName != requestedPlayerName);
+            await base.Clients.All.SendAsync("ReceivePlayersAsync", allPlayers);
         }
 
         public async Task AddPlayer(string name)
         {
             Player player = new Player(name);
+            player.ConnectionId = Context.ConnectionId;
             var addedPlayer = await mainService.AddPlayerAsync(player);
             await base.Clients.All.SendAsync("ReceivePlayersAsync", await mainService.GetPlayersAsync());
+        }
+
+        public override Task OnConnectedAsync()
+        {
+            return base.OnConnectedAsync();
+        }
+
+        public async override Task OnDisconnectedAsync(Exception exception)
+        {
+            var id = Context.ConnectionId;
+            var allPlayers = await mainService.GetPlayersAsync();
+            var disconnectedPlayer = allPlayers.FirstOrDefault(player => player.ConnectionId == id);
+            await this.mainService.RemovePlayerAsync(disconnectedPlayer);
+            var test = await mainService.GetPlayersAsync();
         }
     }
 }

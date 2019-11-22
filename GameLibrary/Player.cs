@@ -11,6 +11,7 @@ namespace GameLibrary
         private List<int> markedPositions;
         private string hash;
         private int playerId;
+        private string connectionId;
 
         public Player(string playerName)
         {
@@ -23,6 +24,18 @@ namespace GameLibrary
 
         public Player()
         {
+        }
+
+        public string ConnectionId
+        {
+            get
+            {
+                return this.connectionId;
+            }
+            set
+            {
+                this.connectionId = value;
+            }
         }
 
         public int PlayerId

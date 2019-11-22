@@ -8,7 +8,7 @@ namespace Server.Services
     public class MainService : IMainService
     {
         private int incrementedId = 1;
-        private readonly List<Player> players = new List<Player>() { new Player("felix") { PlayerId = 999 } };
+        private readonly List<Player> players = new List<Player>() { new Player("Felix") { PlayerId = 999 } };
 
         private readonly List<Game> games = new List<Game>();
         private readonly List<GameRequest> gameRequests = new List<GameRequest>();
@@ -46,6 +46,12 @@ namespace Server.Services
         {
             this.gameRequests.Remove(gameRequest);
             return Task.FromResult(gameRequest);
+        }
+
+        public Task<Player> RemovePlayerAsync(Player player)
+        {
+            this.players.Remove(player);
+            return Task.FromResult(player);
         }
     }
 }

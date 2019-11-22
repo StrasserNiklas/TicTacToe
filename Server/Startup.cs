@@ -67,7 +67,7 @@ namespace Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<GameHub>("test");
+                endpoints.MapHub<GameHub>("game");
             });
         }
     }

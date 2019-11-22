@@ -66,20 +66,6 @@ namespace Client
             }
         }
 
-        public ICommand GetPlayersCommand
-        {
-            get
-            {
-                return new Command(obj =>
-                {
-                    var backgroundTask = Task.Run(async () =>
-                    {
-                        await _hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
-                    });
-                });
-            }
-        }
-
         public ICommand ConnectCommand
         {
             get
@@ -93,7 +79,7 @@ namespace Client
 
                         await CloseConnectionAsync();
                         _hubConnection = new HubConnectionBuilder()
-                            .WithUrl(_urlService.ChatAddress)
+                            .WithUrl(_urlService.LobbyAddress)
                             .Build();
 
                         _hubConnection.On<List<Player>>("ReceivePlayersAsync", OnPlayersReceived);
@@ -105,7 +91,7 @@ namespace Client
                         {
                             if (!this.GameIsActive)
                             {
-                                await _hubConnection.SendAsync("GetPlayers", clientPlayer.PlayerName);
+                                await _hubConnection.SendAsync("GetPlayers", clientPlayer.Player.PlayerName);
                             }
 
                             //if (!this.GameIsActive)
@@ -147,7 +133,7 @@ namespace Client
         private Task CloseConnectionAsync()
             => _hubConnection?.DisposeAsync() ?? Task.CompletedTask;
 
-        public async void OnPlayersReceived(List<Player> players)
+        public void OnPlayersReceived(List<Player> players)
         {
             this.PlayerList = new ObservableCollection<Player>(players);
         }
@@ -162,14 +148,12 @@ namespace Client
             {
                 return new Command(obj =>
                 {
-
                     if (this.GameIsActive && this.CurrentGameStatus != null)
                     {
                         var cell = (GameCellVM)obj;
 
                         if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.PlayerId) 
                         {
-
                             cell.PlayerMark = this.ClientPlayer.Player.Marker;
 
                             var status = new GameStatus();
@@ -177,14 +161,8 @@ namespace Client
                             status.GameId = this.CurrentGameStatus.GameId;
 
                             this.gameClientService.UpdateGameStatusAsync(status);
-
-
-
-
                         }
                     }
-
-                    
                 });
             }
         }
