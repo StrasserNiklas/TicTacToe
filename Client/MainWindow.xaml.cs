@@ -45,7 +45,7 @@ namespace Client
 
             this.gameService = host.Services.GetService<GameClientService>(); 
 
-            this.client = new ClientVM(this.gameService);
+            this.client = new ClientVM(this.gameService, new Services.UrlService());
             
             this.DataContext = this.client;
             this.client.ClientPlayer = new PlayerVM(new Player("player"));
@@ -54,7 +54,7 @@ namespace Client
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             //await this.BooksDemoAsync();
-            var task = Task.Run(() => this.BooksDemoAsync());
+            //var task = Task.Run(() => this.BooksDemoAsync());
 
             this.client.ClientConnected = true;
             
@@ -64,6 +64,8 @@ namespace Client
         {
             try
             {
+
+
                 var player = await this.gameService.PostPlayerInfoToServerAsync(this.client.ClientPlayer.PlayerName);
                 this.client.ClientPlayer = new PlayerVM(player);
 
@@ -86,7 +88,7 @@ namespace Client
 
                 var playerList = new List<Player>(status.Players);
                 playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.client.ClientPlayer.Player.PlayerId));
-
+                
                 this.client.PlayerList = new ObservableCollection<Player>(playerList);//.Result);
 
             }

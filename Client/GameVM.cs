@@ -1,4 +1,5 @@
 ﻿using Client.Models;
+using Client.Services;
 using Client.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -101,7 +102,6 @@ namespace Client
             //    new WinCondition(2,4,6)
             //};
 
-
             this.playerOne = one;
             this.playerTwo = two;
             this.CurrentPlayer = this.playerOne;
@@ -127,9 +127,6 @@ namespace Client
 
                         if (this.indexedGame[index] == 0)
                         {
-
-
-
                             //this.indexedGame[index] = this.CurrentPlayer.Marker;
                             this.CurrentPlayer.MarkedPositions.Add(index);
                             this.gameTurns++;

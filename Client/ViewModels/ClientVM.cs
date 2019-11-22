@@ -1,6 +1,8 @@
 ﻿using Client.Models;
+using Client.Services;
 using Client.ViewModels;
 using GameLibrary;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +14,8 @@ namespace Client
 {
     public class ClientVM : BaseVM
     {
+        private readonly UrlService _urlService;
+        private HubConnection _hubConnection;
         private TicTacToeGameRepresentation gameRepresentation = new TicTacToeGameRepresentation();
         private ObservableCollection<Player> playerList;
         private Player selectedPlayer;
@@ -24,9 +28,9 @@ namespace Client
         private string statusMessage;
         private Player requestingorEnemyPlayer;
 
-        public ClientVM(GameClientService gameClientService)
+        public ClientVM(GameClientService gameClientService, UrlService urlService)
         {
-
+            this._urlService = urlService;
             this.PlayerList = new ObservableCollection<Player>();
             this.gameClientService = gameClientService;
             this.ClientConnected = false;
@@ -62,6 +66,20 @@ namespace Client
             }
         }
 
+        public ICommand GetPlayersCommand
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+                    var backgroundTask = Task.Run(async () =>
+                    {
+                        await _hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
+                    });
+                });
+            }
+        }
+
         public ICommand ConnectCommand
         {
             get
@@ -70,43 +88,68 @@ namespace Client
                 {
                     var backgroundTask = Task.Run(async () =>
                     {
-                        var player = await this.gameClientService.PostPlayerInfoToServerAsync(this.ClientPlayer.PlayerName);
-                        this.ClientPlayer = new PlayerVM(player);
+                        //var player = await this.gameClientService.PostPlayerInfoToServerAsync(this.ClientPlayer.PlayerName);
+                        //this.ClientPlayer = new PlayerVM(player);
+
+                        await CloseConnectionAsync();
+                        _hubConnection = new HubConnectionBuilder()
+                            .WithUrl(_urlService.ChatAddress)
+                            .Build();
+
+                        _hubConnection.On<List<Player>>("ReceivePlayersAsync", OnPlayersReceived);
+                        await _hubConnection.StartAsync();
+
+                        await _hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
 
                         while (true)
                         {
                             if (!this.GameIsActive)
                             {
-                                var status = await this.gameClientService.GetPlayerListAndPostAliveAsync(player.PlayerId);
-
-                                if (status.RequestingPlayer != null)
-                                {
-                                    this.RequestingOrEnemyPlayer = status.RequestingPlayer;
-                                    this.GameWasRequested = true;
-                                    this.RequestID = status.RequestID;
-                                }
-
-                                if (status.StatusMessage != string.Empty)
-                                {
-                                    this.StatusMessage = status.StatusMessage;
-                                }
-
-
-                                var playerList = new List<Player>(status.Players);
-                                playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ClientPlayer.Player.PlayerId));
-
-                                this.PlayerList = new ObservableCollection<Player>(playerList);
+                                await _hubConnection.SendAsync("GetPlayers", clientPlayer.PlayerName);
                             }
-                            else
-                            {
-                                var gameStatus = await this.gameClientService.GetGameStatusAsync(this.CurrentGameStatus.GameId);
 
-                                // set correspondent game logic
-                            }
+                            //if (!this.GameIsActive)
+                            //{
+                            //    var status = await this.gameClientService.GetPlayerListAndPostAliveAsync(player.PlayerId);
+
+                            //    if (status.RequestingPlayer != null)
+                            //    {
+                            //        this.RequestingOrEnemyPlayer = status.RequestingPlayer;
+                            //        this.GameWasRequested = true;
+                            //        this.RequestID = status.RequestID;
+                            //    }
+
+                            //    if (status.StatusMessage != string.Empty)
+                            //    {
+                            //        this.StatusMessage = status.StatusMessage;
+                            //    }
+
+
+                            //    var playerList = new List<Player>(status.Players);
+                            //    playerList.Remove(playerList.SingleOrDefault(player => player.PlayerId == this.ClientPlayer.Player.PlayerId));
+
+                            //    this.PlayerList = new ObservableCollection<Player>(playerList);
+                            //}
+                            //else
+                            //{
+                            //    var gameStatus = await this.gameClientService.GetGameStatusAsync(this.CurrentGameStatus.GameId);
+
+                            //    // set correspondent game logic
+                            //}
+
+                            await Task.Delay(5000);
                         }
                     });
                 });
             }
+        }
+
+        private Task CloseConnectionAsync()
+            => _hubConnection?.DisposeAsync() ?? Task.CompletedTask;
+
+        public async void OnPlayersReceived(List<Player> players)
+        {
+            this.PlayerList = new ObservableCollection<Player>(players);
         }
 
         /// <summary>
