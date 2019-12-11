@@ -14,8 +14,8 @@ namespace Client
 {
     public class ClientVM : BaseVM
     {
-        private readonly UrlService _urlService;
-        private HubConnection _hubConnection;
+        private readonly UrlService urlService;
+        private HubConnection hubConnection;
         private TicTacToeGameRepresentation gameRepresentation = new TicTacToeGameRepresentation();
         private ObservableCollection<Player> playerList;
         private Player selectedPlayer;
@@ -30,31 +30,88 @@ namespace Client
 
         public ClientVM(GameClientService gameClientService, UrlService urlService)
         {
-            this._urlService = urlService;
+            this.urlService = urlService;
             this.PlayerList = new ObservableCollection<Player>();
             this.gameClientService = gameClientService;
             this.ClientConnected = false;
             this.GameIsActive = false;
             this.GameWasRequested = false;
             this.CurrentGameId = 0;
+
+            // ERLAUBT? WARUM NICHT? SONST PASSIERT DER CAST HALD WOANDERS
+            this.Test = new Command(obj => this.ComputePlayerClick((GameCellVM)obj));
         }
+
+        private async Task Setup()
+        {
+            await CloseConnectionAsync();
+            this.hubConnection = new HubConnectionBuilder()
+                .WithUrl(urlService.LobbyAddress)
+                .Build();
+
+            this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
+            this.hubConnection.On<GameRequest>("GameRequested", this.OnGameRequestReceived);
+            this.hubConnection.On<Player>("ReturnPlayerInstance", this.OnClientPlayerInstanceReturned);
+            
+        }
+
+        private void OnClientPlayerInstanceReturned(Player player) //DOKU Receives the client player instance in order to obtain the clients connection id.
+        {
+            this.ClientPlayer.Player = player;
+        }
+
+        private void OnGameRequestReceived(GameRequest gameRequest) //DOKU Responds to a received game request from another player. 
+        {
+            if (gameRequest.Enemy != null)
+            {
+                this.RequestingOrEnemyPlayer = gameRequest.Enemy;
+                this.GameWasRequested = true;
+
+                // allow the player to accept or decline a game for 10 seconds (timeout)
+                var task = Task.Run(() =>
+                {
+                    var aTimer = new System.Timers.Timer(9500);
+
+                    aTimer.Start();
+
+                    aTimer.Elapsed += (sender, e) =>
+                    {
+                        this.GameWasRequested = false;
+                    };
+                });
+            }
+        }
+
+        private Task CloseConnectionAsync() => hubConnection?.DisposeAsync() ?? Task.CompletedTask;
+
+        public void OnPlayersReceived(List<Player> players)
+        {
+            this.PlayerList = new ObservableCollection<Player>(players);
+        }
+
+
+        public ICommand Test { get; }
 
         public int CurrentGameId { get; private set; }
 
         public GameStatus CurrentGameStatus { get; set; }
         public int RequestID { get; set; }
 
+
         /// <summary>
-        /// When the client accepts a game request, a correspondent http request is sent to the server.
+        /// When the client accepts a game request, a correspondent message is sent to the server.
         /// </summary>
         public ICommand AcceptCommand
         {
             get
             {
-                return new Command(obj =>
+                return new Command(async obj =>
                 {
+                    this.GameWasRequested = false;
+
                     // accept request on server
-                    this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, true);
+                    await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
+                    //this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, true);
 
                     //this.GameIsActive = true;
 
@@ -62,6 +119,28 @@ namespace Client
                     // affirm request
                     // make new game in client and later on server
                     // delete the old request
+                });
+            }
+        }
+
+        /// <summary>
+        /// When the client declines a game request, a correspondent message is sent to the server.
+        /// The requesting player is set to default (null) and the game request bool is set to false.
+        /// </summary>
+        public ICommand DeclineCommand
+        {
+            get
+            {
+                return new Command(async obj =>
+                {
+                    this.GameWasRequested = false;
+                    this.RequestingOrEnemyPlayer = default;
+
+                    // delete request on server
+
+                    await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
+                    //this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, false);
+                    this.RequestID = 0;
                 });
             }
         }
@@ -77,21 +156,24 @@ namespace Client
                         //var player = await this.gameClientService.PostPlayerInfoToServerAsync(this.ClientPlayer.PlayerName);
                         //this.ClientPlayer = new PlayerVM(player);
 
-                        await CloseConnectionAsync();
-                        _hubConnection = new HubConnectionBuilder()
-                            .WithUrl(_urlService.LobbyAddress)
-                            .Build();
+                        //await CloseConnectionAsync();
+                        //this.hubConnection = new HubConnectionBuilder()
+                        //    .WithUrl(urlService.LobbyAddress)
+                        //    .Build();
 
-                        _hubConnection.On<List<Player>>("ReceivePlayersAsync", OnPlayersReceived);
-                        await _hubConnection.StartAsync();
+                        //this.hubConnection.On<List<Player>>("ReceivePlayersAsync", OnPlayersReceived);
+                        await this.hubConnection.StartAsync();
 
-                        await _hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
+                       
 
-                        while (true)
+                        await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
+
+                        while (!true)
                         {
+                            // brauchen das ned wenn wir eh immer die liste schicken falls einer connected oder disconnected oder
                             if (!this.GameIsActive)
                             {
-                                await _hubConnection.SendAsync("GetPlayers", clientPlayer.Player.PlayerName);
+                                await this.hubConnection.SendAsync("GetPlayers", clientPlayer.Player.PlayerName);
                             }
 
                             //if (!this.GameIsActive)
@@ -130,14 +212,6 @@ namespace Client
             }
         }
 
-        private Task CloseConnectionAsync()
-            => _hubConnection?.DisposeAsync() ?? Task.CompletedTask;
-
-        public void OnPlayersReceived(List<Player> players)
-        {
-            this.PlayerList = new ObservableCollection<Player>(players);
-        }
-
         /// <summary>
         /// This command is used when a game element button is clicked.
         /// Checks if the player is allowed to place his sign and sends the information to the server.
@@ -167,25 +241,21 @@ namespace Client
             }
         }
 
-        /// <summary>
-        /// When the client declines a game request, a correspondent http request is sent to the server.
-        /// The requesting player is set to default (null) and the game request bool is set to false.
-        /// </summary>
-        public ICommand DeclineCommand
+        private void ComputePlayerClick(GameCellVM cell)
         {
-            get
+            if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.PlayerId)
             {
-                return new Command(obj =>
-                {
-                    this.GameWasRequested = false;
-                    this.RequestingOrEnemyPlayer = default;
+                cell.PlayerMark = this.ClientPlayer.Player.Marker;
 
-                    // delete request on server
-                    this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, false);
-                    this.RequestID = 0;
-                });
+                var status = new GameStatus();
+                status.UpdatedPosition = cell.Index;
+                status.GameId = this.CurrentGameStatus.GameId;
+
+                this.gameClientService.UpdateGameStatusAsync(status);
             }
         }
+
+        
 
         /// <summary>
         /// This command is used when the player using the client requests a game with another online player.
@@ -195,11 +265,12 @@ namespace Client
         {
             get
             {
-                return new Command(obj =>
+                return new Command(async obj =>
                 {
                     if (this.SelectedPlayer != null)
                     {
-                        this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
+                        await this.hubConnection.SendAsync("AddGameRequest", new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
+                        //this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
                     }
                 });
             }

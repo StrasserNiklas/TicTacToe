@@ -47,4 +47,5 @@ namespace Client.Models
             this.action(parameter);
         }
     }
+
 }

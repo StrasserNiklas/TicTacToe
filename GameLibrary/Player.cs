@@ -17,7 +17,7 @@ namespace GameLibrary
         {
             var time = DateTime.Now;
 
-            this.Hash = $"{time.ToString()}{playerName}";
+            this.Hash = $"{time.ToString()}{playerName}"; // we may not need this anymore hmmmmm
             this.PlayerName = playerName;
             this.MarkedPositions = new List<int>();
         }
@@ -25,6 +25,8 @@ namespace GameLibrary
         public Player()
         {
         }
+
+
 
         public string ConnectionId
         {
@@ -38,7 +40,7 @@ namespace GameLibrary
             }
         }
 
-        public int PlayerId
+        public int PlayerId // may not need this neither
         {
             get
             {
