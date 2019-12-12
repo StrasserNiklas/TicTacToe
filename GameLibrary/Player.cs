@@ -101,7 +101,7 @@ namespace GameLibrary
             }
             set
             {
-                if (value > 0)
+                if (value < 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(this.Wins), "You can´t have less than 0 wins.");
                 }

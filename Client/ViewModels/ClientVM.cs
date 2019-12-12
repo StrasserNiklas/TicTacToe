@@ -108,14 +108,14 @@ namespace Client
             {
                 if (status.UpdatedPosition >= 0)
                 {
-                    this.GameRepresentation.GameCells[status.UpdatedPosition].PlayerMark = 1;
+                    this.GameRepresentation.GameCells[status.UpdatedPosition].PlayerMark = 2;
                 }
             }
             else
             {
                 if (status.UpdatedPosition >= 0)
                 {
-                    this.GameRepresentation.GameCells[status.UpdatedPosition].PlayerMark = 2;
+                    this.GameRepresentation.GameCells[status.UpdatedPosition].PlayerMark = 1;
                 }
             }
 

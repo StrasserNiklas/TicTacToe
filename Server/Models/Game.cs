@@ -13,7 +13,6 @@ namespace Server.Models
         private Player playerOne;
         private string endGameMessage;
         private Player currentPlayer;
-        private int gameTurns = 0;
         private List<WinCondition> winConditions;
         private int[] indexedGame = new int[9];
         private bool gameOver;
@@ -54,7 +53,6 @@ namespace Server.Models
         {
             this.GameOver = false;
             this.indexedGame = new int[9];
-            this.gameTurns = 0;
             this.playerOne.MarkedPositions = new List<int>();
             this.playerTwo.MarkedPositions = new List<int>();
             this.EndMessage = string.Empty;
@@ -70,7 +68,7 @@ namespace Server.Models
 
             if (!this.GameOver)
             {
-                if (this.gameTurns > 4 && !this.GameOver)
+                if (this.Turns > 4 && !this.GameOver)
                 {
                     foreach (var condition in this.winConditions)
                     {
@@ -88,10 +86,10 @@ namespace Server.Models
                             }
                         }
 
-                        //if (isWin)
-                        //{
-                        //    return true;
-                        //}
+                        if (isWin)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -104,7 +102,7 @@ namespace Server.Models
                 return isWin;
             }
 
-            if (this.gameTurns == 9 && !this.GameOver)
+            if (this.Turns == 9 && !this.GameOver)
             {
                 this.EndMessage = $"It´s a draw!";
                 this.GameOver = true;
