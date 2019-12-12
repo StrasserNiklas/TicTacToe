@@ -3,6 +3,7 @@ using Client.Services;
 using Client.ViewModels;
 using GameLibrary;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,21 +20,20 @@ namespace Client
         private TicTacToeGameRepresentation gameRepresentation = new TicTacToeGameRepresentation();
         private ObservableCollection<Player> playerList;
         private Player selectedPlayer;
-        private GameClientService gameClientService;
         private int clientId;
         private bool gameIsActive;
         private PlayerVM clientPlayer;
         private bool clientConnected;
         private bool gameWasRequested;
         private string statusMessage;
+        private string activePlayerName = string.Empty;
         private Player requestingorEnemyPlayer;
         private bool myTurn = false;
 
-        public ClientVM(GameClientService gameClientService, UrlService urlService)
+        public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
         {
             this.urlService = urlService;
             this.PlayerList = new ObservableCollection<Player>();
-            this.gameClientService = gameClientService;
             this.ClientConnected = false;
             this.GameIsActive = false;
             this.GameWasRequested = false;
@@ -98,11 +98,31 @@ namespace Client
         {
             if (this.CurrentGameStatus == null)
             {
+                if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
+                {
+                    this.PlayerTwo = this.RequestingOrEnemyPlayer;
+                    this.PlayerOne = this.ClientPlayer.Player;
+                }
+                else
+                {
+                    this.PlayerOne = this.RequestingOrEnemyPlayer;
+                    this.PlayerTwo = this.ClientPlayer.Player;
+                }
+
                 this.GameIsActive = true;
             }
 
             this.myTurn = true;
             this.CurrentGameStatus = status;
+
+            if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
+            {
+                this.ActivePlayerName = this.ClientPlayer.PlayerName;
+            }
+            else
+            {
+                this.ActivePlayerName = this.RequestingOrEnemyPlayer.PlayerName;
+            }
 
             if (status.CurrentPlayerMarker == 1)
             {
@@ -131,7 +151,7 @@ namespace Client
         {
             if (gameRequest.Enemy != null)
             {
-                this.RequestingOrEnemyPlayer = gameRequest.Enemy;
+                this.RequestingOrEnemyPlayer = gameRequest.RequestPlayer;
                 this.GameWasRequested = true;
                 this.RequestID = gameRequest.RequestID;
 
@@ -178,6 +198,8 @@ namespace Client
         {
             this.GameWasRequested = false;
 
+            
+
             // accept request on server
             await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
             //this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, true);
@@ -215,6 +237,7 @@ namespace Client
                     status.CurrentPlayerId = this.ClientPlayer.Player.ConnectionId;
                     status.UpdatedPosition = cell.Index;
                     status.GameId = this.CurrentGameStatus.GameId;
+                    this.ActivePlayerName = this.RequestingOrEnemyPlayer.PlayerName;
 
                     await this.hubConnection.SendAsync("UpdateGameStatus", status);
 
@@ -229,6 +252,7 @@ namespace Client
         {
             if (this.SelectedPlayer != null)
             {
+                this.RequestingOrEnemyPlayer = this.SelectedPlayer;
                 await this.hubConnection.SendAsync("AddGameRequest", new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
                 //this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
             }
@@ -250,6 +274,51 @@ namespace Client
                 this.FireOnPropertyChanged();
             }
         }
+
+        private Player playerOne;
+        private Player playerTwo;
+
+        public Player PlayerOne
+        {
+            get 
+            { 
+                return this.playerOne; 
+            }
+            set 
+            { 
+                this.playerOne = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+        public Player PlayerTwo
+        {
+            get
+            {
+                return this.playerTwo;
+            }
+            set
+            {
+                this.playerTwo = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+
+        public string ActivePlayerName
+        {
+            get 
+            { 
+                return this.activePlayerName;
+            }
+
+            set 
+            { 
+                this.activePlayerName = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets a specific status message to display in the client.

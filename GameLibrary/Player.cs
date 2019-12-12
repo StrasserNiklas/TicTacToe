@@ -97,7 +97,7 @@ namespace GameLibrary
         {
             get
             {
-                return wins;
+                return this.wins;
             }
             set
             {
@@ -106,7 +106,7 @@ namespace GameLibrary
                     throw new ArgumentOutOfRangeException(nameof(this.Wins), "You can´t have less than 0 wins.");
                 }
 
-                wins = value;
+                this.wins = value;
             }
         }
 
