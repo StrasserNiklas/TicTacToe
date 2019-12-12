@@ -145,12 +145,7 @@ namespace Server.Hubs
 
                     if (gameFinished)
                     {
-                        await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + "New game starting.");
-
-                        await Task.Delay(4000);
-
-                        game.CurrentGameStatus = new int[9];
-                        game.GameOver = false;
+                        await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage);
                         
                         // HIER NOCH LOGIK DASS EIN NEUES SPIEL BEGINTN? TIMEOUT?
                     }

@@ -1,6 +1,7 @@
 ﻿using GameLibrary;
 using Server.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Server.Services
@@ -14,7 +15,13 @@ namespace Server.Services
 
         public Task<Player> AddPlayerAsync(Player player)
         {
-            this.players.Add(player);
+            var duplicatePlayer = this.players.SingleOrDefault(x => x.PlayerName == player.PlayerName);
+
+            if (duplicatePlayer == null)
+            {
+                this.players.Add(player);
+            }
+
             return Task.FromResult(player);
         }
 
