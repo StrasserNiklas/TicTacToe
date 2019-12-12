@@ -45,14 +45,5 @@ namespace Client
             this.DataContext = this.client;
             this.client.ClientPlayer = new PlayerVM(new Player("player"));
         }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //await this.BooksDemoAsync();
-            //var task = Task.Run(() => this.BooksDemoAsync());
-
-            this.client.ClientConnected = true;
-            
-        }
     }
 }

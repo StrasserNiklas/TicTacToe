@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Client
@@ -46,6 +47,7 @@ namespace Client
             this.AcceptCommand = new Command(obj => this.ComputeAcceptCommand());
             this.RequestGameCommand = new Command(obj => this.ComputeRequestGameCommand());
             this.DeclineCommand = new Command(obj => this.ComputeDeclineCommand());
+            this.ExitGameCommand = new Command(obj => this.ComputeExitGameCommand());
         }
 
         /// <summary>
@@ -66,6 +68,8 @@ namespace Client
         
         public ICommand DeclineCommand { get; }
 
+        public ICommand ExitGameCommand { get; }
+
         /// <summary>
         /// This command is used when the player using the client requests a game with another online player.
         /// A game request will be sent to the server containing the id of the enemy player and the id of the client player.
@@ -82,7 +86,7 @@ namespace Client
             this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
             this.hubConnection.On<GameRequest>("GameRequested", this.OnGameRequestReceived);
             this.hubConnection.On<Player>("ReturnPlayerInstance", this.OnClientPlayerInstanceReturned);
-            this.hubConnection.On<string>("StatusMessage", this.OnStatusMessageReceived);
+            this.hubConnection.On<string, Player>("StatusMessage", this.OnStatusMessageReceived);
             this.hubConnection.On<GameStatus>("GameStatus", this.OnGameStatusReceived);
 
             await this.hubConnection.StartAsync();
@@ -142,8 +146,22 @@ namespace Client
             
         }
 
-        private void OnStatusMessageReceived(string message)
+        private void OnStatusMessageReceived(string message, Player playerWhoWon)
         {
+            if (playerWhoWon != null)
+            {
+                if (PlayerOne.PlayerName == playerWhoWon.PlayerName)
+                {
+                    PlayerOne.Wins++;
+                    this.FireOnPropertyChanged(nameof(PlayerOne));
+                }
+                else if (PlayerTwo.PlayerName == playerWhoWon.PlayerName)
+                {
+                    PlayerTwo.Wins++;
+                    this.FireOnPropertyChanged(nameof(PlayerTwo));
+                }
+            }
+
             this.StatusMessage = message;
         }
 
@@ -188,7 +206,17 @@ namespace Client
             {
                 return new Command(async obj =>
                 {
-                    await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
+                    if (!string.IsNullOrEmpty(this.clientPlayer.PlayerName))
+                    {
+                        try
+                        {
+                            await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
                 });
             }
         }
@@ -224,7 +252,12 @@ namespace Client
             this.RequestID = 0;
         }
 
-        private async void ComputePlayerClick(GameCellVM cell)
+        private async Task ComputeExitGameCommand()
+        {
+
+        }
+
+        private async Task ComputePlayerClick(GameCellVM cell)
         {
             if (this.GameIsActive)
             {

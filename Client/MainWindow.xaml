@@ -57,11 +57,11 @@
                     <TextBlock Margin="5,10,0,10" Text="Your name: " />
                     <TextBlock Margin="0,10,0,10" Text="{Binding ClientPlayer.PlayerName}" FontWeight="Bold"
                            Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
-                    <TextBox Margin="10" Text="{Binding ClientPlayer.PlayerName, FallbackValue=Enter your name}" 
+                    <TextBox Margin="10" Text="{Binding ClientPlayer.PlayerName, ValidatesOnExceptions=True, FallbackValue=Enter your name}" 
                          Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
                 </DockPanel>
                 
-                <Button Margin="10" Content="Connect to server" Click="Button_Click" Style="{StaticResource buttonRoundCorner}"
+                <Button Margin="10" Content="Connect to server" Style="{StaticResource buttonRoundCorner}"
                         Command="{Binding ConnectCommand}" Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}" Background="#ffd769"/>
                 <!--<Button Content="TestConnect" Command="{Binding GetPlayersCommand}"/>-->
                 <TextBlock Margin="10" Text="Server status: Connected" FontWeight="Bold" HorizontalAlignment="Left" Foreground="Green"
@@ -199,7 +199,8 @@
                     <Label Grid.Column="3" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="IndianRed" HorizontalAlignment="Right"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}"
-                           Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                           Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
+                           Margin=" 0 0 -6 0"/>
                     <Label Grid.Row="1" Grid.Column="1" Content="wants to play with you" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
@@ -241,6 +242,20 @@
                             Command="{Binding CurrentGame.NewGameCommand}" Background="#ffd769"
                             Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"
                              />
+
+                    <Button Grid.Row="0"
+                            Grid.Column="4"
+                            Grid.ColumnSpan="2"
+                            Background="#fc5d5d"
+                            MaxHeight="25"
+                            Width="70"
+                            Style="{StaticResource buttonRoundCorner2}"
+                            Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Exit Game" Margin="2 2 4 2"
+                            IsEnabled="{Binding GameIsActive}"
+                            Command="{Binding ExitGameCommand}"
+                            Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"
+                            />
+
                     <Label Grid.ColumnSpan="4" HorizontalAlignment="Left" Foreground="Green" FontSize="15"  Grid.Row="1" Content="{Binding CurrentGame.EndMessage}" Style="{StaticResource labelStyle}"/>
                 </Grid>
             </Border>
