@@ -7,16 +7,13 @@ namespace Server.Services
 {
     public class MainService : IMainService
     {
-        private int incrementedId = 1;
-        private readonly List<Player> players = new List<Player>() { new Player("Felix") { PlayerId = 999 } };
+        private readonly List<Player> players = new List<Player>();
 
         private readonly List<Game> games = new List<Game>();
         private readonly List<GameRequest> gameRequests = new List<GameRequest>();
 
         public Task<Player> AddPlayerAsync(Player player)
         {
-            player.PlayerId = this.incrementedId;
-            this.incrementedId++;
             this.players.Add(player);
             return Task.FromResult(player);
         }
@@ -52,6 +49,12 @@ namespace Server.Services
         {
             this.players.Remove(player);
             return Task.FromResult(player);
+        }
+
+        public Task<Game> AddGameAsync(Game game)
+        {
+            this.games.Add(game);
+            return Task.FromResult(game);
         }
     }
 }

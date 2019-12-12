@@ -141,8 +141,8 @@ namespace Server.Controllers
 
             if (game != null)
             {
-                var status = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.PlayerId);
-                return Ok(status);
+                //var status = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, 10);
+                //return Ok(status);
             }
 
             //var game = games.SingleOrDefault(game => (game.PlayerOne.PlayerId == data.Enemy.PlayerId || game.PlayerOne.PlayerId == data.RequestPlayer.PlayerId)
@@ -166,7 +166,7 @@ namespace Server.Controllers
 
             if (game != null)
             {
-                if (game.PlayerOne.PlayerId == update.CurrentPlayerId)
+                if (game.PlayerOne.ConnectionId == update.CurrentPlayerId)
                 {
                     if (update.UpdatedPosition > 0 && update.UpdatedPosition < 9)
                     {
@@ -178,7 +178,7 @@ namespace Server.Controllers
 
                     game.CurrentPlayer = game.PlayerTwo;
                 }
-                else if (game.PlayerTwo.PlayerId == update.CurrentPlayerId)
+                else if (game.PlayerTwo.ConnectionId == update.CurrentPlayerId)
                 {
                     if (update.UpdatedPosition > 0 && update.UpdatedPosition < 9)
                     {

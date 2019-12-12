@@ -1,4 +1,5 @@
 ﻿using GameLibrary;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace Client.Models
     public class GameClientService
     {
         private readonly HttpClient httpClient;
-        //private readonly ILogger _logger;
-        public GameClientService(HttpClient httpClient)//, ILogger<BooksClientService> logger)
+        private readonly ILogger logger;
+        public GameClientService(HttpClient httpClient, ILogger<GameClientService> logger)
         {
             this.httpClient = httpClient;
-            //_logger = logger;
+            this.logger = logger;
         }
 
         public async Task PostGameRequest(GameRequest data)

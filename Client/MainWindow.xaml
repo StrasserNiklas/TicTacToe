@@ -195,14 +195,10 @@
                            VerticalAlignment="Center" FontWeight="Bold" 
                            Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
-                    <!-- Test button -->
-                    <Button Grid.Column="4" Width="40" Content="TestRequest" Click="Button_Click_1"/>
-
-
                     <!-- Status message -->
-                    <Label Grid.Column="3" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="Blue" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="3" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="IndianRed" HorizontalAlignment="Right"/>
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingPlayer.PlayerName}" Style="{StaticResource labelStyle}"
+                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
                     <Label Grid.Row="1" Grid.Column="1" Content="wants to play with you" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
@@ -252,7 +248,7 @@
 
         <!-- Game field -->
         <Border Margin="3" Grid.Row="2" Grid.Column="0" Style="{StaticResource borderStyle}" MinWidth="150">
-            <ItemsControl x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding Game.GameCells}">
+            <ItemsControl x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding GameRepresentation.GameCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                         <UniformGrid Columns="3" />

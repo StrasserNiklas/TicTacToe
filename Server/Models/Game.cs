@@ -45,55 +45,7 @@ namespace Server.Models
 
         public int GameId { get; }
 
-
-
-        // just a place holder for the code that checks if a player won
-        private void CheckWinCodePlaceholder()
-        {
-            if (!this.GameOver)
-            {
-                var index = 0; //PLACEHOLDER
-
-                if (this.indexedGame[index] == 0)
-                {
-
-                    this.indexedGame[index] = this.CurrentPlayer.Marker;
-                    this.CurrentPlayer.MarkedPositions.Add(index);
-                    this.gameTurns++;
-
-                    // an server
-
-                    if (this.gameTurns > 4 && !this.GameOver)
-                    {
-                        bool check = this.CheckForWin();
-
-                        if (check)
-                        {
-                            this.GameOver = true;
-                            this.CurrentPlayer.Wins++;
-                            this.EndMessage = $"{this.CurrentPlayer.PlayerName} wins!";
-                        }
-
-                        if (this.gameTurns == 9 && !this.GameOver)
-                        {
-                            this.EndMessage = $"It´s a draw!";
-                            this.GameOver = true;
-                        }
-                    }
-
-
-                    if (this.CurrentPlayer == this.playerOne)
-                    {
-                        this.CurrentPlayer = this.playerTwo;
-                    }
-                    else
-                    {
-                        this.CurrentPlayer = this.playerOne;
-                    }
-                }
-            }
-        }
-
+        public int Turns { get; set; }
 
         /// <summary>
         /// Resets the game and the players status in order for a new game to start.
@@ -112,30 +64,51 @@ namespace Server.Models
         /// This method iterates over the possible win conditions of the current player after he made his mark.
         /// </summary>
         /// <returns>True if a win condition has been met, false otherwise.</returns>
-        public bool CheckForWin()
+        public bool CheckWinConditions()
         {
             bool isWin = false;
 
-            foreach (var condition in this.winConditions)
+            if (!this.GameOver)
             {
-                foreach (var index in condition.Condition)
+                if (this.gameTurns > 4 && !this.GameOver)
                 {
-                    if (this.CurrentPlayer.MarkedPositions.Contains(index))
+                    foreach (var condition in this.winConditions)
                     {
-                        isWin = true;
-                        continue;
-                    }
-                    else
-                    {
-                        isWin = false;
-                        break;
-                    }
-                }
+                        foreach (var index in condition.Condition)
+                        {
+                            if (this.CurrentPlayer.MarkedPositions.Contains(index))
+                            {
+                                isWin = true;
+                                continue;
+                            }
+                            else
+                            {
+                                isWin = false;
+                                break;
+                            }
+                        }
 
-                if (isWin)
-                {
-                    return true;
+                        //if (isWin)
+                        //{
+                        //    return true;
+                        //}
+                    }
                 }
+            }
+
+            if (isWin)
+            {
+                this.GameOver = true;
+                this.CurrentPlayer.Wins++;
+                this.EndMessage = $"{this.CurrentPlayer.PlayerName} wins!";
+                return isWin;
+            }
+
+            if (this.gameTurns == 9 && !this.GameOver)
+            {
+                this.EndMessage = $"It´s a draw!";
+                this.GameOver = true;
+                return true;
             }
 
             return false;

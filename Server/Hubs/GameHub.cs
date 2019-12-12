@@ -45,15 +45,14 @@ namespace Server.Hubs
 
             if (player != null)
             {
-                //    var existingRequestFromRequestingPlayer = this.mainService.RequestedGames.SingleOrDefault(request => (request.EnemyId == data.EnemyId || request.EnemyId == data.RequestPlayerId)
-                //&& (request.RequestPlayerId == data.EnemyId || request.RequestPlayerId == data.RequestPlayerId));
+                // wenn der Enemy schon ein request von wem anderen hat, schicken wir Statusnachricht an den Caller
 
                 var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy == gameRequest.Enemy || request.Enemy == gameRequest.RequestPlayer)
             && (request.RequestPlayer == gameRequest.Enemy || request.RequestPlayer == gameRequest.RequestPlayer));
 
                 if (existingRequest == null)
                 {
-                    var request = await this.mainService.AddGameRequestAsync(new GameRequest(gameRequest.Enemy, gameRequest.RequestPlayer));
+                    var request = await this.mainService.AddGameRequestAsync(gameRequest);//(new GameRequest(gameRequest.Enemy, gameRequest.RequestPlayer));
 
                     // geht das ? XDDDDDDDDDDDDDDDDDD
 
@@ -81,49 +80,94 @@ namespace Server.Hubs
 
         public async Task DeclineOrAcceptRequest(int id, bool accept)
         {
-            var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => request.RequestID == id);
+            var requests = new List<GameRequest>(await this.mainService.GetGameRequestsAsync());
+            var existingRequest = requests.SingleOrDefault(request => request.RequestID == id);
 
             if (existingRequest != null)
             {
                 if (!accept)
                 {
                     existingRequest.Declined = true;
+                    // NÖTIG?
+                    await base.Clients.Client(existingRequest.RequestPlayer.ConnectionId).SendAsync("StatusMessage", $"{existingRequest.Enemy.PlayerName} has declined the request.");
+
+                    await this.mainService.RemoveRequestAsync(existingRequest);
                 }
                 else
                 {
                     existingRequest.Accepted = true;
                     // create game here
 
+                    var game = new Game(existingRequest.RequestPlayer, existingRequest.Enemy);
+                    game.PlayerOne.Marker = 1;
+                    game.PlayerTwo.Marker = 2;
+                    await this.mainService.AddGameAsync(game);
+
+                    var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId);
+                    
+
+                    await base.Clients.Clients(existingRequest.RequestPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
             }
         }
 
-        public async Task UpdateGameStatus(int id, GameStatus update)
+        public async Task UpdateGameStatus(GameStatus update)
         {
             var games = new List<Game>(await this.mainService.GetGamesAsync());
-            var game = games.SingleOrDefault(g => g.GameId == id);
+            var game = games.SingleOrDefault(g => g.GameId == update.GameId);
 
             if (game != null)
             {
-                if (game.PlayerOne.PlayerId == update.CurrentPlayerId)
+                if (game.PlayerOne.ConnectionId == update.CurrentPlayerId)
                 {
-                    if (update.UpdatedPosition > 0 && update.UpdatedPosition < 9)
+                    if (update.UpdatedPosition >= 0 && update.UpdatedPosition < 9)
                     {
                         if (game.CurrentGameStatus[update.UpdatedPosition] == 0)
                         {
                             game.CurrentGameStatus[update.UpdatedPosition] = game.CurrentPlayer.Marker;
+                            game.Turns++;
+
+                            var gameFinished = game.CheckWinConditions();
+
+                            if (gameFinished)
+                            {
+                                await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage);
+                                // HIER NOCH LOGIK DASS EIN NEUES SPIEL BEGINTN? TIMEOUT?
+                            }
+
+                            var gameStatus = new GameStatus(game.CurrentGameStatus, game.PlayerTwo.ConnectionId, game.PlayerTwo.Marker, game.GameId);
+
+                            await base.Clients.Client(game.PlayerTwo.ConnectionId).SendAsync("GameStatus", gameStatus);
+                            // schick game status an den anderen spieler
+                            // schau ob das spiel zu ende is wenn mehr als 5 turns
+                            
                         }
                     }
 
                     game.CurrentPlayer = game.PlayerTwo;
                 }
-                else if (game.PlayerTwo.PlayerId == update.CurrentPlayerId)
+                else if (game.PlayerTwo.ConnectionId == update.CurrentPlayerId)
                 {
                     if (update.UpdatedPosition > 0 && update.UpdatedPosition < 9)
                     {
                         if (game.CurrentGameStatus[update.UpdatedPosition] == 0)
                         {
                             game.CurrentGameStatus[update.UpdatedPosition] = game.CurrentPlayer.Marker;
+
+                            game.Turns++;
+
+                            var gameFinished = game.CheckWinConditions();
+
+                            if (gameFinished)
+                            {
+
+                            }
+
+                            var gameStatus = new GameStatus(game.CurrentGameStatus, game.PlayerOne.ConnectionId, game.PlayerOne.Marker, game.GameId);
+
+                            await base.Clients.Client(game.PlayerOne.ConnectionId).SendAsync("GameStatus", gameStatus);
+                            // schick game status an den anderen spieler
+                            // schau ob das spiel zu ende is wenn mehr als 5 turns
                         }
                     }
 

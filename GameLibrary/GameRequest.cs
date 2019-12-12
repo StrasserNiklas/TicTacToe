@@ -34,7 +34,7 @@ namespace GameLibrary
         /// <summary>
         /// The id of the request if chosen randomly and can´t be set afterwards.
         /// </summary>
-        public int RequestID { get; }
+        public int RequestID { get; set; }
 
         /// <summary>
         /// The player that has sent/started the request

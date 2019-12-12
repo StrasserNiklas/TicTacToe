@@ -12,6 +12,7 @@ namespace Server.Services
         Task<IEnumerable<GameRequest>> GetGameRequestsAsync();
         Task<GameRequest> AddGameRequestAsync(GameRequest gameRequest);
         Task<IEnumerable<Game>> GetGamesAsync();
+        Task<Game> AddGameAsync(Game game);
         Task<IEnumerable<Player>> GetPlayersAsync();
         Task<Player> AddPlayerAsync(Player player);
         Task<Player> RemovePlayerAsync(Player player);

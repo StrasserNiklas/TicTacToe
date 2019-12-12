@@ -5,10 +5,12 @@ namespace GameLibrary
     public class GameStatus
     {
         [JsonConstructor]
-        public GameStatus(int[] indexedGame, int currentPlayerId)
+        public GameStatus(int[] indexedGame, string currentPlayerId, int currentPlayerMarker, int gameID)
         {
             this.IndexedGame = indexedGame;
             this.CurrentPlayerId = currentPlayerId;
+            this.CurrentPlayerMarker = currentPlayerMarker;
+            this.GameId = gameID;
         }
 
         public GameStatus()
@@ -20,6 +22,8 @@ namespace GameLibrary
         public int GameId { get; set; }
         public int[] IndexedGame { get; set; }
 
-        public int CurrentPlayerId { get; set; }
+        public string CurrentPlayerId { get; set; }
+
+        public int CurrentPlayerMarker { get; set; }
     }
 }

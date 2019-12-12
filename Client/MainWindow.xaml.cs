@@ -98,33 +98,6 @@ namespace Client
 
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            if (this.client.GameIsActive)
-            {
-                //var gameStatus = await this.gameService.
-            }
-            else
-            {
-                // exception wenn öfter ein player requested wird
-                var status = await this.gameService.GetPlayerListAndPostAliveAsync(this.client.ClientPlayer.Player.PlayerId);
-
-
-                if (status.RequestingPlayer != null)
-                {
-                    // VM hier setzen für View!
-                    this.client.RequestingOrEnemyPlayer = status.RequestingPlayer;
-                    this.client.GameWasRequested = true;
-                    this.client.RequestID = status.RequestID;
-                }
-
-                if (status.StatusMessage != string.Empty)
-                {
-                    this.client.StatusMessage = status.StatusMessage;
-                }
-            }
-        }
-
         #region OldLocalGameStuff
 
         //List<Button> buttons = new List<Button>();

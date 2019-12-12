@@ -31,6 +31,10 @@ namespace Server
             services.AddSignalR();
             services.AddControllers();
             services.AddSingleton<IMainService, MainService>();
+            services.AddLogging(logging =>
+            {
+                logging.AddDebug();
+            });
 
             services.AddSwaggerGen(options =>
             {
