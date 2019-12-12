@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\O.png" />
+    <None Remove="Resources\X.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.0.0" />
@@ -15,6 +20,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameLibrary\GameLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\O.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\X.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

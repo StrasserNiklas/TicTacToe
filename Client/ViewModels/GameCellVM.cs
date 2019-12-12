@@ -48,13 +48,15 @@ namespace Client.ViewModels
 
                     case 1:
                         var brush = new ImageBrush();
-                        brush.ImageSource = new BitmapImage(new Uri("Images/O.png", UriKind.Relative));
+                        brush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/O.png"));//, UriKind.Relative));
+                        //brush.ImageSource = new BitmapImage(new Uri("Images/O.png", UriKind.Relative));
                         this.CellBackground = brush;
                         break;
 
                     case 2:
                         var brush1 = new ImageBrush();
-                        brush1.ImageSource = new BitmapImage(new Uri("Images/X.png", UriKind.Relative));
+                        brush1.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/X.png"));//, UriKind.Relative));
+                        //brush1.ImageSource = new BitmapImage(new Uri("Images/X.png", UriKind.Relative));
                         this.CellBackground = brush1;
                         break;
 
