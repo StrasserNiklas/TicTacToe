@@ -174,6 +174,17 @@ namespace Server.Models
             }
         }
 
-        public int[] CurrentGameStatus => this.indexedGame;
+        public int[] CurrentGameStatus
+        {
+            get
+            {
+                return this.indexedGame;
+            }
+            set
+            {
+                this.indexedGame = value;
+            }
+        }
+            
     }
 }

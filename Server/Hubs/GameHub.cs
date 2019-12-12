@@ -121,79 +121,20 @@ namespace Server.Hubs
                 if (game.PlayerOne.ConnectionId == update.CurrentPlayerId)
                 {
                     await this.UpdatePlayerSpecificGameStatus(game, update.UpdatedPosition, game.PlayerTwo);
-
-                    //if (update.UpdatedPosition >= 0 && update.UpdatedPosition < 9)
-                    //{
-                        
-                    //    if (game.CurrentGameStatus[update.UpdatedPosition] == 0)
-                    //    {
-                    //        game.CurrentGameStatus[update.UpdatedPosition] = game.CurrentPlayer.Marker;
-                    //        game.CurrentPlayer.MarkedPositions.Add(update.UpdatedPosition);
-                    //        game.Turns++;
-
-                    //        var gameFinished = game.CheckWinConditions();
-
-                    //        if (gameFinished)
-                    //        {
-                    //            await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage);
-                    //            // HIER NOCH LOGIK DASS EIN NEUES SPIEL BEGINTN? TIMEOUT?
-                    //        }
-
-                    //        var gameStatus = new GameStatus(game.CurrentGameStatus, game.PlayerTwo.ConnectionId, game.PlayerTwo.Marker, game.GameId);
-                    //        gameStatus.UpdatedPosition = update.UpdatedPosition;
-
-                    //        await base.Clients.Client(game.PlayerTwo.ConnectionId).SendAsync("GameStatus", gameStatus);
-                    //        // schick game status an den anderen spieler
-                    //        // schau ob das spiel zu ende is wenn mehr als 5 turns
-
-                    //    }
-                    //}
-
                     game.CurrentPlayer = game.PlayerTwo;
                 }
                 else if (game.PlayerTwo.ConnectionId == update.CurrentPlayerId)
                 {
                     await this.UpdatePlayerSpecificGameStatus(game, update.UpdatedPosition, game.PlayerOne);
-
-                    //if (update.UpdatedPosition > 0 && update.UpdatedPosition < 9)
-                    //{
-                        
-
-                    //    // parameter: game, updatedPosition, player
-
-                    //    if (game.CurrentGameStatus[update.UpdatedPosition] == 0)
-                    //    {
-                    //        game.CurrentGameStatus[update.UpdatedPosition] = game.CurrentPlayer.Marker;
-                    //        game.CurrentPlayer.MarkedPositions.Add(update.UpdatedPosition);
-                    //        game.Turns++;
-
-                    //        var gameFinished = game.CheckWinConditions();
-
-                    //        if (gameFinished)
-                    //        {
-
-                    //        }
-
-                    //        var gameStatus = new GameStatus(game.CurrentGameStatus, game.PlayerOne.ConnectionId, game.PlayerOne.Marker, game.GameId);
-                    //        gameStatus.UpdatedPosition = update.UpdatedPosition;
-
-                    //        await base.Clients.Client(game.PlayerOne.ConnectionId).SendAsync("GameStatus", gameStatus);
-                    //        // schick game status an den anderen spieler
-                    //        // schau ob das spiel zu ende is wenn mehr als 5 turns
-                    //    }
-                    //}
-
                     game.CurrentPlayer = game.PlayerOne;
                 }
             }
         }
 
-        // parameter: game, updatedPosition, player
         private async Task UpdatePlayerSpecificGameStatus(Game game, int updatedPosition, Player player)
         {
             if (updatedPosition >= 0 && updatedPosition < 9)
             {
-                //await this.UpdatePlayerSpecificGameStatus(game, update.UpdatedPosition, game.PlayerTwo);
                 if (game.CurrentGameStatus[updatedPosition] == 0)
                 {
                     game.CurrentGameStatus[updatedPosition] = game.CurrentPlayer.Marker;
@@ -204,7 +145,12 @@ namespace Server.Hubs
 
                     if (gameFinished)
                     {
-                        await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage);
+                        await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + "New game starting.");
+
+                        await Task.Delay(4000);
+
+                        game.CurrentGameStatus = new int[9];
+                        game.GameOver = false;
                         
                         // HIER NOCH LOGIK DASS EIN NEUES SPIEL BEGINTN? TIMEOUT?
                     }
@@ -213,9 +159,6 @@ namespace Server.Hubs
                     gameStatus.UpdatedPosition = updatedPosition;
 
                     await base.Clients.Client(player.ConnectionId).SendAsync("GameStatus", gameStatus);
-                    // schick game status an den anderen spieler
-                    // schau ob das spiel zu ende is wenn mehr als 5 turns
-
                 }
             }
 

@@ -229,17 +229,19 @@
                             Command="{Binding DeclineCommand}"
                              />
                     
-                    <!-- New game button -->
-                    <Button Grid.Row="1" 
+                    <!-- Return to lobby button -->
+                    
+                    <Button Grid.Row="1"
                             Grid.Column="4" 
                             Grid.ColumnSpan="2"
                             MaxHeight="25" 
-                            Width="70"
+                            Width="100"
                             Style="{StaticResource buttonRoundCorner}"
-                            Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="New Game" Margin="4" 
+                            Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Return to lobby" Margin="4" 
                             IsEnabled="{Binding CurrentGame.GameOver}"
-                            Command="{Binding CurrentGame.NewGameCommand}" Background="#ffd769"
                             Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"
+                            Command="{Binding CurrentGame.NewGameCommand}" Background="#ffd769"
+                            
                              />
                     <Label Grid.ColumnSpan="4" HorizontalAlignment="Left" Foreground="Green" FontSize="15"  Grid.Row="1" Content="{Binding CurrentGame.EndMessage}" Style="{StaticResource labelStyle}"/>
                 </Grid>
