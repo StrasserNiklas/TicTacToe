@@ -9,7 +9,6 @@ namespace Server.Services
     public class MainService : IMainService
     {
         private readonly List<Player> players = new List<Player>();
-
         private readonly List<Game> games = new List<Game>();
         private readonly List<GameRequest> gameRequests = new List<GameRequest>();
 

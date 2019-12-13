@@ -171,7 +171,9 @@ namespace Server.Hubs
             var allPlayers = await mainService.GetPlayersAsync();
             var disconnectedPlayer = allPlayers.FirstOrDefault(player => player.ConnectionId == id);
             await this.mainService.RemovePlayerAsync(disconnectedPlayer);
-            var test = await mainService.GetPlayersAsync();
+            var players = await mainService.GetPlayersAsync();
+
+            await base.Clients.All.SendAsync("ReceivePlayersAsync", players);
         }
     }
 }

@@ -86,7 +86,7 @@ namespace Client
             this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
             this.hubConnection.On<GameRequest>("GameRequested", this.OnGameRequestReceived);
             this.hubConnection.On<Player>("ReturnPlayerInstance", this.OnClientPlayerInstanceReturned);
-            this.hubConnection.On<string, Player>("StatusMessage", this.OnStatusMessageReceived);
+            this.hubConnection.On<string>("StatusMessage", this.OnStatusMessageReceived);
             this.hubConnection.On<GameStatus>("GameStatus", this.OnGameStatusReceived);
 
             await this.hubConnection.StartAsync();
@@ -146,21 +146,21 @@ namespace Client
             
         }
 
-        private void OnStatusMessageReceived(string message, Player playerWhoWon)
+        private void OnStatusMessageReceived(string message)//, Player playerWhoWon)
         {
-            if (playerWhoWon != null)
-            {
-                if (PlayerOne.PlayerName == playerWhoWon.PlayerName)
-                {
-                    PlayerOne.Wins++;
-                    this.FireOnPropertyChanged(nameof(PlayerOne));
-                }
-                else if (PlayerTwo.PlayerName == playerWhoWon.PlayerName)
-                {
-                    PlayerTwo.Wins++;
-                    this.FireOnPropertyChanged(nameof(PlayerTwo));
-                }
-            }
+            //if (playerWhoWon != null)
+            //{
+            //    if (PlayerOne.PlayerName == playerWhoWon.PlayerName)
+            //    {
+            //        PlayerOne.Wins++;
+            //        this.FireOnPropertyChanged(nameof(PlayerOne));
+            //    }
+            //    else if (PlayerTwo.PlayerName == playerWhoWon.PlayerName)
+            //    {
+            //        PlayerTwo.Wins++;
+            //        this.FireOnPropertyChanged(nameof(PlayerTwo));
+            //    }
+            //}
 
             this.StatusMessage = message;
         }
@@ -210,6 +210,8 @@ namespace Client
                     {
                         try
                         {
+                            this.ClientConnected = true;
+
                             await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
                         }
                         catch
