@@ -37,7 +37,7 @@ namespace Client
             IHost host = Host.CreateDefaultBuilder()
                 .ConfigureLogging(logging =>
                 {
-                    logging.AddSerilog(new LoggerConfiguration().WriteTo.File("log.txt").CreateLogger());
+                    logging.AddSerilog(new LoggerConfiguration().WriteTo.Debug(Serilog.Events.LogEventLevel.Debug).WriteTo.Console().WriteTo.File(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\")) + "log.txt").CreateLogger());
                 })
                 .ConfigureServices(services =>
                 {

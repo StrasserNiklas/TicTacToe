@@ -1,4 +1,5 @@
 ﻿using GameLibrary;
+using Microsoft.Extensions.Logging;
 using Server.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,17 @@ namespace Server.Services
         private readonly List<Player> players = new List<Player>();
         private readonly List<Game> games = new List<Game>();
         private readonly List<GameRequest> gameRequests = new List<GameRequest>();
+        private readonly ILogger<MainService> logger;
+
+        public MainService(ILogger<MainService> logger)
+        {
+            this.logger = logger;
+        }
 
         public Task<Player> AddPlayerAsync(Player player)
         {
+            this.logger.LogInformation("[AddPlayerAsync] ConnectionId: {0}, PlayerId: {1}, PlayerName: {2}", new object[] { player.ConnectionId, player.PlayerId, player.PlayerName });
+
             var duplicatePlayer = this.players.SingleOrDefault(x => x.PlayerName == player.PlayerName);
 
             if (duplicatePlayer == null)
@@ -26,39 +35,46 @@ namespace Server.Services
 
         public Task<IEnumerable<Player>> GetPlayersAsync()
         {
+            this.logger.LogInformation("[GetPlayersAsync]");
             return Task.FromResult<IEnumerable<Player>>(this.players);
         }
 
         public Task<IEnumerable<GameRequest>> GetGameRequestsAsync()
         {
+            this.logger.LogInformation("[GetGameRequestsAsync]");
             return Task.FromResult<IEnumerable<GameRequest>>(this.gameRequests);
         }
 
         public Task<IEnumerable<Game>> GetGamesAsync()
         {
+            this.logger.LogInformation("[GetGamesAsync]");
             return Task.FromResult<IEnumerable<Game>>(this.games);
         }
 
         public Task<GameRequest> AddGameRequestAsync(GameRequest gameRequest)
         {
+            this.logger.LogInformation("[AddGameRequestAsync] Player {0} requests a game with player {1}", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
             this.gameRequests.Add(gameRequest);
             return Task.FromResult(gameRequest);
         }
 
         public Task<GameRequest> RemoveRequestAsync(GameRequest gameRequest)
         {
+            this.logger.LogInformation("[RemoveRequestAsync] Game request from player {0} to player {1} has not been accepted", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
             this.gameRequests.Remove(gameRequest);
             return Task.FromResult(gameRequest);
         }
 
         public Task<Player> RemovePlayerAsync(Player player)
         {
+            this.logger.LogInformation("[RemovePlayerAsync] ConnectionId: {0}, PlayerId: {1}, PlayerName: {2}", new object[] { player.ConnectionId, player.PlayerId, player.PlayerName });
             this.players.Remove(player);
             return Task.FromResult(player);
         }
 
         public Task<Game> AddGameAsync(Game game)
         {
+            this.logger.LogInformation("[AddGameAsync] PlayerOneName: {0}, PlayerTwoName: {1}", new object[] { game.PlayerOne.PlayerName, game.PlayerTwo.PlayerName } );
             this.games.Add(game);
             return Task.FromResult(game);
         }

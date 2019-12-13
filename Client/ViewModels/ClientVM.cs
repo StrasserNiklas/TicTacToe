@@ -102,6 +102,8 @@ namespace Client
 
         private void OnGameStatusReceived(GameStatus status)
         {
+            this.logger.LogInformation("[OnGameStatusReceived] GameId: {0}", new object[] { status.GameId });
+
             if (this.CurrentGameStatus == null)
             {
                 if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
@@ -169,6 +171,8 @@ namespace Client
 
         private void OnGameRequestReceived(GameRequest gameRequest) //DOKU Responds to a received game request from another player. 
         {
+            this.logger.LogInformation("[OnGameRequestReceived] Player {0} requests a game with player {1}", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
+
             if (gameRequest.Enemy != null)
             {
                 this.RequestingOrEnemyPlayer = gameRequest.RequestPlayer;
@@ -194,6 +198,7 @@ namespace Client
 
         public void OnPlayersReceived(List<Player> players)
         {
+            this.logger.LogInformation("[OnPlayersReceived]");
             this.PlayerList = new ObservableCollection<Player>(players.Where(id => id.ConnectionId != this.ClientPlayer.Player.ConnectionId));
         }
 
@@ -228,6 +233,7 @@ namespace Client
 
         private async Task ComputeAcceptCommand()
         {
+            this.logger.LogInformation("[ComputeAcceptCommand]");
             this.GameWasRequested = false;
 
             
@@ -246,6 +252,7 @@ namespace Client
 
         private async Task ComputeDeclineCommand()
         {
+            this.logger.LogInformation("[ComputeDeclineCommand]");
             this.GameWasRequested = false;
             this.RequestingOrEnemyPlayer = default;
 
@@ -263,6 +270,7 @@ namespace Client
 
         private async Task ComputePlayerClick(GameCellVM cell)
         {
+            this.logger.LogInformation("[ComputePlayerClick] CellIndex: {0}", new object[] { cell.Index });
             if (this.GameIsActive)
             {
                 if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.ConnectionId && this.myTurn)
@@ -287,6 +295,7 @@ namespace Client
 
         public async Task ComputeRequestGameCommand()
         {
+            this.logger.LogInformation("[ComputeRequestGameCommand]");
             if (this.SelectedPlayer != null)
             {
                 this.RequestingOrEnemyPlayer = this.SelectedPlayer;
