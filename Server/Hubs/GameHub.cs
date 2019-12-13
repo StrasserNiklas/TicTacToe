@@ -145,8 +145,15 @@ namespace Server.Hubs
 
                     if (gameFinished)
                     {
-                        await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage);
-                        
+                        await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
+
+
+                        await Task.Delay(4000);
+
+                        game.CurrentGameStatus = new int[9];
+
+
+
                         // HIER NOCH LOGIK DASS EIN NEUES SPIEL BEGINTN? TIMEOUT?
                     }
 
@@ -171,9 +178,7 @@ namespace Server.Hubs
             var allPlayers = await mainService.GetPlayersAsync();
             var disconnectedPlayer = allPlayers.FirstOrDefault(player => player.ConnectionId == id);
             await this.mainService.RemovePlayerAsync(disconnectedPlayer);
-            var players = await mainService.GetPlayersAsync();
-
-            await base.Clients.All.SendAsync("ReceivePlayersAsync", players);
+            await base.Clients.All.SendAsync("ReceivePlayersAsync", allPlayers.Where(x => x.ConnectionId != id));
         }
     }
 }

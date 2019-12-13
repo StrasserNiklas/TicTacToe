@@ -30,9 +30,11 @@ namespace Client
         private string activePlayerName = string.Empty;
         private Player requestingorEnemyPlayer;
         private bool myTurn = false;
+        private readonly ILogger<ClientVM> logger;
 
         public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
         {
+            this.logger = logger;
             this.urlService = urlService;
             this.PlayerList = new ObservableCollection<Player>();
             this.ClientConnected = false;

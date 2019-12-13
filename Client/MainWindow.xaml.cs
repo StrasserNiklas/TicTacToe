@@ -19,6 +19,7 @@ using Client.Models;
 using System.Net.Http;
 using System.Collections.ObjectModel;
 using GameLibrary;
+using Serilog;
 
 namespace Client
 {
@@ -34,6 +35,10 @@ namespace Client
             InitializeComponent();
 
             IHost host = Host.CreateDefaultBuilder()
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddSerilog(new LoggerConfiguration().WriteTo.File("log.txt").CreateLogger());
+                })
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<ClientVM>();
