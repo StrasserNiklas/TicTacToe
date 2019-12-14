@@ -31,6 +31,8 @@ namespace Client
         private Player requestingorEnemyPlayer;
         private bool myTurn = false;
         private readonly ILogger<ClientVM> logger;
+        private Player playerOne;
+        private Player playerTwo;
 
         public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
         {
@@ -147,7 +149,26 @@ namespace Client
                 }
             }
 
-            
+            if (status.IndexedGame.All<int>(x => x == 0))
+            {
+                ResetField();
+            }
+
+            PlayerOne.Wins = status.WinsPlayer1;
+            PlayerTwo.Wins = status.WinsPlayer2;
+        }
+
+        private void ResetField()
+        {
+            this.GameRepresentation.GameCells[0].PlayerMark = 0;
+            this.GameRepresentation.GameCells[1].PlayerMark = 0;
+            this.GameRepresentation.GameCells[2].PlayerMark = 0;
+            this.GameRepresentation.GameCells[3].PlayerMark = 0;
+            this.GameRepresentation.GameCells[4].PlayerMark = 0;
+            this.GameRepresentation.GameCells[5].PlayerMark = 0;
+            this.GameRepresentation.GameCells[6].PlayerMark = 0;
+            this.GameRepresentation.GameCells[7].PlayerMark = 0;
+            this.GameRepresentation.GameCells[8].PlayerMark = 0;
         }
 
         private void OnStatusMessageReceived(string message)//, Player playerWhoWon)
@@ -320,9 +341,6 @@ namespace Client
                 this.FireOnPropertyChanged();
             }
         }
-
-        private Player playerOne;
-        private Player playerTwo;
 
         public Player PlayerOne
         {

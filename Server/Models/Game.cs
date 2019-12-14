@@ -58,6 +58,7 @@ namespace Server.Models
             this.PlayerOne.MarkedPositions = new List<int>();
             this.PlayerTwo.MarkedPositions = new List<int>();
             this.EndMessage = string.Empty;
+            this.Turns = 0;
         }
 
         /// <summary>

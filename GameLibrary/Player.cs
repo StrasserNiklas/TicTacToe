@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace GameLibrary
 {
-    public class Player
+    public class Player : INotifyPropertyChanged
     {
         private int wins;
         private string playerName;
@@ -12,6 +14,8 @@ namespace GameLibrary
         private string hash;
         private int playerId;
         private string connectionId;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public Player(string playerName)
         {
@@ -107,7 +111,17 @@ namespace GameLibrary
                 }
 
                 this.wins = value;
+                this.FireOnPropertyChanged();
             }
+        }
+
+        /// <summary>
+        /// Fires the property changed event.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        protected void FireOnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public List<int> MarkedPositions
