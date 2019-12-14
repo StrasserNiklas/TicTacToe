@@ -99,12 +99,10 @@ namespace Server.Hubs
                     // create game here
 
                     var game = new Game(existingRequest.RequestPlayer, existingRequest.Enemy);
-                    game.PlayerOne.Marker = 1;
-                    game.PlayerTwo.Marker = 2;
+                    
                     await this.mainService.AddGameAsync(game);
 
                     var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId);
-                    
 
                     await base.Clients.Clients(existingRequest.RequestPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
@@ -120,51 +118,38 @@ namespace Server.Hubs
             {
                 if (game.PlayerOne.ConnectionId == update.CurrentPlayerId)
                 {
-                    await this.UpdatePlayerSpecificGameStatus(game, update.UpdatedPosition, game.PlayerTwo);
-                    game.CurrentPlayer = game.PlayerTwo;
+                    await this.UpdatePlayerSpecificGameStatus(game, update.UpdatedPosition, game.PlayerOne);
                 }
                 else if (game.PlayerTwo.ConnectionId == update.CurrentPlayerId)
                 {
-                    await this.UpdatePlayerSpecificGameStatus(game, update.UpdatedPosition, game.PlayerOne);
-                    game.CurrentPlayer = game.PlayerOne;
+                    await this.UpdatePlayerSpecificGameStatus(game, update.UpdatedPosition, game.PlayerTwo);
                 }
             }
         }
 
         private async Task UpdatePlayerSpecificGameStatus(Game game, int updatedPosition, Player player)
         {
-            if (updatedPosition >= 0 && updatedPosition < 9)
+            if (game.IsMoveValid(updatedPosition, player))
             {
-                if (game.CurrentGameStatus[updatedPosition] == 0)
+                var gameFinished = game.MakeMove(updatedPosition, player);
+
+                if (gameFinished)
                 {
-                    game.CurrentGameStatus[updatedPosition] = game.CurrentPlayer.Marker;
-                    game.CurrentPlayer.MarkedPositions.Add(updatedPosition);
-                    game.Turns++;
+                    await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
 
-                    var gameFinished = game.CheckWinConditions();
+                    await Task.Delay(4000);
 
-                    if (gameFinished)
-                    {
-                        await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
+                    game.NewGameSetup();
 
-
-                        await Task.Delay(4000);
-
-                        game.CurrentGameStatus = new int[9];
-
-
-
-                        // HIER NOCH LOGIK DASS EIN NEUES SPIEL BEGINTN? TIMEOUT?
-                    }
-
-                    var gameStatus = new GameStatus(game.CurrentGameStatus, player.ConnectionId, player.Marker, game.GameId);
-                    gameStatus.UpdatedPosition = updatedPosition;
-
-                    await base.Clients.Client(player.ConnectionId).SendAsync("GameStatus", gameStatus);
+                    // HIER NOCH LOGIK DASS EIN NEUES SPIEL BEGINTN? TIMEOUT?
                 }
-            }
 
-                
+                var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId);
+                gameStatus.UpdatedPosition = updatedPosition;
+
+                await base.Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", gameStatus);
+
+            }
         }
 
         public override Task OnConnectedAsync()

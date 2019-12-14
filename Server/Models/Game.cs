@@ -34,6 +34,8 @@ namespace Server.Models
 
             this.playerOne = one;
             this.playerTwo = two;
+            this.PlayerOne.Marker = 1;
+            this.PlayerTwo.Marker = 2;
             this.CurrentPlayer = this.playerOne;
             this.GameOver = false;
             this.EndMessage = string.Empty;
@@ -52,9 +54,9 @@ namespace Server.Models
         public void NewGameSetup()
         {
             this.GameOver = false;
-            this.indexedGame = new int[9];
-            this.playerOne.MarkedPositions = new List<int>();
-            this.playerTwo.MarkedPositions = new List<int>();
+            this.CurrentGameStatus = new int[9];
+            this.PlayerOne.MarkedPositions = new List<int>();
+            this.PlayerTwo.MarkedPositions = new List<int>();
             this.EndMessage = string.Empty;
         }
 
@@ -110,6 +112,49 @@ namespace Server.Models
             }
 
             return false;
+        }
+
+        private Player GetOtherPlayer(Player player)
+        {
+            return (player == this.PlayerOne) ? this.PlayerTwo : this.PlayerOne;
+        }
+
+        public bool IsMoveValid(int updatedPosition, Player player)
+        {
+            if (updatedPosition < 0 || updatedPosition >= 9)
+            {
+                return false;
+            }
+
+            if (this.CurrentGameStatus[updatedPosition] != 0)
+            {
+                return false;
+            }
+
+            if (this.CurrentPlayer != player)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool MakeMove(int updatedPosition, Player player)
+        {
+            if (IsMoveValid(updatedPosition, player))
+            {
+                this.CurrentGameStatus[updatedPosition] = this.CurrentPlayer.Marker;
+                this.CurrentPlayer.MarkedPositions.Add(updatedPosition);
+                this.Turns++;
+
+                var gameFinished = this.CheckWinConditions();
+
+                this.CurrentPlayer = this.GetOtherPlayer(player);
+
+                return gameFinished;
+            }
+
+            throw new InvalidOperationException("Invalid move was tried.");
         }
 
         public string EndMessage
