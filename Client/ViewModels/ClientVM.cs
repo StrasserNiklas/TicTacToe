@@ -642,7 +642,8 @@ namespace Client
         private async Task ComputeRequestGameCommand()
         {
             this.logger.LogInformation("[ComputeRequestGameCommand]");
-            if (this.SelectedPlayer != null)
+
+            if (this.SelectedPlayer != null && !this.gameIsActive)
             {
                 this.RequestingOrEnemyPlayer = this.SelectedPlayer;
                 await this.hubConnection.SendAsync("AddGameRequest", new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
