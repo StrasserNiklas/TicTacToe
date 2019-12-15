@@ -8,8 +8,6 @@ namespace Client
 {
     public class PlayerVM : BaseVM
     {
-        private string playerName;
-
         public string PlayerName
         {
             get 

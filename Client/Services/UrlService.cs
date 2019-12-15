@@ -14,7 +14,7 @@ namespace Client.Services
         //public string LobbyAddress => $"https://tictactoefyn.azurewebsites.net/game";
         
 
-        private const string BaseUri = "https://localhost:5001/api/main";
+        //private const string BaseUri = "https://localhost:5001/api/main";
         public string LobbyAddress => $"https://localhost:5001/game";
         //public string GroupAddress => $"{BaseUri}/groupchat";
     }

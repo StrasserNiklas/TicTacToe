@@ -18,11 +18,10 @@ namespace Client
     {
         private readonly UrlService urlService;
         private HubConnection hubConnection;
-        private TicTacToeGameRepresentation gameRepresentation = new TicTacToeGameRepresentation();
+        private readonly TicTacToeGameRepresentation gameRepresentation = new TicTacToeGameRepresentation();
         private ObservableCollection<Player> playerList;
         private ObservableCollection<SimpleGameInformation> gameList;
         private Player selectedPlayer;
-        private int clientId;
         private bool gameIsActive;
         private PlayerVM clientPlayer;
         private bool clientConnected;
@@ -49,11 +48,11 @@ namespace Client
             this.Setup();
 
             // ERLAUBT? WARUM NICHT? SONST PASSIERT DER CAST HALD WOANDERS
-            this.PlayerClick = new Command(obj => this.ComputePlayerClick((GameCellVM)obj));
-            this.AcceptCommand = new Command(obj => this.ComputeAcceptCommand());
-            this.RequestGameCommand = new Command(obj => this.ComputeRequestGameCommand());
-            this.DeclineCommand = new Command(obj => this.ComputeDeclineCommand());
-            this.ReturnToLobbyCommand = new Command(obj => this.ComputeReturnToLobbyCommand());
+            this.PlayerClick = new Command(async obj => await this.ComputePlayerClick((GameCellVM)obj));
+            this.AcceptCommand = new Command(async obj => await this.ComputeAcceptCommand());
+            this.RequestGameCommand = new Command(async obj => await this.ComputeRequestGameCommand());
+            this.DeclineCommand = new Command(async obj => await this.ComputeDeclineCommand());
+            this.ReturnToLobbyCommand = new Command(async obj => await this.ComputeReturnToLobbyCommand());
         }
 
         /// <summary>
@@ -281,10 +280,13 @@ namespace Client
                     cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker;//this.ClientPlayer.Player.Marker;
                     this.myTurn = false;
 
-                    var status = new GameStatus();
-                    status.CurrentPlayerId = this.ClientPlayer.Player.ConnectionId;
-                    status.UpdatedPosition = cell.Index;
-                    status.GameId = this.CurrentGameStatus.GameId;
+                    var status = new GameStatus
+                    {
+                        CurrentPlayerId = this.ClientPlayer.Player.ConnectionId,
+                        UpdatedPosition = cell.Index,
+                        GameId = this.CurrentGameStatus.GameId
+                    };
+
                     this.ActivePlayerName = this.RequestingOrEnemyPlayer.PlayerName;
 
                     await this.hubConnection.SendAsync("UpdateGameStatus", status);

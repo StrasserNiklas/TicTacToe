@@ -20,19 +20,18 @@ namespace Server.Hubs
 
         public async Task GetPlayers(string requestedPlayerName)
         {
-            //var allPlayers = await mainService.GetPlayersAsync();
+            var allPlayers = await mainService.GetPlayersAsync();
 
             // select all players except the requested one
             // requested player should not be included in the result
-            //allPlayers = allPlayers.Where(name => name.PlayerName != requestedPlayerName);
+            allPlayers = allPlayers.Where(name => name.PlayerName != requestedPlayerName);
             //await base.Clients.All.SendAsync("ReceivePlayersAsync", allPlayers);
             await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
         }
 
         public async Task AddPlayer(string name)
         {
-            Player player = new Player(name);
-            player.ConnectionId = Context.ConnectionId;
+            Player player = new Player(name) { ConnectionId = Context.ConnectionId };
             var addedPlayer = await mainService.AddPlayerAsync(player);
             await base.Clients.Caller.SendAsync("ReturnPlayerInstance", player);
 
@@ -190,8 +189,11 @@ namespace Server.Hubs
 
         private GameStatus CreateNewGameStatus(Game game, int updatedPosition = -1)
         {
-            var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId, game.PlayerOne.Wins, game.PlayerTwo.Wins);
-            gameStatus.UpdatedPosition = updatedPosition;
+            var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId, game.PlayerOne.Wins, game.PlayerTwo.Wins)
+            {
+                UpdatedPosition = updatedPosition
+            };
+
             return gameStatus;
         }
 
