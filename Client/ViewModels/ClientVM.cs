@@ -55,6 +55,7 @@ namespace Client
             this.RequestGameCommand = new Command(async obj => await this.ComputeRequestGameCommand());
             this.DeclineCommand = new Command(async obj => await this.ComputeDeclineCommand());
             this.ReturnToLobbyCommand = new Command(async obj => await this.ComputeReturnToLobbyCommand());
+            this.ConnectCommand = new Command(async obj => await this.ComputeConnectCommand());
         }
 
         /// <summary>
@@ -82,6 +83,8 @@ namespace Client
         /// A game request will be sent to the server containing the id of the enemy player and the id of the client player.
         /// </summary>
         public ICommand RequestGameCommand { get; }
+
+        public ICommand ConnectCommand { get; }
 
         private async Task Setup()
         {
@@ -247,7 +250,7 @@ namespace Client
 
         
 
-        public void OnPlayersReceived(List<Player> players)
+        private void OnPlayersReceived(List<Player> players)
         {
             if (this.ClientConnected)
             {
@@ -256,33 +259,25 @@ namespace Client
             }
         }
 
-        public int CurrentGameId { get; private set; }
-
-        public GameStatus CurrentGameStatus { get; set; }
-        public int RequestID { get; set; }        
-
-        public ICommand ConnectCommand
+        private async Task ComputeConnectCommand()
         {
-            get
-            {
-                return new Command(async obj =>
-                {
-                    if (!string.IsNullOrEmpty(this.clientPlayer.PlayerName))
-                    {
-                        try
-                        {
-                            this.ClientConnected = true;
+            this.logger.LogInformation("[ComputeConnectCommand]");
 
-                            await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
-                        }
-                        catch
-                        {
-                            this.StatusMessage = "Unable to connect to server.";
-                            //MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error); //hm?
-                        }
-                    }
-                });
+            if (!string.IsNullOrEmpty(this.clientPlayer.PlayerName))
+            {
+                try
+                {
+                    this.ClientConnected = true;
+
+                    await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
+                }
+                catch
+                {
+                    this.StatusMessage = "Unable to connect to server.";
+                    //MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error); //hm?
+                }
             }
+
         }
 
 
@@ -377,6 +372,12 @@ namespace Client
                 this.FireOnPropertyChanged();
             }
         }
+
+        public int CurrentGameId { get; private set; }
+
+        public GameStatus CurrentGameStatus { get; set; }
+        public int RequestID { get; set; }
+
 
         public Player PlayerOne
         {
