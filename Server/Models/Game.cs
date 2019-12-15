@@ -13,7 +13,7 @@ namespace Server.Models
         private Player playerOne;
         private string endGameMessage;
         private Player currentPlayer;
-        private List<WinCondition> winConditions;
+        private readonly List<WinCondition> winConditions;
         private int[] indexedGame = new int[9];
         private bool gameOver;
 

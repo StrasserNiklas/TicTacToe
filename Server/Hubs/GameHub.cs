@@ -29,11 +29,30 @@ namespace Server.Hubs
             await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
         }
 
-        public async Task AddPlayer(string name)
+        public async Task AddPlayer(string nameForNewPlayer)
         {
-            Player player = new Player(name) { ConnectionId = Context.ConnectionId };
-            var addedPlayer = await mainService.AddPlayerAsync(player);
-            await base.Clients.Caller.SendAsync("ReturnPlayerInstance", player);
+            Player newPlayer = new Player(nameForNewPlayer) { ConnectionId = Context.ConnectionId };
+
+            var allPlayers = await mainService.GetPlayersAsync();
+            bool playerExists = false;
+
+            foreach (var player in allPlayers)
+            {
+                if (player.PlayerName == nameForNewPlayer)
+                {
+                    playerExists = true;
+                    break;
+                }
+            }
+
+            if (playerExists)
+            {
+                await base.Clients.Caller.SendAsync("DuplicateName");
+                return;
+            }
+
+            var addedPlayer = await mainService.AddPlayerAsync(newPlayer);
+            await base.Clients.Caller.SendAsync("ReturnPlayerInstance", newPlayer);
 
 
             await base.Clients.Caller.SendAsync("ReceiveGames", await this.mainService.GetSimpleGameInformationListAsync());
@@ -103,7 +122,8 @@ namespace Server.Hubs
                     // create game here
 
                     var game = new Game(existingRequest.RequestPlayer, existingRequest.Enemy);
-                    
+                    await this.mainService.RemoveRequestAsync(existingRequest);
+
                     await this.mainService.AddGameAsync(game);
 
                     

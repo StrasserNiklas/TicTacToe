@@ -23,12 +23,7 @@ namespace Server.Services
         {
             this.logger.LogInformation("[AddPlayerAsync] ConnectionId: {0}, PlayerId: {1}, PlayerName: {2}", new object[] { player.ConnectionId, player.PlayerId, player.PlayerName });
 
-            var duplicatePlayer = this.players.SingleOrDefault(x => x.PlayerName == player.PlayerName);
-
-            if (duplicatePlayer == null)
-            {
-                this.players.Add(player);
-            }
+            this.players.Add(player);
 
             return Task.FromResult(player);
         }

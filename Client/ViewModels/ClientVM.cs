@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -33,6 +34,8 @@ namespace Client
         private readonly ILogger<ClientVM> logger;
         private Player playerOne;
         private Player playerTwo;
+        private bool playerClicked;
+        private System.Timers.Timer timer;
 
         public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
         {
@@ -95,6 +98,7 @@ namespace Client
             this.hubConnection.On<string>("StatusMessage", this.OnStatusMessageReceived);
             this.hubConnection.On<GameStatus>("GameStatus", this.OnGameStatusReceived);
             this.hubConnection.On("EnemyLeftGame", this.OnEnemyLeftGame);
+            this.hubConnection.On("DuplicateName", this.OnDuplicateName);
 
             await this.hubConnection.StartAsync();
 
@@ -108,6 +112,12 @@ namespace Client
         private void OnGamesReceived(List<SimpleGameInformation> games)
         {
             this.GameList = new ObservableCollection<SimpleGameInformation>(games);
+        }
+
+        private void OnDuplicateName()
+        {
+            this.ClientConnected = false;
+            this.StatusMessage = "Duplicate name, please choose a new one.";
         }
 
         private void OnGameStatusReceived(GameStatus status)
@@ -131,6 +141,14 @@ namespace Client
             }
 
             this.myTurn = true;
+            this.playerClicked = true;
+
+            this.timer = new System.Timers.Timer(10000);
+            this.timer.AutoReset = false;
+            this.timer.Start();
+
+            this.timer.Elapsed += Timer_Elapsed;
+
             this.CurrentGameStatus = status;
 
             if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
@@ -164,6 +182,32 @@ namespace Client
 
             PlayerOne.Wins = status.WinsPlayer1;
             PlayerTwo.Wins = status.WinsPlayer2;
+        }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (this.myTurn)
+            {
+                this.StatusMessage = "It's your turn. Play, or the game will end in 5 seconds!";
+
+                Task.Run(() =>
+                {
+                    this.timer = new System.Timers.Timer(5000);
+                    this.timer.AutoReset = false;
+                    this.timer.Start();
+
+                    this.timer.Elapsed += async (sender, e) =>
+                    {
+                        this.timer.Enabled = false;
+                        this.StatusMessage = "Game ended because of inactivity.";
+                        await this.ComputeReturnToLobbyCommand();
+                    };
+                });
+
+                this.timer.Enabled = false;
+            }
+
+            this.timer.Enabled = false;
         }
 
         private void OnStatusMessageReceived(string message)
@@ -207,7 +251,7 @@ namespace Client
             }
         }
 
-        private Task CloseConnectionAsync() => hubConnection?.DisposeAsync() ?? Task.CompletedTask;
+        
 
         public void OnPlayersReceived(List<Player> players)
         {
@@ -239,7 +283,8 @@ namespace Client
                         }
                         catch
                         {
-                            MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error); //hm?
+                            this.StatusMessage = "Unable to connect to server.";
+                            //MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error); //hm?
                         }
                     }
                 });
@@ -265,16 +310,27 @@ namespace Client
 
         private async Task ComputeReturnToLobbyCommand()
         {
+            this.timer = new System.Timers.Timer();
+            this.timer.AutoReset = false;
+
             this.logger.LogInformation("[ComputeReturnToLobbyCommand]");
-            this.PlayerOne = new Player();
-            this.PlayerTwo = new Player();
-            this.GameIsActive = false;
-            this.ResetField();
+
+            Application.Current.Dispatcher.Invoke(new ThreadStart(() =>
+            {
+                this.PlayerOne = new Player();
+                this.PlayerTwo = new Player();
+                this.GameIsActive = false;
+                this.ResetField();
+            }));
+            
             await this.hubConnection.SendAsync("ReturnToLobby", this.ClientPlayer.Player.ConnectionId, this.RequestingOrEnemyPlayer.ConnectionId);
         }
 
         private async Task ComputePlayerClick(GameCellVM cell)
         {
+            this.timer.Stop();
+            this.playerClicked = true;
+
             this.logger.LogInformation("[ComputePlayerClick] CellIndex: {0}", new object[] { cell.Index });
             if (this.GameIsActive)
             {
@@ -515,5 +571,7 @@ namespace Client
                 item.PlayerMark = 0;
             }
         }
+
+        private Task CloseConnectionAsync() => hubConnection?.DisposeAsync() ?? Task.CompletedTask;
     }
 }
