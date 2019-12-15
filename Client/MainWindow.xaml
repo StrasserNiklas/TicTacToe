@@ -113,13 +113,19 @@
                                 </GridViewColumn.CellTemplate>
                                 
                             </GridViewColumn>
+                            <GridViewColumn Header=" vs " Width="Auto"  >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text=" vs " />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Header="Player 2" Width="Auto"  >
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding PlayerTwo}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
-
                             </GridViewColumn>
 
                         </GridView>

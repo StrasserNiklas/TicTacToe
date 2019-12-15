@@ -14,8 +14,12 @@ namespace GameLibrary
             this.PlayerTwo = playerTwo;
         }
 
-        public string PlayerOne { get; }
+        public SimpleGameInformation()
+        {
+        }
 
-        public string PlayerTwo { get; }
+        public string PlayerOne { get; set; }
+
+        public string PlayerTwo { get; set; }
     }
 }
