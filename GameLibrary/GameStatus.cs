@@ -32,6 +32,7 @@ namespace GameLibrary
 
         public int CurrentPlayerMarker { get; set; }
 
+        public bool IsNewGame { get; set; }
         public int WinsPlayer1 { get; set; }
         public int WinsPlayer2 { get; set; }
     }

@@ -51,7 +51,7 @@ namespace Server.Hubs
                 return;
             }
 
-            var addedPlayer = await mainService.AddPlayerAsync(newPlayer);
+            await mainService.AddPlayerAsync(newPlayer);
             await base.Clients.Caller.SendAsync("ReturnPlayerInstance", newPlayer);
 
 
@@ -81,7 +81,7 @@ namespace Server.Hubs
 
                     var task = Task.Run(() =>
                     {
-                        var aTimer = new System.Timers.Timer(10000);
+                        var aTimer = new System.Timers.Timer(9000) { AutoReset = false } ;
 
                         aTimer.Start();
 
@@ -89,7 +89,7 @@ namespace Server.Hubs
                         {
                             if (!request.Accepted)
                             {
-                                await this.mainService.RemoveRequestAsync(request);
+                                await this.mainService.RemoveRequestAsync(request, false);
                             }
                         };
                     });
@@ -97,8 +97,6 @@ namespace Server.Hubs
                     await base.Clients.Client(player.ConnectionId).SendAsync("GameRequested", gameRequest);
                 }
             }
-
-
         }
 
         public async Task DeclineOrAcceptRequest(int id, bool accept)
@@ -110,19 +108,17 @@ namespace Server.Hubs
             {
                 if (!accept)
                 {
-                    existingRequest.Declined = true;
-                    // NÖTIG?
+                    //existingRequest.Declined = true;
                     await base.Clients.Client(existingRequest.RequestPlayer.ConnectionId).SendAsync("StatusMessage", $"{existingRequest.Enemy.PlayerName} has declined the request.");
-
-                    await this.mainService.RemoveRequestAsync(existingRequest);
+                    await this.mainService.RemoveRequestAsync(existingRequest, false);
                 }
                 else
                 {
-                    existingRequest.Accepted = true;
+                    //existingRequest.Accepted = true;
                     // create game here
 
                     var game = new Game(existingRequest.RequestPlayer, existingRequest.Enemy);
-                    await this.mainService.RemoveRequestAsync(existingRequest);
+                    await this.mainService.RemoveRequestAsync(existingRequest, true);
 
                     await this.mainService.AddGameAsync(game);
 
@@ -132,7 +128,7 @@ namespace Server.Hubs
                     var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
                     await base.Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
 
-                    var gameStatus = CreateNewGameStatus(game);
+                    var gameStatus = CreateNewGameStatus(game, true);
 
                     await base.Clients.Clients(existingRequest.RequestPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
@@ -194,25 +190,30 @@ namespace Server.Hubs
                     await Task.Delay(4000);
 
                     game.NewGameSetup();
-                    var gameStatus = CreateNewGameStatus(game, updatedPosition);
+                    var gameStatus = CreateNewGameStatus(game, true, updatedPosition);
 
                     await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
                 else
                 {
-                    var gameStatus = CreateNewGameStatus(game, updatedPosition);
+                    var gameStatus = CreateNewGameStatus(game, false, updatedPosition);
 
                     await base.Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
             }
         }
 
-        private GameStatus CreateNewGameStatus(Game game, int updatedPosition = -1)
+        private GameStatus CreateNewGameStatus(Game game, bool isNewGame, int updatedPosition = -1)
         {
             var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId, game.PlayerOne.Wins, game.PlayerTwo.Wins)
             {
                 UpdatedPosition = updatedPosition
             };
+
+            if (isNewGame)
+            {
+                gameStatus.IsNewGame = true;
+            }
 
             return gameStatus;
         }

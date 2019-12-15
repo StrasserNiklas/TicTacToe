@@ -53,9 +53,9 @@ namespace Server.Services
             return Task.FromResult(gameRequest);
         }
 
-        public Task<GameRequest> RemoveRequestAsync(GameRequest gameRequest)
+        public Task<GameRequest> RemoveRequestAsync(GameRequest gameRequest, bool accepted)
         {
-            this.logger.LogInformation("[RemoveRequestAsync] Game request from player {0} to player {1} has not been accepted", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
+            this.logger.LogInformation($"[RemoveRequestAsync] Game request from player {0} to player {1} has been accepted: {accepted.ToString()}", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
             this.gameRequests.Remove(gameRequest);
             return Task.FromResult(gameRequest);
         }

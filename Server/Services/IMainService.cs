@@ -17,7 +17,7 @@ namespace Server.Services
         Task<IEnumerable<Player>> GetPlayersAsync();
         Task<Player> AddPlayerAsync(Player player);
         Task<Player> RemovePlayerAsync(Player player);
-        Task<GameRequest> RemoveRequestAsync(GameRequest gameRequest);
+        Task<GameRequest> RemoveRequestAsync(GameRequest gameRequest, bool accepted);
         Task<IEnumerable<Player>> GetPlayersNotInGameAsync();
         Task<List<SimpleGameInformation>> GetSimpleGameInformationListAsync();
     }

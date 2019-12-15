@@ -34,7 +34,6 @@ namespace Client
         private readonly ILogger<ClientVM> logger;
         private Player playerOne;
         private Player playerTwo;
-        private bool playerClicked;
         private System.Timers.Timer timer;
 
         public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
@@ -124,7 +123,7 @@ namespace Client
         {
             this.logger.LogInformation("[OnGameStatusReceived] GameId: {0}", new object[] { status.GameId });
 
-            if (this.CurrentGameStatus == null)
+            if (this.CurrentGameStatus == null || status.IsNewGame)
             {
                 if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
                 {
@@ -141,14 +140,9 @@ namespace Client
             }
 
             this.myTurn = true;
-            this.playerClicked = true;
-
-            this.timer = new System.Timers.Timer(10000);
-            this.timer.AutoReset = false;
+            this.timer = new System.Timers.Timer(10000) { AutoReset = false };
             this.timer.Start();
-
             this.timer.Elapsed += Timer_Elapsed;
-
             this.CurrentGameStatus = status;
 
             if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
@@ -192,8 +186,7 @@ namespace Client
 
                 Task.Run(() =>
                 {
-                    this.timer = new System.Timers.Timer(5000);
-                    this.timer.AutoReset = false;
+                    this.timer = new System.Timers.Timer(5000) { AutoReset = false };
                     this.timer.Start();
 
                     this.timer.Elapsed += async (sender, e) =>
@@ -217,6 +210,7 @@ namespace Client
 
         private void OnEnemyLeftGame()
         {
+            this.timer.Enabled = false;
             this.logger.LogInformation("[OnEnemyLeftGame]");
             this.StatusMessage = "Enemy left the game.";
             this.PlayerOne = new Player();
@@ -239,7 +233,7 @@ namespace Client
                 // allow the player to accept or decline a game for 10 seconds (timeout)
                 var task = Task.Run(() =>
                 {
-                    var aTimer = new System.Timers.Timer(9500);
+                    var aTimer = new System.Timers.Timer(9500) { AutoReset = false } ;
 
                     aTimer.Start();
 
@@ -310,8 +304,8 @@ namespace Client
 
         private async Task ComputeReturnToLobbyCommand()
         {
-            this.timer = new System.Timers.Timer();
-            this.timer.AutoReset = false;
+            this.timer.Enabled = false;
+            this.timer = new System.Timers.Timer { AutoReset = false };
 
             this.logger.LogInformation("[ComputeReturnToLobbyCommand]");
 
@@ -329,7 +323,6 @@ namespace Client
         private async Task ComputePlayerClick(GameCellVM cell)
         {
             this.timer.Stop();
-            this.playerClicked = true;
 
             this.logger.LogInformation("[ComputePlayerClick] CellIndex: {0}", new object[] { cell.Index });
             if (this.GameIsActive)
