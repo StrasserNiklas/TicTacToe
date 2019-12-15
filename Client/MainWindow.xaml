@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.Converter"
         mc:Ignorable="d"
-        Title="Tic Tac Toe" Height="600" Width="600">
+        Title="Tic Tac Toe" Height="550" Width="550">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
