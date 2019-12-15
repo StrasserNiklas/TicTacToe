@@ -64,7 +64,7 @@ namespace Server.Services
 
         public Task<Player> RemovePlayerAsync(Player player)
         {
-            this.logger.LogInformation("[RemovePlayerAsync] ConnectionId: {0}, PlayerId: {1}, PlayerName: {2}", new object[] { player.ConnectionId, player.PlayerId, player.PlayerName });
+            this.logger.LogInformation("[RemovePlayerAsync] ConnectionId: {0}, PlayerName: {1}", new object[] { player.ConnectionId, player.PlayerName });
             this.players.Remove(player);
             return Task.FromResult(player);
         }

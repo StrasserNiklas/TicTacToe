@@ -13,8 +13,6 @@ namespace GameLibrary
         private int wins;
         private string playerName;
         private List<int> markedPositions;
-        private string hash;
-        private int playerId;
         private string connectionId;
 
         public event PropertyChangedEventHandler PropertyChanged;
