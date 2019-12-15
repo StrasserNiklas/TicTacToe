@@ -20,12 +20,13 @@ namespace Server.Hubs
 
         public async Task GetPlayers(string requestedPlayerName)
         {
-            var allPlayers = await mainService.GetPlayersAsync();
+            //var allPlayers = await mainService.GetPlayersAsync();
 
             // select all players except the requested one
             // requested player should not be included in the result
-            allPlayers = allPlayers.Where(name => name.PlayerName != requestedPlayerName);
-            await base.Clients.All.SendAsync("ReceivePlayersAsync", allPlayers);
+            //allPlayers = allPlayers.Where(name => name.PlayerName != requestedPlayerName);
+            //await base.Clients.All.SendAsync("ReceivePlayersAsync", allPlayers);
+            await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
         }
 
         public async Task AddPlayer(string name)
@@ -34,7 +35,11 @@ namespace Server.Hubs
             player.ConnectionId = Context.ConnectionId;
             var addedPlayer = await mainService.AddPlayerAsync(player);
             await base.Clients.Caller.SendAsync("ReturnPlayerInstance", player);
-            await base.Clients.All.SendAsync("ReceivePlayersAsync", await mainService.GetPlayersAsync());
+
+
+            await base.Clients.Caller.SendAsync("ReceiveGames", await this.mainService.GetSimpleGameInformationListAsync());
+            await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+            //await base.Clients.All.SendAsync("ReceivePlayersAsync", await mainService.GetPlayersAsync());
         }
 
         public async Task AddGameRequest(GameRequest gameRequest)
@@ -102,6 +107,12 @@ namespace Server.Hubs
                     
                     await this.mainService.AddGameAsync(game);
 
+                    
+                    await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+
+                    var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
+                    await base.Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
+
                     var gameStatus = CreateNewGameStatus(game);
 
                     await base.Clients.Clients(existingRequest.RequestPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
@@ -126,6 +137,30 @@ namespace Server.Hubs
                 }
             }
         }
+
+        public async Task ReturnToLobby(string id, string enemyId)
+        {
+            var games = new List<Game>(await this.mainService.GetGamesAsync());
+
+            foreach (var game in games)
+            {
+                if (game.PlayerOne.ConnectionId == id || game.PlayerTwo.ConnectionId == id)
+                {
+                    await this.mainService.RemoveGameAsync(game);
+
+                    //await base.Clients.Client(enemyId).SendAsync("StatusMessage", "Enemy left the game, please return to lobby.");
+                    await base.Clients.Client(enemyId).SendAsync("EnemyLeftGame");
+                    
+
+                    var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
+                    await base.Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
+                    await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+                }
+            }
+
+        }
+
+
 
         private async Task UpdatePlayerSpecificGameStatus(Game game, int updatedPosition, Player player)
         {

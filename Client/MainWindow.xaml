@@ -241,11 +241,11 @@
                             Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Return to lobby" Margin="4" 
                             IsEnabled="{Binding CurrentGame.GameOver}"
                             Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"
-                            Command="{Binding CurrentGame.NewGameCommand}" Background="#ffd769"
+                            Command="{Binding ReturnToLobbyCommand}" Background="#ffd769"
                             
                              />
 
-                    <Button Grid.Row="0"
+                    <!--<Button Grid.Row="0"
                             Grid.Column="4"
                             Grid.ColumnSpan="2"
                             Background="#fc5d5d"
@@ -256,7 +256,7 @@
                             IsEnabled="{Binding GameIsActive}"
                             Command="{Binding ExitGameCommand}"
                             Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"
-                            />
+                            />-->
 
                     <Label Grid.ColumnSpan="4" HorizontalAlignment="Left" Foreground="Green" FontSize="15"  Grid.Row="1" Content="{Binding CurrentGame.EndMessage}" Style="{StaticResource labelStyle}"/>
                 </Grid>

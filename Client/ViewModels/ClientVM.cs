@@ -20,6 +20,7 @@ namespace Client
         private HubConnection hubConnection;
         private TicTacToeGameRepresentation gameRepresentation = new TicTacToeGameRepresentation();
         private ObservableCollection<Player> playerList;
+        private ObservableCollection<SimpleGameInformation> gameList;
         private Player selectedPlayer;
         private int clientId;
         private bool gameIsActive;
@@ -39,6 +40,7 @@ namespace Client
             this.logger = logger;
             this.urlService = urlService;
             this.PlayerList = new ObservableCollection<Player>();
+            this.GameList = new ObservableCollection<SimpleGameInformation>();
             this.ClientConnected = false;
             this.GameIsActive = false;
             this.GameWasRequested = false;
@@ -51,7 +53,7 @@ namespace Client
             this.AcceptCommand = new Command(obj => this.ComputeAcceptCommand());
             this.RequestGameCommand = new Command(obj => this.ComputeRequestGameCommand());
             this.DeclineCommand = new Command(obj => this.ComputeDeclineCommand());
-            this.ExitGameCommand = new Command(obj => this.ComputeExitGameCommand());
+            this.ReturnToLobbyCommand = new Command(obj => this.ComputeReturnToLobbyCommand());
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace Client
         
         public ICommand DeclineCommand { get; }
 
-        public ICommand ExitGameCommand { get; }
+        public ICommand ReturnToLobbyCommand { get; }
 
         /// <summary>
         /// This command is used when the player using the client requests a game with another online player.
@@ -88,10 +90,12 @@ namespace Client
                 .Build();
 
             this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
+            this.hubConnection.On<IEnumerable<SimpleGameInformation>>("ReceiveGames", this.OnGamesReceived);
             this.hubConnection.On<GameRequest>("GameRequested", this.OnGameRequestReceived);
             this.hubConnection.On<Player>("ReturnPlayerInstance", this.OnClientPlayerInstanceReturned);
             this.hubConnection.On<string>("StatusMessage", this.OnStatusMessageReceived);
             this.hubConnection.On<GameStatus>("GameStatus", this.OnGameStatusReceived);
+            this.hubConnection.On("EnemyLeftGame", this.OnEnemyLeftGame);
 
             await this.hubConnection.StartAsync();
 
@@ -100,6 +104,11 @@ namespace Client
         private void OnClientPlayerInstanceReturned(Player player) //DOKU Receives the client player instance in order to obtain the clients connection id.
         {
             this.ClientPlayer.Player = player;
+        }
+
+        private void OnGamesReceived(IEnumerable<SimpleGameInformation> games)
+        {
+            this.GameList = new ObservableCollection<SimpleGameInformation>(games);
         }
 
         private void OnGameStatusReceived(GameStatus status)
@@ -158,37 +167,21 @@ namespace Client
             PlayerTwo.Wins = status.WinsPlayer2;
         }
 
-        private void ResetField()
+        private void OnStatusMessageReceived(string message)
         {
-            this.GameRepresentation.GameCells[0].PlayerMark = 0;
-            this.GameRepresentation.GameCells[1].PlayerMark = 0;
-            this.GameRepresentation.GameCells[2].PlayerMark = 0;
-            this.GameRepresentation.GameCells[3].PlayerMark = 0;
-            this.GameRepresentation.GameCells[4].PlayerMark = 0;
-            this.GameRepresentation.GameCells[5].PlayerMark = 0;
-            this.GameRepresentation.GameCells[6].PlayerMark = 0;
-            this.GameRepresentation.GameCells[7].PlayerMark = 0;
-            this.GameRepresentation.GameCells[8].PlayerMark = 0;
-        }
-
-        private void OnStatusMessageReceived(string message)//, Player playerWhoWon)
-        {
-            //if (playerWhoWon != null)
-            //{
-            //    if (PlayerOne.PlayerName == playerWhoWon.PlayerName)
-            //    {
-            //        PlayerOne.Wins++;
-            //        this.FireOnPropertyChanged(nameof(PlayerOne));
-            //    }
-            //    else if (PlayerTwo.PlayerName == playerWhoWon.PlayerName)
-            //    {
-            //        PlayerTwo.Wins++;
-            //        this.FireOnPropertyChanged(nameof(PlayerTwo));
-            //    }
-            //}
-
             this.StatusMessage = message;
         }
+
+        private void OnEnemyLeftGame()
+        {
+            this.logger.LogInformation("[OnEnemyLeftGame]");
+            this.StatusMessage = "Enemy left the game.";
+            this.PlayerOne = default;
+            this.PlayerTwo = default;
+            this.GameIsActive = false;
+            this.ResetField();
+        }
+        
 
         private void OnGameRequestReceived(GameRequest gameRequest) //DOKU Responds to a received game request from another player. 
         {
@@ -244,7 +237,7 @@ namespace Client
                         }
                         catch
                         {
-                            MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error); //hm?
                         }
                     }
                 });
@@ -256,19 +249,7 @@ namespace Client
         {
             this.logger.LogInformation("[ComputeAcceptCommand]");
             this.GameWasRequested = false;
-
-            
-
-            // accept request on server
             await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
-            //this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, true);
-
-            //this.GameIsActive = true;
-
-
-            // affirm request
-            // make new game in client and later on server
-            // delete the old request
         }
 
         private async Task ComputeDeclineCommand()
@@ -276,17 +257,18 @@ namespace Client
             this.logger.LogInformation("[ComputeDeclineCommand]");
             this.GameWasRequested = false;
             this.RequestingOrEnemyPlayer = default;
-
-            // delete request on server
-
             await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, false);
-            //this.gameClientService.DeclineOrAcceptGameRequest(this.RequestID, false);
             this.RequestID = 0;
         }
 
-        private async Task ComputeExitGameCommand()
+        private async Task ComputeReturnToLobbyCommand()
         {
-
+            this.logger.LogInformation("[ComputeReturnToLobbyCommand]");
+            this.PlayerOne = default;
+            this.PlayerTwo = default;
+            this.GameIsActive = false;
+            this.ResetField();
+            await this.hubConnection.SendAsync("ReturnToLobby", this.ClientPlayer.Player.ConnectionId, this.RequestingOrEnemyPlayer.ConnectionId);
         }
 
         private async Task ComputePlayerClick(GameCellVM cell)
@@ -401,7 +383,7 @@ namespace Client
                 {
                     Task.Run(async () =>
                     {
-                        await Task.Delay(9000);
+                        await Task.Delay(7000);
                         this.StatusMessage = string.Empty;
                     });
                 }
@@ -473,7 +455,7 @@ namespace Client
         }
 
         /// <summary>
-        /// Gets or sets the list of currently online players.
+        /// Gets or sets the list of currently available players.
         /// </summary>
         public ObservableCollection<Player> PlayerList
         {
@@ -484,6 +466,22 @@ namespace Client
             set 
             { 
                 this.playerList = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the list of currently online players.
+        /// </summary>
+        public ObservableCollection<SimpleGameInformation> GameList
+        {
+            get
+            {
+                return this.gameList;
+            }
+            set
+            {
+                this.gameList = value;
                 this.FireOnPropertyChanged();
             }
         }
@@ -504,5 +502,13 @@ namespace Client
         }
 
         public TicTacToeGameRepresentation GameRepresentation => this.gameRepresentation;
+
+        private void ResetField()
+        {
+            foreach (var item in this.GameRepresentation.GameCells)
+            {
+                item.PlayerMark = 0;
+            }
+        }
     }
 }

@@ -78,5 +78,48 @@ namespace Server.Services
             this.games.Add(game);
             return Task.FromResult(game);
         }
+
+        public Task<Game> RemoveGameAsync(Game game)
+        {
+            this.logger.LogInformation("[RemoveGameAsync] PlayerOneName: {0}, PlayerTwoName: {1}", new object[] { game.PlayerOne.PlayerName, game.PlayerTwo.PlayerName });
+            this.games.Remove(game);
+            return Task.FromResult(game);
+        }
+
+        public Task<IEnumerable<Player>> GetPlayersNotInGameAsync()
+        {
+            List<Player> playerList = new List<Player>();
+
+            if (this.games.Count == 0)
+            {
+                return Task.FromResult<IEnumerable<Player>>(this.players);
+            }
+
+            foreach (var game in this.games)
+            {
+                foreach (var player in this.players)
+                {
+                    if (game.PlayerOne.ConnectionId != player.ConnectionId && game.PlayerTwo.ConnectionId != player.ConnectionId)
+                    {
+                        playerList.Add(player);
+                    }
+                }
+            }
+
+            return Task.FromResult<IEnumerable<Player>>(playerList);
+        }
+
+        public Task<IEnumerable<SimpleGameInformation>> GetSimpleGameInformationListAsync()
+        {
+            List<SimpleGameInformation> simpleGameInformation = new List<SimpleGameInformation>();
+
+            foreach (var item in this.games)
+            {
+                simpleGameInformation.Add(new SimpleGameInformation(item.PlayerOne.PlayerName, item.PlayerTwo.PlayerName));
+            }
+
+            return Task.FromResult<IEnumerable<SimpleGameInformation>>(simpleGameInformation);
+        }
     }
 }
+
