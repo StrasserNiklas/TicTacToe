@@ -28,6 +28,7 @@ namespace GameLibrary
 
         public Player()
         {
+            this.PlayerName = "Player";
         }
 
 

@@ -89,7 +89,7 @@ namespace Client
                 .Build();
 
             this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
-            this.hubConnection.On<IEnumerable<SimpleGameInformation>>("ReceiveGames", this.OnGamesReceived);
+            this.hubConnection.On<List<SimpleGameInformation>>("ReceiveGames", this.OnGamesReceived);
             this.hubConnection.On<GameRequest>("GameRequested", this.OnGameRequestReceived);
             this.hubConnection.On<Player>("ReturnPlayerInstance", this.OnClientPlayerInstanceReturned);
             this.hubConnection.On<string>("StatusMessage", this.OnStatusMessageReceived);
@@ -105,7 +105,7 @@ namespace Client
             this.ClientPlayer.Player = player;
         }
 
-        private void OnGamesReceived(IEnumerable<SimpleGameInformation> games)
+        private void OnGamesReceived(List<SimpleGameInformation> games)
         {
             this.GameList = new ObservableCollection<SimpleGameInformation>(games);
         }
@@ -175,8 +175,8 @@ namespace Client
         {
             this.logger.LogInformation("[OnEnemyLeftGame]");
             this.StatusMessage = "Enemy left the game.";
-            this.PlayerOne = default;
-            this.PlayerTwo = default;
+            this.PlayerOne = new Player();
+            this.PlayerTwo = new Player();
             this.GameIsActive = false;
             this.ResetField();
         }
@@ -211,8 +211,11 @@ namespace Client
 
         public void OnPlayersReceived(List<Player> players)
         {
-            this.logger.LogInformation("[OnPlayersReceived]");
-            this.PlayerList = new ObservableCollection<Player>(players.Where(id => id.ConnectionId != this.ClientPlayer.Player.ConnectionId));
+            if (this.ClientConnected)
+            {
+                this.logger.LogInformation("[OnPlayersReceived]");
+                this.PlayerList = new ObservableCollection<Player>(players.Where(id => id.ConnectionId != this.ClientPlayer.Player.ConnectionId));
+            }
         }
 
         public int CurrentGameId { get; private set; }
@@ -263,8 +266,8 @@ namespace Client
         private async Task ComputeReturnToLobbyCommand()
         {
             this.logger.LogInformation("[ComputeReturnToLobbyCommand]");
-            this.PlayerOne = default;
-            this.PlayerTwo = default;
+            this.PlayerOne = new Player();
+            this.PlayerTwo = new Player();
             this.GameIsActive = false;
             this.ResetField();
             await this.hubConnection.SendAsync("ReturnToLobby", this.ClientPlayer.Player.ConnectionId, this.RequestingOrEnemyPlayer.ConnectionId);

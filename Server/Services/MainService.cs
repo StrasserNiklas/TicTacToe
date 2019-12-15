@@ -10,7 +10,7 @@ namespace Server.Services
     public class MainService : IMainService
     {
         private readonly List<Player> players = new List<Player>();
-        private readonly List<Game> games = new List<Game>();
+        private readonly List<Game> games = new List<Game>(); //{ new Game(new Player("nikalallala"), new Player("felixixixixix")) };
         private readonly List<GameRequest> gameRequests = new List<GameRequest>();
         private readonly ILogger<MainService> logger;
 
@@ -109,7 +109,7 @@ namespace Server.Services
             return Task.FromResult<IEnumerable<Player>>(playerList);
         }
 
-        public Task<IEnumerable<SimpleGameInformation>> GetSimpleGameInformationListAsync()
+        public Task<List<SimpleGameInformation>> GetSimpleGameInformationListAsync()
         {
             List<SimpleGameInformation> simpleGameInformation = new List<SimpleGameInformation>();
 
@@ -118,7 +118,8 @@ namespace Server.Services
                 simpleGameInformation.Add(new SimpleGameInformation(item.PlayerOne.PlayerName, item.PlayerTwo.PlayerName));
             }
 
-            return Task.FromResult<IEnumerable<SimpleGameInformation>>(simpleGameInformation);
+            //return Task.FromResult<List<SimpleGameInformation>>(simpleGameInformation);
+            return Task.FromResult(simpleGameInformation);
         }
     }
 }
