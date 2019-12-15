@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -17,22 +19,30 @@ namespace GameLibrary
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Player"/> class.
+        /// </summary>
+        /// <param name="playerName">Name of the player.</param>
         public Player(string playerName)
         {
-            var time = DateTime.Now;
-
-            this.Hash = $"{time.ToString()}{playerName}"; // we may not need this anymore hmmmmm
             this.PlayerName = playerName;
             this.MarkedPositions = new List<int>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Player"/> class.
+        /// </summary>
         public Player()
         {
             this.PlayerName = "Player";
         }
 
-
-
+        /// <summary>
+        /// Gets or sets the unique connection identifier set by the signalR service.
+        /// </summary>
+        /// <value>
+        /// The unique connection identifier set by the signalR service.
+        /// </value>
         public string ConnectionId
         {
             get
@@ -45,40 +55,13 @@ namespace GameLibrary
             }
         }
 
-        public int PlayerId // may not need this neither
-        {
-            get
-            {
-                return this.playerId;
-            }
-            set
-            {
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(this.PlayerId), "The player ID can´t be below 0.");
-                }
-
-                this.playerId = value;
-            }
-        }
-
-        public string Hash
-        {
-            get
-            {
-                return this.hash;
-            }
-            set
-            {
-                if (value == string.Empty)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(this.Hash), "The hash identifying a player can´t be an empty string.");
-                }
-
-                this.hash = value;
-            }
-        }
-
+        /// <summary>
+        /// Gets or sets the name of the player.
+        /// </summary>
+        /// <value>
+        /// The name of the player.
+        /// </value>
+        /// <exception cref="ArgumentOutOfRangeException">PlayerName - The player name can´t be an empty string.</exception>
         public string PlayerName
         {
             get
@@ -96,8 +79,21 @@ namespace GameLibrary
             }
         }
 
+        /// <summary>
+        /// Gets or sets the marker of the player.
+        /// </summary>
+        /// <value>
+        /// The marker of the player.
+        /// </value>
         public int Marker { get; set; }
 
+        /// <summary>
+        /// Gets or sets the wins of the player.
+        /// </summary>
+        /// <value>
+        /// The wins of the player.
+        /// </value>
+        /// <exception cref="ArgumentOutOfRangeException">Wins - You can´t have less than 0 wins.</exception>
         public int Wins
         {
             get
@@ -125,6 +121,13 @@ namespace GameLibrary
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Gets or sets the marked positions of the player.
+        /// </summary>
+        /// <value>
+        /// The marked positions of the player.
+        /// </value>
+        /// <exception cref="ArgumentNullException">MarkedPositions - The list of marked positions can´t be null.</exception>
         public List<int> MarkedPositions
         {
             get

@@ -1,4 +1,6 @@
-﻿using GameLibrary;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using GameLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,6 +160,12 @@ namespace Server.Models
             throw new InvalidOperationException("Invalid move was tried.");
         }
 
+        /// <summary>
+        /// Gets or sets the end message.
+        /// </summary>
+        /// <value>
+        /// The end message.
+        /// </value>
         public string EndMessage
         {
             get
@@ -170,6 +178,12 @@ namespace Server.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current player.
+        /// </summary>
+        /// <value>
+        /// The current player.
+        /// </value>
         public Player CurrentPlayer
         {
             get
@@ -182,6 +196,13 @@ namespace Server.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets the player one.
+        /// </summary>
+        /// <value>
+        /// The player one.
+        /// </value>
+        /// <exception cref="ArgumentNullException">PlayerOne - Player one can´t be null.</exception>
         public Player PlayerOne
         {
             get
@@ -195,6 +216,13 @@ namespace Server.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets the player two.
+        /// </summary>
+        /// <value>
+        /// The player two.
+        /// </value>
+        /// <exception cref="ArgumentNullException">PlayerTwo - Player two can´t be null.</exception>
         public Player PlayerTwo
         {
             get
@@ -208,6 +236,12 @@ namespace Server.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the game is over.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if game is over; otherwise, <c>false</c>.
+        /// </value>
         public bool GameOver
         {
             get
@@ -220,6 +254,12 @@ namespace Server.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current game status.
+        /// </summary>
+        /// <value>
+        /// The current game status.
+        /// </value>
         public int[] CurrentGameStatus
         {
             get

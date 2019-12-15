@@ -1,4 +1,6 @@
-﻿using GameLibrary;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using GameLibrary;
 using Microsoft.AspNetCore.SignalR;
 using Server.Models;
 using Server.Services;
@@ -70,8 +72,8 @@ namespace Server.Hubs
             {
                 // wenn der Enemy schon ein request von wem anderen hat, schicken wir Statusnachricht an den Caller
 
-                var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy == gameRequest.Enemy || request.Enemy == gameRequest.RequestPlayer)
-            && (request.RequestPlayer == gameRequest.Enemy || request.RequestPlayer == gameRequest.RequestPlayer));
+                var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy == gameRequest.Enemy || request.Enemy == gameRequest.RequestingPlayer)
+            && (request.RequestingPlayer == gameRequest.Enemy || request.RequestingPlayer == gameRequest.RequestingPlayer));
 
                 if (existingRequest == null)
                 {
@@ -109,7 +111,7 @@ namespace Server.Hubs
                 if (!accept)
                 {
                     //existingRequest.Declined = true;
-                    await base.Clients.Client(existingRequest.RequestPlayer.ConnectionId).SendAsync("StatusMessage", $"{existingRequest.Enemy.PlayerName} has declined the request.");
+                    await base.Clients.Client(existingRequest.RequestingPlayer.ConnectionId).SendAsync("StatusMessage", $"{existingRequest.Enemy.PlayerName} has declined the request.");
                     await this.mainService.RemoveRequestAsync(existingRequest, false);
                 }
                 else
@@ -117,7 +119,7 @@ namespace Server.Hubs
                     //existingRequest.Accepted = true;
                     // create game here
 
-                    var game = new Game(existingRequest.RequestPlayer, existingRequest.Enemy);
+                    var game = new Game(existingRequest.RequestingPlayer, existingRequest.Enemy);
                     await this.mainService.RemoveRequestAsync(existingRequest, true);
 
                     await this.mainService.AddGameAsync(game);
@@ -130,7 +132,7 @@ namespace Server.Hubs
 
                     var gameStatus = CreateNewGameStatus(game, true);
 
-                    await base.Clients.Clients(existingRequest.RequestPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
+                    await base.Clients.Clients(existingRequest.RequestingPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
             }
         }

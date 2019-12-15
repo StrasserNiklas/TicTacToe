@@ -1,24 +1,38 @@
-﻿using Newtonsoft.Json;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using Newtonsoft.Json;
 using System;
 
 namespace GameLibrary
 {
+    /// <summary>
+    /// This class respresents a game request in a game. 
+    /// It contains two players, one who sent the request, another the request is addressed to, 
+    /// information whether the request has been accepted or not and an unique request id.
+    /// </summary>
     public class GameRequest
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameRequest"/> class.
+        /// </summary>
+        /// <param name="enemy">The enemy.</param>
+        /// <param name="requestPlayer">The requesting player.</param>
         [JsonConstructor]
         public GameRequest(Player enemy, Player requestPlayer)
         {
             this.Enemy = enemy; 
-            this.RequestPlayer = requestPlayer;
+            this.RequestingPlayer = requestPlayer;
 
             Random r = new Random();
             this.RequestID = r.Next(999, 1234567) + r.Next(999, 1234567);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameRequest"/> class.
+        /// </summary>
         public GameRequest()
         {
         }
-
 
         /// <summary>
         /// A value indicating if a game request has been accepted.
@@ -39,7 +53,7 @@ namespace GameLibrary
         /// <summary>
         /// The player that has sent/started the request
         /// </summary>
-        public Player RequestPlayer { get; set; }
+        public Player RequestingPlayer { get; set; }
 
         /// <summary>
         /// The player the request is sent to.

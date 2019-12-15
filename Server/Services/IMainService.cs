@@ -1,4 +1,6 @@
-﻿using GameLibrary;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using GameLibrary;
 using Server.Models;
 using System;
 using System.Collections.Generic;

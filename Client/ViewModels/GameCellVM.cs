@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -48,15 +50,13 @@ namespace Client.ViewModels
 
                     case 1:
                         var brush = new ImageBrush();
-                        brush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/O.png"));//, UriKind.Relative));
-                        //brush.ImageSource = new BitmapImage(new Uri("Images/O.png", UriKind.Relative));
+                        brush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/O.png"));
                         this.CellBackground = brush;
                         break;
 
                     case 2:
                         var brush1 = new ImageBrush();
-                        brush1.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/X.png"));//, UriKind.Relative));
-                        //brush1.ImageSource = new BitmapImage(new Uri("Images/X.png", UriKind.Relative));
+                        brush1.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/X.png"));
                         this.CellBackground = brush1;
                         break;
 

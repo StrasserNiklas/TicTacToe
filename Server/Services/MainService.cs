@@ -1,4 +1,6 @@
-﻿using GameLibrary;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using GameLibrary;
 using Microsoft.Extensions.Logging;
 using Server.Models;
 using System.Collections.Generic;
@@ -21,7 +23,7 @@ namespace Server.Services
 
         public Task<Player> AddPlayerAsync(Player player)
         {
-            this.logger.LogInformation("[AddPlayerAsync] ConnectionId: {0}, PlayerId: {1}, PlayerName: {2}", new object[] { player.ConnectionId, player.PlayerId, player.PlayerName });
+            this.logger.LogInformation("[AddPlayerAsync] ConnectionId: {0}, PlayerName: {1}", new object[] { player.ConnectionId, player.PlayerName });
 
             this.players.Add(player);
 
@@ -48,14 +50,14 @@ namespace Server.Services
 
         public Task<GameRequest> AddGameRequestAsync(GameRequest gameRequest)
         {
-            this.logger.LogInformation("[AddGameRequestAsync] Player {0} requests a game with player {1}", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
+            this.logger.LogInformation("[AddGameRequestAsync] Player {0} requests a game with player {1}", new object[] { gameRequest.RequestingPlayer.PlayerName, gameRequest.Enemy.PlayerName });
             this.gameRequests.Add(gameRequest);
             return Task.FromResult(gameRequest);
         }
 
         public Task<GameRequest> RemoveRequestAsync(GameRequest gameRequest, bool accepted)
         {
-            this.logger.LogInformation($"[RemoveRequestAsync] Game request from player {0} to player {1} has been accepted: {accepted.ToString()}", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
+            this.logger.LogInformation($"[RemoveRequestAsync] Game request from player {0} to player {1} has been accepted: {accepted.ToString()}", new object[] { gameRequest.RequestingPlayer.PlayerName, gameRequest.Enemy.PlayerName });
             this.gameRequests.Remove(gameRequest);
             return Task.FromResult(gameRequest);
         }

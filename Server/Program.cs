@@ -1,3 +1,5 @@
+// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

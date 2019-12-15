@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Server.Models

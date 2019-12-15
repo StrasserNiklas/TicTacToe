@@ -1,4 +1,6 @@
-﻿using Client.Models;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using Client.Models;
 using Client.Services;
 using Client.ViewModels;
 using GameLibrary;
@@ -177,8 +179,8 @@ namespace Client
                 ResetField();
             }
 
-            PlayerOne.Wins = status.WinsPlayer1;
-            PlayerTwo.Wins = status.WinsPlayer2;
+            PlayerOne.Wins = status.WinsPlayerOne;
+            PlayerTwo.Wins = status.WinsPlayerTwo;
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -225,11 +227,11 @@ namespace Client
 
         private void OnGameRequestReceived(GameRequest gameRequest) //DOKU Responds to a received game request from another player. 
         {
-            this.logger.LogInformation("[OnGameRequestReceived] Player {0} requests a game with player {1}", new object[] { gameRequest.RequestPlayer.PlayerName, gameRequest.Enemy.PlayerName });
+            this.logger.LogInformation("[OnGameRequestReceived] Player {0} requests a game with player {1}", new object[] { gameRequest.RequestingPlayer.PlayerName, gameRequest.Enemy.PlayerName });
 
             if (gameRequest.Enemy != null)
             {
-                this.RequestingOrEnemyPlayer = gameRequest.RequestPlayer;
+                this.RequestingOrEnemyPlayer = gameRequest.RequestingPlayer;
                 this.GameWasRequested = true;
                 this.RequestID = gameRequest.RequestID;
 

@@ -1,4 +1,6 @@
-﻿using Client.Models;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using Client.Models;
 using Client.ViewModels;
 using GameLibrary;
 using System;
