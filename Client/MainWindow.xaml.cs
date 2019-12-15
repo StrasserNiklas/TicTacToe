@@ -47,7 +47,7 @@ namespace Client
                     services.AddSingleton<Services.UrlService>();
                 }).Build();
 
-            this.client = host.Services.GetService<ClientVM>();//new ClientVM(this.gameService, new Services.UrlService());
+            this.client = host.Services.GetService<ClientVM>();
             
             this.DataContext = this.client;
             this.client.ClientPlayer = new PlayerVM(new Player("player"));
