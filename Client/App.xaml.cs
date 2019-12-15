@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
 using System.Windows;
 
 namespace Client

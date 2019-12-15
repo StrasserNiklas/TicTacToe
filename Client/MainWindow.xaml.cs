@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -42,7 +42,6 @@ namespace Server
 
             services.AddSwaggerGen(options =>
             {
-                // options.IncludeXmlComments("../docs/BooksServiceSample.xml");
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "TicTacToe Service API",
