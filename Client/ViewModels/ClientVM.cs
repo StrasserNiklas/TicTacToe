@@ -612,6 +612,7 @@ namespace Client
         private async Task ComputePlayerClick(GameCellVM cell)
         {
             this.timer.Stop();
+            this.timer.Enabled = false;
 
             this.logger.LogInformation("[ComputePlayerClick] CellIndex: {0}", new object[] { cell.Index });
             if (this.GameIsActive)

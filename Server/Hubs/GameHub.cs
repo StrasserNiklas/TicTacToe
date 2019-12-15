@@ -188,8 +188,10 @@ namespace Server.Hubs
                 if (gameFinished)
                 {
                     await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
+                    var oldGameStatus = CreateNewGameStatus(game, false, updatedPosition);
 
-                    await Task.Delay(4000);
+                    await base.Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", oldGameStatus);
+                    await Task.Delay(5000);
 
                     game.NewGameSetup();
                     var gameStatus = CreateNewGameStatus(game, true, updatedPosition);
@@ -230,6 +232,19 @@ namespace Server.Hubs
             var id = Context.ConnectionId;
             var allPlayers = await mainService.GetPlayersAsync();
             var disconnectedPlayer = allPlayers.FirstOrDefault(player => player.ConnectionId == id);
+
+            //TODO !!!!! do this in main service
+            var games = new List<Game>(await this.mainService.GetGamesAsync());
+
+            foreach (var game in games)
+            {
+                if (game.PlayerOne.ConnectionId == id || game.PlayerTwo.ConnectionId == id)
+                {
+                    await this.mainService.RemoveGameAsync(game);
+                }
+            }
+
+
             await this.mainService.RemovePlayerAsync(disconnectedPlayer);
             await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
         }
