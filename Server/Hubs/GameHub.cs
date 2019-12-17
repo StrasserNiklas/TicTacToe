@@ -41,6 +41,7 @@ namespace Server.Hubs
         /// Gets the players from the MainService and sends them to all clients.
         /// </summary>
         /// <param name="requestedPlayerName">Name of the requested player.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         public async Task GetPlayers(string requestedPlayerName)
         {
             var allPlayers = await this.mainService.GetPlayersAsync();
@@ -48,19 +49,19 @@ namespace Server.Hubs
             // select all players except the requested one
             // requested player should not be included in the result
             allPlayers = allPlayers.Where(name => name.PlayerName != requestedPlayerName);
-            //await base.Clients.All.SendAsync("ReceivePlayersAsync", allPlayers);
-            await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+            await Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
         }
 
         /// <summary>
         /// Adds a new player to the list of players, send all players to the clients, send all games and the new player instance to the caller.
         /// </summary>
         /// <param name="nameForNewPlayer">The name for the new player.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         public async Task AddPlayer(string nameForNewPlayer)
         {
             Player newPlayer = new Player(nameForNewPlayer) { ConnectionId = Context.ConnectionId };
 
-            var allPlayers = await mainService.GetPlayersAsync();
+            var allPlayers = await this.mainService.GetPlayersAsync();
             bool playerExists = false;
 
             foreach (var player in allPlayers)
@@ -74,22 +75,22 @@ namespace Server.Hubs
 
             if (playerExists)
             {
-                await base.Clients.Caller.SendAsync("DuplicateName");
+                await Clients.Caller.SendAsync("DuplicateName");
                 return;
             }
 
-            await mainService.AddPlayerAsync(newPlayer);
-            await base.Clients.Caller.SendAsync("ReturnPlayerInstance", newPlayer);
+            await this.mainService.AddPlayerAsync(newPlayer);
+            await Clients.Caller.SendAsync("ReturnPlayerInstance", newPlayer);
 
-
-            await base.Clients.Caller.SendAsync("ReceiveGames", await this.mainService.GetSimpleGameInformationListAsync());
-            await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+            await Clients.Caller.SendAsync("ReceiveGames", await this.mainService.GetSimpleGameInformationListAsync());
+            await Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
         }
 
         /// <summary>
         /// Adds the new game request to the list of game requests and send the request to the desired player.
         /// </summary>
         /// <param name="gameRequest">The game request.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         public async Task AddGameRequest(GameRequest gameRequest)
         {
             var list = await this.mainService.GetPlayersAsync();
@@ -98,15 +99,12 @@ namespace Server.Hubs
             if (player != null)
             {
                 // wenn der Enemy schon ein request von wem anderen hat, schicken wir Statusnachricht an den Caller
-
                 var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy == gameRequest.Enemy || request.Enemy == gameRequest.RequestingPlayer)
             && (request.RequestingPlayer == gameRequest.Enemy || request.RequestingPlayer == gameRequest.RequestingPlayer));
 
                 if (existingRequest == null)
                 {
-                    var request = await this.mainService.AddGameRequestAsync(gameRequest);//(new GameRequest(gameRequest.Enemy, gameRequest.RequestPlayer));
-
-                    // geht das ? XDDDDDDDDDDDDDDDDDD
+                    var request = await this.mainService.AddGameRequestAsync(gameRequest);
 
                     var task = Task.Run(() =>
                     {
@@ -123,7 +121,7 @@ namespace Server.Hubs
                         };
                     });
 
-                    await base.Clients.Client(player.ConnectionId).SendAsync("GameRequested", gameRequest);
+                    await Clients.Client(player.ConnectionId).SendAsync("GameRequested", gameRequest);
                 }
             }
         }
@@ -132,7 +130,8 @@ namespace Server.Hubs
         /// Declines or accepts the game request and sends a decline message or various game data to different clients.
         /// </summary>
         /// <param name="id">The game request identifier.</param>
-        /// <param name="accept">if set to <c>true</c> [accept].</param>
+        /// <param name="accept">If set to <c>true</c> [accept].</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         public async Task DeclineOrAcceptRequest(int id, bool accept)
         {
             var requests = new List<GameRequest>(await this.mainService.GetGameRequestsAsync());
@@ -142,29 +141,26 @@ namespace Server.Hubs
             {
                 if (!accept)
                 {
-                    //existingRequest.Declined = true;
-                    await base.Clients.Client(existingRequest.RequestingPlayer.ConnectionId).SendAsync("StatusMessage", $"{existingRequest.Enemy.PlayerName} has declined the request.");
+                    // existingRequest.Declined = true;
+                    await Clients.Client(existingRequest.RequestingPlayer.ConnectionId).SendAsync("StatusMessage", $"{existingRequest.Enemy.PlayerName} has declined the request.");
                     await this.mainService.RemoveRequestAsync(existingRequest, false);
                 }
                 else
                 {
-                    //existingRequest.Accepted = true;
-                    // create game here
-
+                    // existingRequest.Accepted = true;
                     var game = new Game(existingRequest.RequestingPlayer, existingRequest.Enemy);
                     await this.mainService.RemoveRequestAsync(existingRequest, true);
 
                     await this.mainService.AddGameAsync(game);
 
-
-                    await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+                    await Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
 
                     var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
-                    await base.Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
+                    await Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
 
-                    var gameStatus = CreateNewGameStatus(game, true);
+                    var gameStatus = this.CreateNewGameStatus(game, true);
 
-                    await base.Clients.Clients(existingRequest.RequestingPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
+                    await Clients.Clients(existingRequest.RequestingPlayer.ConnectionId, existingRequest.Enemy.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
             }
         }
@@ -173,6 +169,7 @@ namespace Server.Hubs
         /// Updates the game status after a move.
         /// </summary>
         /// <param name="update">The GameStatus to update.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         public async Task UpdateGameStatus(GameStatus update)
         {
             var games = new List<Game>(await this.mainService.GetGamesAsync());
@@ -196,6 +193,7 @@ namespace Server.Hubs
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="enemyId">The enemy identifier.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         public async Task ReturnToLobby(string id, string enemyId)
         {
             var games = new List<Game>(await this.mainService.GetGamesAsync());
@@ -206,71 +204,14 @@ namespace Server.Hubs
                 {
                     await this.mainService.RemoveGameAsync(game);
 
-                    //await base.Clients.Client(enemyId).SendAsync("StatusMessage", "Enemy left the game, please return to lobby.");
-                    await base.Clients.Client(enemyId).SendAsync("EnemyLeftGame");
-
+                    // await base.Clients.Client(enemyId).SendAsync("StatusMessage", "Enemy left the game, please return to lobby.");
+                    await Clients.Client(enemyId).SendAsync("EnemyLeftGame");
 
                     var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
-                    await base.Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
-                    await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+                    await Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
+                    await Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
                 }
             }
-        }
-
-        /// <summary>
-        /// Updates the game after a move and sends the game status to concerned clients.
-        /// </summary>
-        /// <param name="game">The game.</param>
-        /// <param name="updatedPosition">The updated position.</param>
-        /// <param name="player">The player.</param>
-        private async Task UpdatePlayerSpecificGameStatus(Game game, int updatedPosition, Player player)
-        {
-            if (game.IsMoveValid(updatedPosition, player))
-            {
-                var gameFinished = game.MakeMove(updatedPosition, player);
-
-                if (gameFinished)
-                {
-                    await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
-                    var oldGameStatus = CreateNewGameStatus(game, false, updatedPosition);
-
-                    await base.Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", oldGameStatus);
-                    await Task.Delay(5000);
-
-                    game.NewGameSetup();
-                    var gameStatus = CreateNewGameStatus(game, true, updatedPosition);
-
-                    await base.Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("GameStatus", gameStatus);
-                }
-                else
-                {
-                    var gameStatus = CreateNewGameStatus(game, false, updatedPosition);
-
-                    await base.Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", gameStatus);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates a new game status.
-        /// </summary>
-        /// <param name="game">The game instance.</param>
-        /// <param name="isNewGame">if set to <c>true</c> [is new game].</param>
-        /// <param name="updatedPosition">The updated position in the field.</param>
-        /// <returns></returns>
-        private GameStatus CreateNewGameStatus(Game game, bool isNewGame, int updatedPosition = -1)
-        {
-            var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId, game.PlayerOne.Wins, game.PlayerTwo.Wins)
-            {
-                UpdatedPosition = updatedPosition
-            };
-
-            if (isNewGame)
-            {
-                gameStatus.IsNewGame = true;
-            }
-
-            return gameStatus;
         }
 
         /// <summary>
@@ -287,11 +228,12 @@ namespace Server.Hubs
         /// <summary>
         /// Called when a connection with the hub is terminated, removes the player and sends the list to all clients.
         /// </summary>
-        /// <param name="exception"></param>
+        /// <param name="exception">The exception that occurred.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             var id = Context.ConnectionId;
-            var allPlayers = await mainService.GetPlayersAsync();
+            var allPlayers = await this.mainService.GetPlayersAsync();
             var disconnectedPlayer = allPlayers.FirstOrDefault(player => player.ConnectionId == id);
 
             var games = new List<Game>(await this.mainService.GetGamesAsync());
@@ -305,7 +247,64 @@ namespace Server.Hubs
             }
 
             await this.mainService.RemovePlayerAsync(disconnectedPlayer);
-            await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+            await Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
+        }
+
+        /// <summary>
+        /// Updates the game after a move and sends the game status to concerned clients.
+        /// </summary>
+        /// <param name="game">The game instance.</param>
+        /// <param name="updatedPosition">The updated position.</param>
+        /// <param name="player">The player instance.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
+        private async Task UpdatePlayerSpecificGameStatus(Game game, int updatedPosition, Player player)
+        {
+            if (game.IsMoveValid(updatedPosition, player))
+            {
+                var gameFinished = game.MakeMove(updatedPosition, player);
+
+                if (gameFinished)
+                {
+                    await Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
+                    var oldGameStatus = this.CreateNewGameStatus(game, false, updatedPosition);
+
+                    await Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", oldGameStatus);
+                    await Task.Delay(5000);
+
+                    game.NewGameSetup();
+                    var gameStatus = this.CreateNewGameStatus(game, true, updatedPosition);
+
+                    await Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("GameStatus", gameStatus);
+                }
+                else
+                {
+                    var gameStatus = this.CreateNewGameStatus(game, false, updatedPosition);
+
+                    await Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", gameStatus);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a new game status.
+        /// </summary>
+        /// <param name="game">The game instance.</param>
+        /// <param name="isNewGame">If set to <c>true</c> [is new game].</param>
+        /// <param name="updatedPosition">The updated position in the field.</param>
+        /// <returns>The new game status.</returns>
+        private GameStatus CreateNewGameStatus(Game game, bool isNewGame, int updatedPosition = -1)
+        {
+            var gameStatus = new GameStatus(game.CurrentGameStatus, game.CurrentPlayer.ConnectionId, game.CurrentPlayer.Marker, game.GameId, game.PlayerOne.Wins, game.PlayerTwo.Wins)
+            {
+                UpdatedPosition = updatedPosition
+            };
+
+            if (isNewGame)
+            {
+                gameStatus.IsNewGame = true;
+            }
+
+            return gameStatus;
         }
     }
 }
