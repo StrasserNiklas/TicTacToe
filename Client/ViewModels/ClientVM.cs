@@ -439,7 +439,7 @@ namespace Client
         private void OnGameStatusReceived(GameStatus status)
         {
             this.logger.LogInformation("[OnGameStatusReceived] GameId: {0}", new object[] { status.GameId });
-
+            
             if (this.CurrentGameStatus == null || status.IsNewGame)
             {
                 if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
