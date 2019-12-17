@@ -1,10 +1,10 @@
 ﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
 
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Server.Models
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     /// <summary>
     /// A win condition is based on the continuous indexes of a TicTacToe game.
     /// Typical TicTacToe-Game: 
@@ -21,6 +21,7 @@ namespace Server.Models
         {
             this.Condition = condition.ToList();
         }
+
         public List<int> Condition { get; set; }
     }
 }

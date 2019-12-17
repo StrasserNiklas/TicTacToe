@@ -6,17 +6,17 @@
 // <summary>This file represents </summary>
 //-----------------------------------------------------------------------
 
-using GameLibrary;
-using Microsoft.AspNetCore.SignalR;
-using Server.Models;
-using Server.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Server.Hubs
 {
+    using GameLibrary;
+    using Microsoft.AspNetCore.SignalR;
+    using Server.Models;
+    using Server.Services;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class GameHub : Hub
     {
         private readonly IMainService mainService;
@@ -65,7 +65,6 @@ namespace Server.Hubs
 
             await base.Clients.Caller.SendAsync("ReceiveGames", await this.mainService.GetSimpleGameInformationListAsync());
             await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
-            //await base.Clients.All.SendAsync("ReceivePlayersAsync", await mainService.GetPlayersAsync());
         }
 
         public async Task AddGameRequest(GameRequest gameRequest)
@@ -89,7 +88,7 @@ namespace Server.Hubs
 
                     var task = Task.Run(() =>
                     {
-                        var aTimer = new System.Timers.Timer(9000) { AutoReset = false } ;
+                        var aTimer = new System.Timers.Timer(9000) { AutoReset = false };
 
                         aTimer.Start();
 
@@ -130,7 +129,7 @@ namespace Server.Hubs
 
                     await this.mainService.AddGameAsync(game);
 
-                    
+
                     await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
 
                     var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
@@ -173,17 +172,14 @@ namespace Server.Hubs
 
                     //await base.Clients.Client(enemyId).SendAsync("StatusMessage", "Enemy left the game, please return to lobby.");
                     await base.Clients.Client(enemyId).SendAsync("EnemyLeftGame");
-                    
+
 
                     var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
                     await base.Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
                     await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
                 }
             }
-
         }
-
-
 
         private async Task UpdatePlayerSpecificGameStatus(Game game, int updatedPosition, Player player)
         {

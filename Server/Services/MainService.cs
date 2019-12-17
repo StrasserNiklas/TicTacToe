@@ -1,19 +1,21 @@
 ﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
 
-using GameLibrary;
-using Microsoft.Extensions.Logging;
-using Server.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Server.Services
 {
+    using GameLibrary;
+    using Microsoft.Extensions.Logging;
+    using Server.Models;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public class MainService : IMainService
     {
         private readonly List<Player> players = new List<Player>();
-        private readonly List<Game> games = new List<Game>(); //{ new Game(new Player("nikalallala"), new Player("felixixixixix")) };
+
+        private readonly List<Game> games = new List<Game>();//{ new Game(new Player("nikalallala"), new Player("felixixixixix")) };
+
         private readonly List<GameRequest> gameRequests = new List<GameRequest>();
+
         private readonly ILogger<MainService> logger;
 
         public MainService(ILogger<MainService> logger)
@@ -71,7 +73,7 @@ namespace Server.Services
 
         public Task<Game> AddGameAsync(Game game)
         {
-            this.logger.LogInformation("[AddGameAsync] PlayerOneName: {0}, PlayerTwoName: {1}", new object[] { game.PlayerOne.PlayerName, game.PlayerTwo.PlayerName } );
+            this.logger.LogInformation("[AddGameAsync] PlayerOneName: {0}, PlayerTwoName: {1}", new object[] { game.PlayerOne.PlayerName, game.PlayerTwo.PlayerName });
             this.games.Add(game);
             return Task.FromResult(game);
         }
@@ -123,4 +125,3 @@ namespace Server.Services
         }
     }
 }
-
