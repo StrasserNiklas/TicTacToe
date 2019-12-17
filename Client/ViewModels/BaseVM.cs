@@ -11,8 +11,15 @@ namespace Client.ViewModels
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
+    /// <summary>
+    /// Represents a base view model.
+    /// </summary>
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
     public class BaseVM : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>

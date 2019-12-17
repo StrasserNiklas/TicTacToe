@@ -29,7 +29,7 @@ namespace Server
         /// Creates the host builder.
         /// </summary>
         /// <param name="args">The command line arguments.</param>
-        /// <returns></returns>
+        /// <returns>The created host builder.</returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

@@ -24,6 +24,10 @@ namespace Client.ViewModels
         /// This field is used to save the player mark.
         /// </summary>
         private int playerMark;
+
+        /// <summary>
+        /// This field is used to save the cell background.
+        /// </summary>
         private Brush cellBackground;
 
         /// <summary>
@@ -54,6 +58,7 @@ namespace Client.ViewModels
             {
                 return this.playerMark;
             }
+
             set 
             {
                 switch (value)
@@ -92,6 +97,7 @@ namespace Client.ViewModels
             {
                 return this.cellBackground;
             }
+
             set 
             { 
                 this.cellBackground = value;

@@ -11,10 +11,17 @@ namespace Server.Models
     using System;
     using System.Collections.Generic;
     using GameLibrary;
-    
 
+    /// <summary>
+    /// Represents a game which contains all the important information for the game.
+    /// </summary>
     public class Game
     {
+        /// <summary>
+        /// This field is used to save the list of win conditions.
+        /// </summary>
+        private readonly List<WinCondition> winConditions;
+
         /// <summary>
         /// This field is used to save player two.
         /// </summary>
@@ -31,11 +38,6 @@ namespace Server.Models
         private Player currentPlayer;
 
         /// <summary>
-        /// This field is used to save the list of win conditions.
-        /// </summary>
-        private readonly List<WinCondition> winConditions;
-
-        /// <summary>
         /// This field is used to save the indexed game.
         /// </summary>
         private int[] indexedGame = new int[9];
@@ -43,22 +45,21 @@ namespace Server.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
         /// </summary>
-        /// <param name="one">The one.</param>
-        /// <param name="two">The two.</param>
+        /// <param name="one">The first player.</param>
+        /// <param name="two">The second player.</param>
         public Game(Player one, Player two)
         {
             this.winConditions = new List<WinCondition>()
             {
-                new WinCondition(0,3,6),
-                new WinCondition(1,4,7),
-                new WinCondition(2,5,8),
-                new WinCondition(0,1,2),
-                new WinCondition(3,4,5),
-                new WinCondition(6,7,8),
-                new WinCondition(0,4,8),
-                new WinCondition(2,4,6)
+                new WinCondition(0, 3, 6),
+                new WinCondition(1, 4, 7),
+                new WinCondition(2, 5, 8),
+                new WinCondition(0, 1, 2),
+                new WinCondition(3, 4, 5),
+                new WinCondition(6, 7, 8),
+                new WinCondition(0, 4, 8),
+                new WinCondition(2, 4, 6)
             };
-
 
             this.playerOne = one;
             this.playerTwo = two;
@@ -80,7 +81,114 @@ namespace Server.Models
         /// </value>
         public int GameId { get; }
 
+        /// <summary>
+        /// Gets or sets the turns in a game.
+        /// </summary>
+        /// <value>
+        /// The turns in a game.
+        /// </value>
         public int Turns { get; set; }
+
+        /// <summary>
+        /// Gets or sets the end message.
+        /// </summary>
+        /// <value>
+        /// The end message.
+        /// </value>
+        public string EndMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current player.
+        /// </summary>
+        /// <value>
+        /// The current player.
+        /// </value>
+        /// <exception cref="ArgumentNullException">CurrentPlayer - The current player can´t be null.</exception>
+        public Player CurrentPlayer
+        {
+            get
+            {
+                return this.currentPlayer;
+            }
+
+            set
+            {
+                this.currentPlayer = value ?? throw new ArgumentNullException(nameof(this.CurrentPlayer), "The current player can´t be null.");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the player one.
+        /// </summary>
+        /// <value>
+        /// The player one.
+        /// </value>
+        /// <exception cref="ArgumentNullException">PlayerOne - Player one can´t be null.</exception>
+        public Player PlayerOne
+        {
+            get
+            {
+                return this.playerOne;
+            }
+
+            set
+            {
+                this.playerOne = value ?? throw new ArgumentNullException(nameof(this.PlayerOne), "Player one can´t be null.");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the player two.
+        /// </summary>
+        /// <value>
+        /// The player two.
+        /// </value>
+        /// <exception cref="ArgumentNullException">PlayerTwo - Player two can´t be null.</exception>
+        public Player PlayerTwo
+        {
+            get
+            {
+                return this.playerTwo;
+            }
+
+            set
+            {
+                this.playerTwo = value ?? throw new ArgumentNullException(nameof(this.PlayerTwo), "Player two can´t be null.");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the game is over.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if game is over; otherwise, <c>false</c>.
+        /// </value>
+        public bool GameOver { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current game status.
+        /// </summary>
+        /// <value>
+        /// The current game status.
+        /// </value>
+        /// <exception cref="ArgumentException">CurrentGameStatus - The indexed game array has to be of length 9.</exception>
+        public int[] CurrentGameStatus
+        {
+            get
+            {
+                return this.indexedGame;
+            }
+
+            set
+            {
+                if (value.Length != 9)
+                {
+                    throw new ArgumentException(nameof(this.CurrentGameStatus), "The indexed game array has to be of length 9.");
+                }
+
+                this.indexedGame = value;
+            }
+        }
 
         /// <summary>
         /// Resets the game and the players status in order for a new game to start.
@@ -149,11 +257,14 @@ namespace Server.Models
             return false;
         }
 
-        private Player GetOtherPlayer(Player player)
-        {
-            return (player == this.PlayerOne) ? this.PlayerTwo : this.PlayerOne;
-        }
-
+        /// <summary>
+        /// Determines whether a given move is valid.
+        /// </summary>
+        /// <param name="updatedPosition">The updated position.</param>
+        /// <param name="player">The player.</param>
+        /// <returns>
+        ///   <c>true</c> if move is valid; otherwise, <c>false</c>.
+        /// </returns>
         public bool IsMoveValid(int updatedPosition, Player player)
         {
             if (updatedPosition < 0 || updatedPosition >= 9)
@@ -174,9 +285,18 @@ namespace Server.Models
             return true;
         }
 
+        /// <summary>
+        /// Makes the game move of the player.
+        /// </summary>
+        /// <param name="updatedPosition">The updated position.</param>
+        /// <param name="player">The player that makes the move.</param>
+        /// <returns>
+        ///     <c>true</c> if game if finished; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Invalid move was tried.</exception>
         public bool MakeMove(int updatedPosition, Player player)
         {
-            if (IsMoveValid(updatedPosition, player))
+            if (this.IsMoveValid(updatedPosition, player))
             {
                 this.CurrentGameStatus[updatedPosition] = this.CurrentPlayer.Marker;
                 this.CurrentPlayer.MarkedPositions.Add(updatedPosition);
@@ -193,102 +313,13 @@ namespace Server.Models
         }
 
         /// <summary>
-        /// Gets or sets the end message.
+        /// Gets the enemy of the given player.
         /// </summary>
-        /// <value>
-        /// The end message.
-        /// </value>
-        public string EndMessage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the current player.
-        /// </summary>
-        /// <value>
-        /// The current player.
-        /// </value>
-        /// <exception cref="ArgumentNullException">CurrentPlayer - The current player can´t be null.</exception>
-        public Player CurrentPlayer
+        /// <param name="player">The given player.</param>
+        /// <returns>The enemy of the given player.</returns>
+        private Player GetOtherPlayer(Player player)
         {
-            get
-            {
-                return this.currentPlayer;
-            }
-            set
-            {
-                this.currentPlayer = value ?? throw new ArgumentNullException(nameof(this.CurrentPlayer), "The current player can´t be null.");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the player one.
-        /// </summary>
-        /// <value>
-        /// The player one.
-        /// </value>
-        /// <exception cref="ArgumentNullException">PlayerOne - Player one can´t be null.</exception>
-        public Player PlayerOne
-        {
-            get
-            {
-                return this.playerOne;
-            }
-
-            set
-            {
-                this.playerOne = value ?? throw new ArgumentNullException(nameof(this.PlayerOne), "Player one can´t be null.");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the player two.
-        /// </summary>
-        /// <value>
-        /// The player two.
-        /// </value>
-        /// <exception cref="ArgumentNullException">PlayerTwo - Player two can´t be null.</exception>
-        public Player PlayerTwo
-        {
-            get
-            {
-                return this.playerTwo;
-            }
-
-            set
-            {
-                this.playerTwo = value ?? throw new ArgumentNullException(nameof(this.PlayerTwo), "Player two can´t be null.");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the game is over.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if game is over; otherwise, <c>false</c>.
-        /// </value>
-        public bool GameOver { get; set; }
-
-        /// <summary>
-        /// Gets or sets the current game status.
-        /// </summary>
-        /// <value>
-        /// The current game status.
-        /// </value>
-        /// <exception cref="ArgumentException">CurrentGameStatus - The indexed game array has to be of length 9.</exception>
-        public int[] CurrentGameStatus
-        {
-            get
-            {
-                return this.indexedGame;
-            }
-            set
-            {
-                if (value.Length != 9)
-                {
-                    throw new ArgumentException(nameof(this.CurrentGameStatus), "The indexed game array has to be of length 9.");
-                }
-
-                this.indexedGame = value;
-            }
+            return (player == this.PlayerOne) ? this.PlayerTwo : this.PlayerOne;
         }
     }
 }

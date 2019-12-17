@@ -23,43 +23,98 @@ namespace Client
     using GameLibrary;
     using Microsoft.AspNetCore.SignalR.Client;
     using Microsoft.Extensions.Logging;
-    
+
+    /// <summary>
+    /// Represents the main view model for the client game.
+    /// </summary>
+    /// <seealso cref="Client.ViewModels.BaseVM" />
     public class ClientVM : BaseVM
     {
+        /// <summary>
+        /// This field is used to save the URL service.
+        /// </summary>
         private readonly UrlService urlService;
 
-        private HubConnection hubConnection;
-
-        private ObservableCollection<Player> playerList;
-
-        private ObservableCollection<SimpleGameInformation> gameList;
-
-        private Player selectedPlayer;
-
-        private bool gameIsActive;
-
-        private PlayerVM clientPlayer;
-
-        private bool clientConnected;
-
-        private bool gameWasRequested;
-
-        private string statusMessage;
-
-        private string activePlayerName = string.Empty;
-
-        private Player requestingorEnemyPlayer;
-
-        private bool myTurn = false;
-
+        /// <summary>
+        /// This field is used to save the logger.
+        /// </summary>
         private readonly ILogger<ClientVM> logger;
 
+        /// <summary>
+        /// This field is used to save the hub connection.
+        /// </summary>
+        private HubConnection hubConnection;
+
+        /// <summary>
+        /// This field is used to save the player list.
+        /// </summary>
+        private ObservableCollection<Player> playerList;
+
+        /// <summary>
+        /// This field is used to save the game list.
+        /// </summary>
+        private ObservableCollection<SimpleGameInformation> gameList;
+
+        /// <summary>
+        /// This field is used to save whether the game is active.
+        /// </summary>
+        private bool gameIsActive;
+
+        /// <summary>
+        /// This field is used to save the client player.
+        /// </summary>
+        private PlayerVM clientPlayer;
+
+        /// <summary>
+        /// This field is used to save the client connected.
+        /// </summary>
+        private bool clientConnected;
+
+        /// <summary>
+        /// This field is used to save whether the game was requested.
+        /// </summary>
+        private bool gameWasRequested;
+
+        /// <summary>
+        /// This field is used to save the status message.
+        /// </summary>
+        private string statusMessage;
+
+        /// <summary>
+        /// This field is used to save the active player name.
+        /// </summary>
+        private string activePlayerName = string.Empty;
+
+        /// <summary>
+        /// This field is used to save the requesting or the enemy player.
+        /// </summary>
+        private Player requestingorEnemyPlayer;
+
+        /// <summary>
+        /// This field is used to indicate whether it is clients turn.
+        /// </summary>
+        private bool myTurn = false;
+
+        /// <summary>
+        /// This field is used to save the first player.
+        /// </summary>
         private Player playerOne;
 
+        /// <summary>
+        /// This field is used to save the second player.
+        /// </summary>
         private Player playerTwo;
 
+        /// <summary>
+        /// This field is used to save the timer.
+        /// </summary>
         private System.Timers.Timer timer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientVM"/> class.
+        /// </summary>
+        /// <param name="urlService">The URL service.</param>
+        /// <param name="logger">The logger.</param>
         public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
         {
             this.logger = logger;
@@ -82,27 +137,47 @@ namespace Client
             this.SetupCommand.Execute(new object());
         }
 
+        /// <summary>
+        /// Gets the setup command.
+        /// </summary>
+        /// <value>
+        /// The setup command.
+        /// </value>
         public ICommand SetupCommand { get; }
 
         /// <summary>
+        /// Gets the player click command.
         /// This command is used when a game element button is clicked.
         /// Checks if the player is allowed to place his sign and sends the information to the server.
         /// </summary>
+        /// <value>
+        /// The player click command.
+        /// </value>
         public ICommand PlayerClick { get; }
 
         /// <summary>
+        /// Gets the accept command.
         /// When the client accepts a game request, a correspondent message is sent to the server.
         /// </summary>
+        /// <value>
+        /// The accept command.
+        /// </value>
         public ICommand AcceptCommand { get; }
 
         /// <summary>
+        /// Gets the decline command.
         /// When the client declines a game request, a correspondent message is sent to the server.
-        /// The requesting player is set to default (null) and the game request bool is set to false.
+        /// The requesting player is set to default (null) and the game request boolean is set to false.
         /// </summary>
+        /// <value>
+        /// The decline command.
+        /// </value>
         public ICommand DeclineCommand { get; }
 
         /// <summary>
         /// Gets the return to lobby command.
+        /// This command is used when the player using the client clicks on the return to lobby button.
+        /// The game on the client is reset and a request will be sent to the server containing the id of the client player and the id of the enemy player.
         /// </summary>
         /// <value>
         /// The return to lobby command.
@@ -110,11 +185,23 @@ namespace Client
         public ICommand ReturnToLobbyCommand { get; }
 
         /// <summary>
+        /// Gets the request game command.
         /// This command is used when the player using the client requests a game with another online player.
         /// A game request will be sent to the server containing the id of the enemy player and the id of the client player.
         /// </summary>
+        /// <value>
+        /// The request game command.
+        /// </value>
         public ICommand RequestGameCommand { get; }
 
+        /// <summary>
+        /// Gets the connect command.
+        /// This command is used when the player types in his username and connects to the server.
+        /// A request will be sent to the server containing the client player name.
+        /// </summary>
+        /// <value>
+        /// The connect command.
+        /// </value>
         public ICommand ConnectCommand { get; }
 
         /// <summary>
@@ -130,6 +217,7 @@ namespace Client
             {
                 return this.requestingorEnemyPlayer;
             }
+
             set
             {
                 this.requestingorEnemyPlayer = value;
@@ -173,6 +261,7 @@ namespace Client
             {
                 return this.playerOne;
             }
+
             set
             {
                 this.playerOne = value;
@@ -192,6 +281,7 @@ namespace Client
             {
                 return this.playerTwo;
             }
+
             set
             {
                 this.playerTwo = value;
@@ -224,12 +314,19 @@ namespace Client
         /// E.g. a player has declined a game request.
         /// Disappears from the client after a set amount of time.
         /// </summary>
+        /// <value>
+        /// The status message.
+        /// </value>
         public string StatusMessage
         {
-            get { return statusMessage; }
+            get
+            {
+                return this.statusMessage;
+            }
+
             set
             {
-                statusMessage = value;
+                this.statusMessage = value;
                 this.FireOnPropertyChanged();
 
                 if (value != string.Empty)
@@ -244,15 +341,19 @@ namespace Client
         }
 
         /// <summary>
-        /// Gets or sets a value whether a game with the client has been requested by another player.
+        /// Gets or sets a value indicating whether a game with the client has been requested by another player.
         /// Needed for UI representation.
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if game was requested; otherwise, <c>false</c>.
+        /// </value>
         public bool GameWasRequested
         {
             get
             {
                 return this.gameWasRequested;
             }
+
             set
             {
                 this.gameWasRequested = value;
@@ -261,14 +362,18 @@ namespace Client
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the player using the client connected to the server.
+        /// Gets or sets a value indicating whether the player using the client is connected to the server.
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if client is connected; otherwise, <c>false</c>.
+        /// </value>
         public bool ClientConnected
         {
             get
             {
                 return this.clientConnected;
             }
+
             set
             {
                 this.clientConnected = value;
@@ -279,27 +384,36 @@ namespace Client
         /// <summary>
         /// Gets or sets the player that is using the client.
         /// </summary>
+        /// <value>
+        /// The client player.
+        /// </value>
+        /// <exception cref="ArgumentNullException">ClientPlayer - The client player can´t be null.</exception>
         public PlayerVM ClientPlayer
         {
             get
             {
-                return clientPlayer;
+                return this.clientPlayer;
             }
+
             set
             {
-                clientPlayer = value ?? throw new ArgumentNullException(nameof(this.ClientPlayer), "The client player can´t be null.");
+                this.clientPlayer = value ?? throw new ArgumentNullException(nameof(this.ClientPlayer), "The client player can´t be null.");
             }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether a game with another player is currently in progress.
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if a game with another player is currently in progress; otherwise, <c>false</c>.
+        /// </value>
         public bool GameIsActive
         {
             get
             {
                 return this.gameIsActive;
             }
+
             set
             {
                 this.gameIsActive = value;
@@ -310,12 +424,16 @@ namespace Client
         /// <summary>
         /// Gets or sets the list of currently available players.
         /// </summary>
+        /// <value>
+        /// The list of currently available players.
+        /// </value>
         public ObservableCollection<Player> PlayerList
         {
             get
             {
                 return this.playerList;
             }
+
             set
             {
                 this.playerList = value;
@@ -324,14 +442,18 @@ namespace Client
         }
 
         /// <summary>
-        /// Gets or sets the list of currently online players.
+        /// Gets or sets the list of players currently in a game.
         /// </summary>
+        /// <value>
+        /// The list of players currently in a game.
+        /// </value>
         public ObservableCollection<SimpleGameInformation> GameList
         {
             get
             {
                 return this.gameList;
             }
+
             set
             {
                 this.gameList = value;
@@ -342,17 +464,10 @@ namespace Client
         /// <summary>
         /// Gets or sets the currently selected player in the online player list.
         /// </summary>
-        public Player SelectedPlayer
-        {
-            get
-            {
-                return this.selectedPlayer;
-            }
-            set
-            {
-                selectedPlayer = value;
-            }
-        }
+        /// <value>
+        /// The currently selected player in the online player list.
+        /// </value>
+        public Player SelectedPlayer { get; set; }
 
         /// <summary>
         /// Gets the game representation.
@@ -376,16 +491,20 @@ namespace Client
         /// <summary>
         /// Closes the connection asynchronously.
         /// </summary>
-        /// <returns></returns>
-        private Task CloseConnectionAsync() => hubConnection?.DisposeAsync() ?? Task.CompletedTask;
+        /// <returns>A Task that represents the asynchronous method.</returns>
+        private Task CloseConnectionAsync() => this.hubConnection?.DisposeAsync() ?? Task.CompletedTask;
 
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task Setup()
         {
             try
             {
-                await CloseConnectionAsync();
+                await this.CloseConnectionAsync();
                 this.hubConnection = new HubConnectionBuilder()
-                    .WithUrl(urlService.LobbyAddress)
+                    .WithUrl(this.urlService.LobbyAddress)
                     .Build();
 
                 this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
@@ -418,6 +537,10 @@ namespace Client
             this.ClientPlayer.Player = player;
         }
 
+        /// <summary>
+        /// Called when the client receives a list of currently running games.
+        /// </summary>
+        /// <param name="games">The games.</param>
         private void OnGamesReceived(List<SimpleGameInformation> games)
         {
             this.GameList = new ObservableCollection<SimpleGameInformation>(games);
@@ -459,7 +582,7 @@ namespace Client
             this.myTurn = true;
             this.timer = new System.Timers.Timer(10000) { AutoReset = false };
             this.timer.Start();
-            this.timer.Elapsed += Timer_Elapsed;
+            this.timer.Elapsed += this.Timer_Elapsed;
             this.CurrentGameStatus = status;
 
             if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
@@ -488,15 +611,15 @@ namespace Client
 
             if (status.IndexedGame.All<int>(x => x == 0))
             {
-                ResetField();
+                this.ResetField();
             }
 
-            PlayerOne.Wins = status.WinsPlayerOne;
-            PlayerTwo.Wins = status.WinsPlayerTwo;
+            this.PlayerOne.Wins = status.WinsPlayerOne;
+            this.PlayerTwo.Wins = status.WinsPlayerTwo;
         }
 
         /// <summary>
-        /// Handles the Elapsed event of the Timer control. Is responsible for the timeout message if a client player is afk in a game.
+        /// Handles the Elapsed event of the Timer control. Is responsible for the timeout message if a client player is AFK in a game.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Timers.ElapsedEventArgs"/> instance containing the event data.</param>
@@ -590,6 +713,11 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// This command is used when the player types in his username and connects to the server.
+        /// A request will be sent to the server containing the client player name.
+        /// </summary>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeConnectCommand()
         {
             this.logger.LogInformation("[ComputeConnectCommand]");
@@ -600,7 +728,7 @@ namespace Client
                 {
                     this.ClientConnected = true;
 
-                    await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
+                    await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
                 }
                 catch (HttpRequestException)
                 {
@@ -613,6 +741,10 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// When the client accepts a game request, a correspondent message is sent to the server.
+        /// </summary>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeAcceptCommand()
         {
             this.logger.LogInformation("[ComputeAcceptCommand]");
@@ -622,13 +754,21 @@ namespace Client
             {
                 await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
             }
+            catch (HttpRequestException)
+            {
+                this.StatusMessage = "Unable to reach server. Please try again later.";
+            }
             catch (Exception)
             {
-
-                throw;
+                this.statusMessage = "An unknown error occured. Please try again later.";
             }
         }
 
+        /// <summary>
+        /// When the client declines a game request, a correspondent message is sent to the server.
+        /// The requesting player is set to default (null) and the game request boolean is set to false.
+        /// </summary>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeDeclineCommand()
         {
             this.logger.LogInformation("[ComputeDeclineCommand]");
@@ -651,6 +791,11 @@ namespace Client
             this.RequestID = 0;
         }
 
+        /// <summary>
+        /// This command is used when the player using the client clicks on the return to lobby button.
+        /// The game on the client is reset and a request will be sent to the server containing the id of the client player and the id of the enemy player.
+        /// </summary>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeReturnToLobbyCommand()
         {
             this.timer.Enabled = false;
@@ -680,6 +825,12 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// This command is used when a game element button is clicked.
+        /// Checks if the player is allowed to place his sign and sends the information to the server.
+        /// </summary>
+        /// <param name="cell">The cell that was clicked.</param>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputePlayerClick(GameCellVM cell)
         {
             this.timer.Stop();
@@ -690,7 +841,7 @@ namespace Client
             {
                 if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.ConnectionId && this.myTurn)
                 {
-                    cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker; //this.ClientPlayer.Player.Marker;
+                    cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker; // this.ClientPlayer.Player.Marker;
                     this.myTurn = false;
 
                     var status = new GameStatus
@@ -715,11 +866,16 @@ namespace Client
                         this.StatusMessage = "An unknown error occured. Please try again later.";
                     }
 
-                    //this.gameClientService.UpdateGameStatusAsync(status);
+                    // this.gameClientService.UpdateGameStatusAsync(status);
                 }
             }
         }
 
+        /// <summary>
+        /// This command is used when the player using the client requests a game with another online player.
+        /// A game request will be sent to the server containing the id of the enemy player and the id of the client player.
+        /// </summary>
+        /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeRequestGameCommand()
         {
             this.logger.LogInformation("[ComputeRequestGameCommand]");

@@ -31,7 +31,7 @@ namespace Server
         /// <param name="configuration">The configuration.</param>
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Server
         public IConfiguration Configuration { get; }
 
         /// <summary>
-        /// // This method gets called by the runtime. Adds the required services.
+        /// This method gets called by the runtime. Adds the required services.
         /// </summary>
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
@@ -58,7 +58,9 @@ namespace Server
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
                 {
                     Title = "TicTacToe Service API",
                     Version = "v1",

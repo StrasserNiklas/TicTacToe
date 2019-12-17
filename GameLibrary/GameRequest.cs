@@ -12,7 +12,7 @@ namespace GameLibrary
     using Newtonsoft.Json;
 
     /// <summary>
-    /// This class respresents a game request in a game. 
+    /// This class represents a game request in a game. 
     /// It contains two players, one who sent the request, another the request is addressed to, 
     /// information whether the request has been accepted or not and an unique request id.
     /// </summary>
@@ -41,28 +41,43 @@ namespace GameLibrary
         }
 
         /// <summary>
-        /// A value indicating if a game request has been accepted.
+        /// Gets or sets a value indicating whether a game request has been accepted.
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if accepted; otherwise, <c>false</c>.
+        /// </value>
         public bool Accepted { get; set; }
 
         /// <summary>
-        /// A value indicating if a game has been declined.
+        /// Gets or sets a value indicating whether a game request has been declined.
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if declined; otherwise, <c>false</c>.
+        /// </value>
         public bool Declined { get; set; }
 
         /// <summary>
-        /// The id of the request if chosen randomly and can´t be set afterwards.
+        /// Gets or sets the id of the request, which is chosen randomly and can´t be set afterwards.
         /// </summary>
+        /// <value>
+        /// The id of the request.
+        /// </value>
         public int RequestID { get; set; }
 
         /// <summary>
-        /// The player that has sent/started the request
+        /// Gets or sets the player that has sent/started the request.
         /// </summary>
+        /// <value>
+        /// The requesting player.
+        /// </value>
         public Player RequestingPlayer { get; set; }
 
         /// <summary>
-        /// The player the request is sent to.
+        /// Gets or sets the player the request is sent to.
         /// </summary>
+        /// <value>
+        /// The player the request is sent to.
+        /// </value>
         public Player Enemy { get; set; }
     }
 }

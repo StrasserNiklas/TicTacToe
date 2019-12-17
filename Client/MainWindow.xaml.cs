@@ -16,7 +16,7 @@ namespace Client
     using Serilog;
 
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.XAML.
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -31,7 +31,7 @@ namespace Client
         /// </summary>
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             IHost host = Host.CreateDefaultBuilder()
                 .ConfigureLogging(logging =>
