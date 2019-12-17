@@ -1,4 +1,10 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="ActionVisitor.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents </summary>
+//-----------------------------------------------------------------------
 
 using GameLibrary;
 using Microsoft.AspNetCore.SignalR;
