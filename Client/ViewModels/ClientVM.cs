@@ -124,8 +124,9 @@ namespace Client
             this.ClientConnected = false;
             this.GameIsActive = false;
             this.GameWasRequested = false;
-            this.CurrentGameId = 0;
 
+            // object as a command parameter is needed because:
+            // when a xaml object calls a command, the object needs to be relayed to the command method.
             this.SetupCommand = new Command(async obj => await this.Setup());
             this.PlayerClick = new Command(async obj => await this.ComputePlayerClick((GameCellVM)obj));
             this.AcceptCommand = new Command(async obj => await this.ComputeAcceptCommand());
@@ -134,7 +135,7 @@ namespace Client
             this.ReturnToLobbyCommand = new Command(async obj => await this.ComputeReturnToLobbyCommand());
             this.ConnectCommand = new Command(async obj => await this.ComputeConnectCommand());
 
-            this.SetupCommand.Execute(new object());
+            this.SetupCommand.Execute(new object()); 
         }
 
         /// <summary>
@@ -224,14 +225,6 @@ namespace Client
                 this.FireOnPropertyChanged();
             }
         }
-
-        /// <summary>
-        /// Gets the current game identifier.
-        /// </summary>
-        /// <value>
-        /// The current game identifier.
-        /// </value>
-        public int CurrentGameId { get; private set; }
 
         /// <summary>
         /// Gets or sets the current game status.
@@ -865,8 +858,6 @@ namespace Client
                     {
                         this.StatusMessage = "An unknown error occured. Please try again later.";
                     }
-
-                    // this.gameClientService.UpdateGameStatusAsync(status);
                 }
             }
         }
