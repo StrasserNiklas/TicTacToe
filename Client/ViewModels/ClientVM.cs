@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -48,15 +49,18 @@ namespace Client
             this.GameWasRequested = false;
             this.CurrentGameId = 0;
 
-            this.Setup();
-
+            this.SetupCommand = new Command(async obj => await this.Setup());
             this.PlayerClick = new Command(async obj => await this.ComputePlayerClick((GameCellVM)obj));
             this.AcceptCommand = new Command(async obj => await this.ComputeAcceptCommand());
             this.RequestGameCommand = new Command(async obj => await this.ComputeRequestGameCommand());
             this.DeclineCommand = new Command(async obj => await this.ComputeDeclineCommand());
             this.ReturnToLobbyCommand = new Command(async obj => await this.ComputeReturnToLobbyCommand());
             this.ConnectCommand = new Command(async obj => await this.ComputeConnectCommand());
+
+            this.SetupCommand.Execute(new object());
         }
+
+        public ICommand SetupCommand { get; }
 
         /// <summary>
         /// This command is used when a game element button is clicked.
@@ -355,22 +359,32 @@ namespace Client
 
         private async Task Setup()
         {
-            await CloseConnectionAsync();
-            this.hubConnection = new HubConnectionBuilder()
-                .WithUrl(urlService.LobbyAddress)
-                .Build();
+            try
+            {
+                await CloseConnectionAsync();
+                this.hubConnection = new HubConnectionBuilder()
+                    .WithUrl(urlService.LobbyAddress)
+                    .Build();
 
-            this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
-            this.hubConnection.On<List<SimpleGameInformation>>("ReceiveGames", this.OnGamesReceived);
-            this.hubConnection.On<GameRequest>("GameRequested", this.OnGameRequestReceived);
-            this.hubConnection.On<Player>("ReturnPlayerInstance", this.OnClientPlayerInstanceReturned);
-            this.hubConnection.On<string>("StatusMessage", this.OnStatusMessageReceived);
-            this.hubConnection.On<GameStatus>("GameStatus", this.OnGameStatusReceived);
-            this.hubConnection.On("EnemyLeftGame", this.OnEnemyLeftGame);
-            this.hubConnection.On("DuplicateName", this.OnDuplicateName);
+                this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
+                this.hubConnection.On<List<SimpleGameInformation>>("ReceiveGames", this.OnGamesReceived);
+                this.hubConnection.On<GameRequest>("GameRequested", this.OnGameRequestReceived);
+                this.hubConnection.On<Player>("ReturnPlayerInstance", this.OnClientPlayerInstanceReturned);
+                this.hubConnection.On<string>("StatusMessage", this.OnStatusMessageReceived);
+                this.hubConnection.On<GameStatus>("GameStatus", this.OnGameStatusReceived);
+                this.hubConnection.On("EnemyLeftGame", this.OnEnemyLeftGame);
+                this.hubConnection.On("DuplicateName", this.OnDuplicateName);
 
-            await this.hubConnection.StartAsync();
-
+                await this.hubConnection.StartAsync();
+            }
+            catch (HttpRequestException)
+            {
+                this.StatusMessage = "Unable to connect to server.";
+            }
+            catch (Exception)
+            {
+                this.statusMessage = "An unknown error occured. Please try again later.";
+            }
         }
 
         /// <summary>
@@ -566,10 +580,13 @@ namespace Client
 
                     await this.hubConnection.SendAsync("AddPlayer", clientPlayer.PlayerName);
                 }
-                catch
+                catch (HttpRequestException)
                 {
                     this.StatusMessage = "Unable to connect to server.";
-                    //MessageBox.Show("Unable to connect to server.", "Error", MessageBoxButton.OK, MessageBoxImage.Error); //hm?
+                }
+                catch (Exception)
+                {
+                    this.statusMessage = "An unknown error occured. Please try again later.";
                 }
             }
 
@@ -579,7 +596,16 @@ namespace Client
         {
             this.logger.LogInformation("[ComputeAcceptCommand]");
             this.GameWasRequested = false;
-            await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
+            
+            try
+            {
+                await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         private async Task ComputeDeclineCommand()
@@ -587,7 +613,20 @@ namespace Client
             this.logger.LogInformation("[ComputeDeclineCommand]");
             this.GameWasRequested = false;
             this.RequestingOrEnemyPlayer = default;
-            await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, false);
+
+            try
+            {
+                await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, false);
+            }
+            catch (HttpRequestException)
+            {
+                this.StatusMessage = "Unable to reach server. Please try again later.";
+            }
+            catch (Exception)
+            {
+                this.statusMessage = "An unknown error occured. Please try again later.";
+            }
+
             this.RequestID = 0;
         }
 
@@ -606,7 +645,18 @@ namespace Client
                 this.ResetField();
             }));
 
-            await this.hubConnection.SendAsync("ReturnToLobby", this.ClientPlayer.Player.ConnectionId, this.RequestingOrEnemyPlayer.ConnectionId);
+            try
+            {
+                await this.hubConnection.SendAsync("ReturnToLobby", this.ClientPlayer.Player.ConnectionId, this.RequestingOrEnemyPlayer.ConnectionId);
+            }
+            catch (HttpRequestException)
+            {
+                this.StatusMessage = "Unable to reach server. Please try again later.";
+            }
+            catch (Exception)
+            {
+                this.statusMessage = "An unknown error occured. Please try again later.";
+            }
         }
 
         private async Task ComputePlayerClick(GameCellVM cell)
@@ -631,7 +681,18 @@ namespace Client
 
                     this.ActivePlayerName = this.RequestingOrEnemyPlayer.PlayerName;
 
-                    await this.hubConnection.SendAsync("UpdateGameStatus", status);
+                    try
+                    {
+                        await this.hubConnection.SendAsync("UpdateGameStatus", status);
+                    }
+                    catch (HttpRequestException)
+                    {
+                        this.StatusMessage = "Unable to reach server. Please try again later.";
+                    }
+                    catch (Exception)
+                    {
+                        this.StatusMessage = "An unknown error occured. Please try again later.";
+                    }
 
                     //this.gameClientService.UpdateGameStatusAsync(status);
                 }
@@ -647,8 +708,19 @@ namespace Client
             if (this.SelectedPlayer != null && !this.gameIsActive)
             {
                 this.RequestingOrEnemyPlayer = this.SelectedPlayer;
-                await this.hubConnection.SendAsync("AddGameRequest", new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
-                //this.gameClientService.PostGameRequest(new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
+
+                try
+                {
+                    await this.hubConnection.SendAsync("AddGameRequest", new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
+                }
+                catch (HttpRequestException)
+                {
+                    this.StatusMessage = "Unable to reach server. Please try again later.";
+                }
+                catch (Exception)
+                {
+                    this.statusMessage = "An unknown error occured. Please try again later.";
+                }
             }
         }
     }

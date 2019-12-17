@@ -233,7 +233,6 @@ namespace Server.Hubs
             var allPlayers = await mainService.GetPlayersAsync();
             var disconnectedPlayer = allPlayers.FirstOrDefault(player => player.ConnectionId == id);
 
-            //TODO !!!!! do this in main service
             var games = new List<Game>(await this.mainService.GetGamesAsync());
 
             foreach (var game in games)
@@ -243,7 +242,6 @@ namespace Server.Hubs
                     await this.mainService.RemoveGameAsync(game);
                 }
             }
-
 
             await this.mainService.RemovePlayerAsync(disconnectedPlayer);
             await base.Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());

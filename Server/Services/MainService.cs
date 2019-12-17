@@ -85,6 +85,8 @@ namespace Server.Services
 
         public Task<IEnumerable<Player>> GetPlayersNotInGameAsync()
         {
+            this.logger.LogInformation("[GetPlayersNotInGameAsync]");
+
             List<Player> playerList = new List<Player>();
 
             if (this.games.Count == 0)
@@ -108,6 +110,8 @@ namespace Server.Services
 
         public Task<List<SimpleGameInformation>> GetSimpleGameInformationListAsync()
         {
+            this.logger.LogInformation("[GetSimpleGameInformationListAsync]");
+
             List<SimpleGameInformation> simpleGameInformation = new List<SimpleGameInformation>();
 
             foreach (var item in this.games)
@@ -115,7 +119,6 @@ namespace Server.Services
                 simpleGameInformation.Add(new SimpleGameInformation(item.PlayerOne.PlayerName, item.PlayerTwo.PlayerName));
             }
 
-            //return Task.FromResult<List<SimpleGameInformation>>(simpleGameInformation);
             return Task.FromResult(simpleGameInformation);
         }
     }
