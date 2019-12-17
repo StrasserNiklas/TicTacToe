@@ -1,9 +1,9 @@
 ﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
 
-using System.Windows;
-
 namespace Client
 {
+    using System.Windows;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>

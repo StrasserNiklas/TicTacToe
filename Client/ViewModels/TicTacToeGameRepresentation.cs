@@ -1,18 +1,15 @@
 ﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 namespace Client.ViewModels
 {
+    using System;
+    using System.Collections.ObjectModel;
+
     /// <summary>
     /// This class represents a normal tic tac game field containing 9 fields.
     /// </summary>
     public class TicTacToeGameRepresentation
     {
-
         /// <summary>
         /// This field is used to save the game cells collection.
         /// </summary>
@@ -47,14 +44,13 @@ namespace Client.ViewModels
         public ObservableCollection<GameCellVM> GameCells
         {
             get
-            { 
-                return gameCells; 
+            {
+                return gameCells;
             }
-            set 
-            { 
+            set
+            {
                 gameCells = value ?? throw new ArgumentNullException(nameof(this.GameCells), "The list of marked positions can´t be null.");
             }
         }
-
     }
 }

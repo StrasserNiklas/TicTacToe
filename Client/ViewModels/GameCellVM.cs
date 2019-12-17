@@ -1,11 +1,11 @@
 ﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
 
-using System;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-
 namespace Client.ViewModels
 {
+    using System;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+
     /// <summary>
     /// Represents a single cell of the tic tac toe game with an index and a background.
     /// 
@@ -16,6 +16,7 @@ namespace Client.ViewModels
     public class GameCellVM : BaseVM
     {
         private int playerMark;
+
         private Brush cellBackground;
 
         public GameCellVM(int index, int playerMark)
@@ -23,7 +24,6 @@ namespace Client.ViewModels
             this.Index = index;
             this.PlayerMark = playerMark;
         }
-
 
         /// <summary>
         /// Gets the game index the cell is representing.
@@ -36,11 +36,11 @@ namespace Client.ViewModels
         /// </summary>
         public int PlayerMark
         {
-            get 
-            { 
+            get
+            {
                 return this.playerMark;
             }
-            set 
+            set
             {
                 switch (value)
                 {
@@ -68,22 +68,20 @@ namespace Client.ViewModels
             }
         }
 
-
         /// <summary>
         /// Gets or sets the background of the game cell that will represent a button.
         /// </summary>
         public Brush CellBackground
         {
-            get 
-            { 
-                return this.cellBackground; 
+            get
+            {
+                return this.cellBackground;
             }
-            set 
-            { 
+            set
+            {
                 this.cellBackground = value;
                 this.FireOnPropertyChanged();
             }
         }
-
     }
 }

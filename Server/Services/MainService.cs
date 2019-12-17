@@ -8,12 +8,12 @@
 
 namespace Server.Services
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using GameLibrary;
     using Microsoft.Extensions.Logging;
     using Server.Models;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
+    
     public class MainService : IMainService
     {
         private readonly List<Player> players = new List<Player>();

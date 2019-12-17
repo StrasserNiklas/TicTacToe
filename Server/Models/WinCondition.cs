@@ -17,11 +17,21 @@ namespace Server.Models
     /// </summary>
     public class WinCondition
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WinCondition"/> class.
+        /// </summary>
+        /// <param name="condition">The win condition.</param>
         public WinCondition(params int[] condition)
         {
             this.Condition = condition.ToList();
         }
 
+        /// <summary>
+        /// Gets or sets the list of integer the condition requires.
+        /// </summary>
+        /// <value>
+        /// The condition.
+        /// </value>
         public List<int> Condition { get; set; }
     }
 }

@@ -1,13 +1,10 @@
 ﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
-
 namespace Client.ViewModels
 {
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+
     public class BaseVM : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

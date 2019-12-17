@@ -8,15 +8,15 @@
 
 namespace Server.Hubs
 {
-    using GameLibrary;
-    using Microsoft.AspNetCore.SignalR;
-    using Server.Models;
-    using Server.Services;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
+    using GameLibrary;
+    using Microsoft.AspNetCore.SignalR;
+    using Server.Models;
+    using Server.Services;
+    
     public class GameHub : Hub
     {
         private readonly IMainService mainService;
@@ -71,7 +71,6 @@ namespace Server.Hubs
         {
             var list = await this.mainService.GetPlayersAsync();
             var player = list.SingleOrDefault(player => player.ConnectionId == gameRequest.Enemy.ConnectionId);
-            //var player = list.SingleOrDefault(player => player.PlayerId == gameRequest.Enemy.PlayerId); OLD OLD OLD OLD
 
             if (player != null)
             {
