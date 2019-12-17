@@ -40,8 +40,6 @@ namespace GameLibrary
         /// </summary>
         private string connectionId;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
@@ -61,6 +59,11 @@ namespace GameLibrary
         }
 
         /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
         /// Gets or sets the unique connection identifier set by the signalR service.
         /// </summary>
         /// <value>
@@ -72,6 +75,7 @@ namespace GameLibrary
             {
                 return this.connectionId;
             }
+
             set
             {
                 this.connectionId = value;
@@ -91,6 +95,7 @@ namespace GameLibrary
             {
                 return this.playerName;
             }
+
             set
             {
                 if (value == string.Empty)
@@ -123,6 +128,7 @@ namespace GameLibrary
             {
                 return this.wins;
             }
+
             set
             {
                 if (value < 0)
@@ -133,15 +139,6 @@ namespace GameLibrary
                 this.wins = value;
                 this.FireOnPropertyChanged();
             }
-        }
-
-        /// <summary>
-        /// Fires the property changed event.
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        protected void FireOnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -157,10 +154,20 @@ namespace GameLibrary
             {
                 return this.markedPositions;
             }
+
             set
             {
                 this.markedPositions = value ?? throw new ArgumentNullException(nameof(this.MarkedPositions), "The list of marked positions can´t be null.");
             }
+        }
+
+        /// <summary>
+        /// Fires the property changed event.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        protected void FireOnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

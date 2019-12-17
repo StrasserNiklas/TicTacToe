@@ -13,13 +13,23 @@ namespace Tests
     using NUnit.Framework;
     using Server.Models;
 
-    public class Tests
+    /// <summary>
+    /// Represents the Unit Tests for our solution.
+    /// </summary>
+    /// <seealso cref="Object" />
+    public class TicTacToeTests
     {
+        /// <summary>
+        /// Setup this instance.
+        /// </summary>
         [SetUp]
         public void Setup()
         {
         }
 
+        /// <summary>
+        /// Tests the game win.
+        /// </summary>
         [Test]
         public void TestGameWin()
         {
@@ -49,6 +59,9 @@ namespace Tests
             Assert.AreEqual(0, player2.Wins);
         }
 
+        /// <summary>
+        /// Tests the game draw.
+        /// </summary>
         [Test]
         public void TestGameDraw()
         {

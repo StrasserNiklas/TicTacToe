@@ -53,6 +53,7 @@ namespace Client.ViewModels
             { 
                 return this.gameCells; 
             }
+
             set 
             { 
                 this.gameCells = value ?? throw new ArgumentNullException(nameof(this.GameCells), "The list of marked positions can´t be null.");

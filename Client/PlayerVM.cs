@@ -13,77 +13,98 @@ namespace Client
     using Client.Models;
     using Client.ViewModels;
     using GameLibrary;
-    
+
+    /// <summary>
+    /// Represents a view model for a player.
+    /// </summary>
+    /// <seealso cref="Client.ViewModels.BaseVM" />
     public class PlayerVM : BaseVM
     {
-        public string PlayerName
-        {
-            get 
-            { 
-                return this.player.PlayerName; 
-            }
-            set 
-            { 
-                this.player.PlayerName = value;
-                this.FireOnPropertyChanged();
-            }
-        }
+        /// <summary>
+        /// This field is used to save the marked positions.
+        /// </summary>
+        private List<int> markedPositions;
 
+        /// <summary>
+        /// This field is used to save the wins.
+        /// </summary>
+        private int wins;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerVM"/> class.
+        /// </summary>
+        /// <param name="player">The player.</param>
         public PlayerVM(Player player)
         {
             this.Player = player;
         }
 
-        private Player player;
-
-        public Player Player
+        /// <summary>
+        /// Gets or sets the name of the player.
+        /// </summary>
+        /// <value>
+        /// The name of the player.
+        /// </value>
+        public string PlayerName
         {
             get
-            { 
-                return player; 
+            {
+                return this.Player.PlayerName;
             }
 
             set
-            { 
-                player = value; 
+            {
+                this.Player.PlayerName = value;
+                this.FireOnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the player.
+        /// </summary>
+        /// <value>
+        /// The player.
+        /// </value>
+        public Player Player { get; set; }
 
-
-        private int wins;
-
+        /// <summary>
+        /// Gets or sets the wins.
+        /// </summary>
+        /// <value>
+        /// The wins of the player.
+        /// </value>
         public int Wins
         {
             get
             {
-                return wins;
+                return this.wins;
             }
+
             set
             {
-                wins = value;
+                this.wins = value;
                 this.FireOnPropertyChanged(nameof(this.Wins));
             }
         }
 
-
-        private List<int> markedPositions;
-
+        /// <summary>
+        /// Gets or sets the marked positions.
+        /// </summary>
+        /// <value>
+        /// The marked positions.
+        /// </value>
+        /// <exception cref="ArgumentNullException">MarkedPositions - The list of marked positions can´t be null.</exception>
         public List<int> MarkedPositions
         {
             get
             {
                 return this.markedPositions;
             }
+
             set
             {
                 this.markedPositions = value ?? throw new ArgumentNullException(nameof(this.MarkedPositions), "The list of marked positions can´t be null.");
             }
         }
-
     }
-
-
-
-    
 }

@@ -12,13 +12,11 @@ namespace Server.Models
     using System.Linq;
 
     /// <summary>
-    /// A win condition is based on the continuous indexes of a TicTacToe game.
-    /// Typical TicTacToe-Game: 
-    /// 
+    /// A win condition is based on the continuous indexes of a Tic-Tac-Toe game.
+    /// Typical Tic-Tac-Toe-Game: 
     /// [O X O]               [0 1 2]
     /// [X O O] -> indexed -> [3 4 5]
     /// [O X O]               [6 7 8]    
-    /// 
     /// Based on that, a win condition would be: 2,5,8 as can be seen in the example game.
     /// </summary>
     public class WinCondition

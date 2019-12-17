@@ -13,8 +13,12 @@ namespace Client.Services
     /// </summary>
     public class UrlService
     {
-        //public string LobbyAddress => $"https://tictactoefyn.azurewebsites.net/game";
-        
-        public string LobbyAddress => $"https://localhost:5001/game";
+        /// <summary>
+        /// Gets the lobby address.
+        /// </summary>
+        /// <value>
+        /// The lobby address.
+        /// </value>
+        public string LobbyAddress => $"https://localhost:5001/game"; // https://tictactoefyn.azurewebsites.net/game
     }
 }
