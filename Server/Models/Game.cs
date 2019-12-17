@@ -1,22 +1,25 @@
 ﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
 
-using GameLibrary;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
 namespace Server.Models
 {
+    using GameLibrary;
+    using System;
+    using System.Collections.Generic;
+
     public class Game
     {
         private Player playerTwo;
+
         private Player playerOne;
+
         private string endGameMessage;
+
         private Player currentPlayer;
+
         private readonly List<WinCondition> winConditions;
+
         private int[] indexedGame = new int[9];
+
         private bool gameOver;
 
         public Game(Player one, Player two)
@@ -271,6 +274,5 @@ namespace Server.Models
                 this.indexedGame = value;
             }
         }
-            
     }
 }
