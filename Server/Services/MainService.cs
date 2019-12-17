@@ -8,11 +8,11 @@
 
 namespace Server.Services
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using GameLibrary;
     using Microsoft.Extensions.Logging;
     using Server.Models;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// This file represents a main service for the game which handles the different requests.

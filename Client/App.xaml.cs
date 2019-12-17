@@ -6,10 +6,10 @@
 // <summary>This file represents an application</summary>
 //-----------------------------------------------------------------------
 
-using System.Windows;
-
 namespace Client
 {
+    using System.Windows;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>

@@ -6,13 +6,13 @@
 // <summary>This file represents some test cases for the game.</summary>
 //-----------------------------------------------------------------------
 
-using GameLibrary;
-using NUnit.Framework;
-using Server.Models;
-using System;
-
 namespace Tests
 {
+    using System;
+    using GameLibrary;
+    using NUnit.Framework;
+    using Server.Models;
+
     public class Tests
     {
         [SetUp]

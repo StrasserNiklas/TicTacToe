@@ -6,13 +6,16 @@
 // <summary>This file represents a command class which inherits from the ICommand class.</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
-
 namespace Client.Models
 {
+    using System;
+    using System.Windows.Input;
+
+    /// <summary>
+    /// This class is needed to execute commands.
+    /// The object parameter is needed when a command is called by a XAML object in order to execute code using the object.
+    /// </summary>
+    /// <seealso cref="System.Windows.Input.ICommand" />
     public class Command : ICommand
     {
         /// <summary>
@@ -55,5 +58,4 @@ namespace Client.Models
             this.action(parameter);
         }
     }
-
 }

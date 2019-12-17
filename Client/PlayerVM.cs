@@ -6,14 +6,14 @@
 // <summary>This file represents a view model for a player.</summary>
 //-----------------------------------------------------------------------
 
-using Client.Models;
-using Client.ViewModels;
-using GameLibrary;
-using System;
-using System.Collections.Generic;
-
 namespace Client
 {
+    using System;
+    using System.Collections.Generic;
+    using Client.Models;
+    using Client.ViewModels;
+    using GameLibrary;
+    
     public class PlayerVM : BaseVM
     {
         public string PlayerName

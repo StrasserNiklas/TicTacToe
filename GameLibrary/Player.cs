@@ -6,19 +6,38 @@
 // <summary>This file represents a model for the player.</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
-
 namespace GameLibrary
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+
+    /// <summary>
+    /// This class represents a player.
+    /// It contains field for his name, his connection id on the server, his wins, his marked positions and his marker.
+    /// </summary>
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
     public class Player : INotifyPropertyChanged
     {
+        /// <summary>
+        /// This field is used to save the wins of the player.
+        /// </summary>
         private int wins;
+
+        /// <summary>
+        /// This field is used to save the player name.
+        /// </summary>
         private string playerName;
+
+        /// <summary>
+        /// This field is used to save the marked positions of the player.
+        /// </summary>
         private List<int> markedPositions;
+
+        /// <summary>
+        /// This field is used to save the connection identifier of the player.
+        /// </summary>
         private string connectionId;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -143,6 +162,5 @@ namespace GameLibrary
                 this.markedPositions = value ?? throw new ArgumentNullException(nameof(this.MarkedPositions), "The list of marked positions can´t be null.");
             }
         }
-
     }
 }

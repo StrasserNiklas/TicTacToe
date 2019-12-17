@@ -6,12 +6,12 @@
 // <summary>This file represents a view model for a specific game cell.</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-
 namespace Client.ViewModels
 {
+    using System;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+
     /// <summary>
     /// Represents a single cell of the tic-tac-toe game with an index and a background.
     /// [O X O]               [0 1 2].
@@ -24,10 +24,6 @@ namespace Client.ViewModels
         /// This field is used to save the player mark.
         /// </summary>
         private int playerMark;
-
-        /// <summary>
-        /// This field is used to save the cell background.
-        /// </summary>
         private Brush cellBackground;
 
         /// <summary>
@@ -54,11 +50,10 @@ namespace Client.ViewModels
         /// <value>The player mark the cell is representing.</value>
         public int PlayerMark
         {
-            get 
-            { 
+            get
+            {
                 return this.playerMark;
             }
-
             set 
             {
                 switch (value)
@@ -93,11 +88,10 @@ namespace Client.ViewModels
         /// <value>The background of the game cell.</value>
         public Brush CellBackground
         {
-            get 
-            { 
-                return this.cellBackground; 
+            get
+            {
+                return this.cellBackground;
             }
-
             set 
             { 
                 this.cellBackground = value;

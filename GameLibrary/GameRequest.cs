@@ -6,11 +6,11 @@
 // <summary>This file represents a game request to play with another player.</summary>
 //-----------------------------------------------------------------------
 
-using Newtonsoft.Json;
-using System;
-
 namespace GameLibrary
 {
+    using System;
+    using Newtonsoft.Json;
+
     /// <summary>
     /// This class respresents a game request in a game. 
     /// It contains two players, one who sent the request, another the request is addressed to, 
@@ -26,7 +26,7 @@ namespace GameLibrary
         [JsonConstructor]
         public GameRequest(Player enemy, Player requestPlayer)
         {
-            this.Enemy = enemy; 
+            this.Enemy = enemy;
             this.RequestingPlayer = requestPlayer;
 
             Random r = new Random();
@@ -44,7 +44,6 @@ namespace GameLibrary
         /// A value indicating if a game request has been accepted.
         /// </summary>
         public bool Accepted { get; set; }
-
 
         /// <summary>
         /// A value indicating if a game has been declined.
@@ -65,6 +64,5 @@ namespace GameLibrary
         /// The player the request is sent to.
         /// </summary>
         public Player Enemy { get; set; }
-
     }
 }

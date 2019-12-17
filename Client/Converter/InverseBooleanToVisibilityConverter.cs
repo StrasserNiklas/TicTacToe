@@ -6,15 +6,13 @@
 // <summary>This file represents an inverse boolean to visibility converter.</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Windows;
-using System.Windows.Data;
-
 namespace Client.Converter
 {
+    using System;
+    using System.Globalization;
+    using System.Windows;
+    using System.Windows.Data;
+
     /// <summary>
     /// This class represents an inverse boolean to visibility converter.
     /// </summary>

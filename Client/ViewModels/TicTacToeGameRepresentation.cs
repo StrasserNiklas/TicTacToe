@@ -6,13 +6,11 @@
 // <summary>This file represents a typical tic tac toe game.</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 namespace Client.ViewModels
 {
+    using System;
+    using System.Collections.ObjectModel;
+
     /// <summary>
     /// This class represents a normal tic-tac-toe game field containing 9 fields.
     /// </summary>
@@ -55,7 +53,6 @@ namespace Client.ViewModels
             { 
                 return this.gameCells; 
             }
-
             set 
             { 
                 this.gameCells = value ?? throw new ArgumentNullException(nameof(this.GameCells), "The list of marked positions can´t be null.");

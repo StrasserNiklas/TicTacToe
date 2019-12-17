@@ -6,42 +6,58 @@
 // <summary>This file represents the main view model for the client game.</summary>
 //-----------------------------------------------------------------------
 
-using Client.Models;
-using Client.Services;
-using Client.ViewModels;
-using GameLibrary;
-using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-
 namespace Client
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Input;
+    using Client.Models;
+    using Client.Services;
+    using Client.ViewModels;
+    using GameLibrary;
+    using Microsoft.AspNetCore.SignalR.Client;
+    using Microsoft.Extensions.Logging;
+    
     public class ClientVM : BaseVM
     {
         private readonly UrlService urlService;
+
         private HubConnection hubConnection;
+
         private ObservableCollection<Player> playerList;
+
         private ObservableCollection<SimpleGameInformation> gameList;
+
         private Player selectedPlayer;
+
         private bool gameIsActive;
+
         private PlayerVM clientPlayer;
+
         private bool clientConnected;
+
         private bool gameWasRequested;
+
         private string statusMessage;
+
         private string activePlayerName = string.Empty;
+
         private Player requestingorEnemyPlayer;
+
         private bool myTurn = false;
+
         private readonly ILogger<ClientVM> logger;
+
         private Player playerOne;
+
         private Player playerTwo;
+
         private System.Timers.Timer timer;
 
         public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
@@ -153,12 +169,12 @@ namespace Client
         /// </value>
         public Player PlayerOne
         {
-            get 
-            { 
-                return this.playerOne; 
+            get
+            {
+                return this.playerOne;
             }
-            set 
-            { 
+            set
+            {
                 this.playerOne = value;
                 this.FireOnPropertyChanged();
             }
@@ -191,13 +207,13 @@ namespace Client
         /// </value>
         public string ActivePlayerName
         {
-            get 
-            { 
+            get
+            {
                 return this.activePlayerName;
             }
 
-            set 
-            { 
+            set
+            {
                 this.activePlayerName = value;
                 this.FireOnPropertyChanged();
             }
@@ -249,15 +265,15 @@ namespace Client
         /// </summary>
         public bool ClientConnected
         {
-            get 
-            { 
-                return this.clientConnected; 
+            get
+            {
+                return this.clientConnected;
             }
-            set 
+            set
             {
                 this.clientConnected = value;
                 this.FireOnPropertyChanged();
-             }
+            }
         }
 
         /// <summary>
@@ -265,12 +281,12 @@ namespace Client
         /// </summary>
         public PlayerVM ClientPlayer
         {
-            get 
-            { 
-                return clientPlayer; 
+            get
+            {
+                return clientPlayer;
             }
-            set 
-            { 
+            set
+            {
                 clientPlayer = value ?? throw new ArgumentNullException(nameof(this.ClientPlayer), "The client player can´t be null.");
             }
         }
@@ -297,11 +313,11 @@ namespace Client
         public ObservableCollection<Player> PlayerList
         {
             get
-            { 
-                return this.playerList; 
+            {
+                return this.playerList;
             }
-            set 
-            { 
+            set
+            {
                 this.playerList = value;
                 this.FireOnPropertyChanged();
             }
@@ -328,12 +344,12 @@ namespace Client
         /// </summary>
         public Player SelectedPlayer
         {
-            get 
-            { 
-                return this.selectedPlayer; 
+            get
+            {
+                return this.selectedPlayer;
             }
-            set 
-            { 
+            set
+            {
                 selectedPlayer = value;
             }
         }
@@ -595,14 +611,13 @@ namespace Client
                     this.statusMessage = "An unknown error occured. Please try again later.";
                 }
             }
-
         }
 
         private async Task ComputeAcceptCommand()
         {
             this.logger.LogInformation("[ComputeAcceptCommand]");
             this.GameWasRequested = false;
-            
+
             try
             {
                 await this.hubConnection.SendAsync("DeclineOrAcceptRequest", this.RequestID, true);
@@ -703,8 +718,6 @@ namespace Client
                     //this.gameClientService.UpdateGameStatusAsync(status);
                 }
             }
-
-
         }
 
         private async Task ComputeRequestGameCommand()
