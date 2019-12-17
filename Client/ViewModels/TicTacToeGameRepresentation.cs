@@ -1,18 +1,21 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿//-----------------------------------------------------------------------
+// <copyright file="TicTacToeGameRepresentation.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents a typical tic tac toe game.</summary>
+//-----------------------------------------------------------------------
 
 namespace Client.ViewModels
 {
+    using System;
+    using System.Collections.ObjectModel;
+
     /// <summary>
-    /// This class represents a normal tic tac game field containing 9 fields.
+    /// This class represents a normal tic-tac-toe game field containing 9 fields.
     /// </summary>
     public class TicTacToeGameRepresentation
     {
-
         /// <summary>
         /// This field is used to save the game cells collection.
         /// </summary>
@@ -48,13 +51,12 @@ namespace Client.ViewModels
         {
             get
             { 
-                return gameCells; 
+                return this.gameCells; 
             }
             set 
             { 
-                gameCells = value ?? throw new ArgumentNullException(nameof(this.GameCells), "The list of marked positions can´t be null.");
+                this.gameCells = value ?? throw new ArgumentNullException(nameof(this.GameCells), "The list of marked positions can´t be null.");
             }
         }
-
     }
 }

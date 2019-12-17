@@ -3,19 +3,19 @@
 // Copyright (c) FHWN. All rights reserved.
 // </copyright>
 // <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
-// <summary>This file represents the SignalR Hub for the TicTacToe server.</summary>
+// <summary>This file represents a hub for the game which sends the messages to the players.</summary>
 //-----------------------------------------------------------------------
 
 namespace Server.Hubs
 {
-    using GameLibrary;
-    using Microsoft.AspNetCore.SignalR;
-    using Server.Models;
-    using Server.Services;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using GameLibrary;
+    using Microsoft.AspNetCore.SignalR;
+    using Server.Models;
+    using Server.Services;
 
     /// <summary>
     /// The SignalR Hub for the Tic-Tac-Toe server.
@@ -94,7 +94,6 @@ namespace Server.Hubs
         {
             var list = await this.mainService.GetPlayersAsync();
             var player = list.SingleOrDefault(player => player.ConnectionId == gameRequest.Enemy.ConnectionId);
-            //var player = list.SingleOrDefault(player => player.PlayerId == gameRequest.Enemy.PlayerId); OLD OLD OLD OLD
 
             if (player != null)
             {

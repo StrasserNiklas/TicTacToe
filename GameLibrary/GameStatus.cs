@@ -1,9 +1,15 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
-
-using Newtonsoft.Json;
+﻿//-----------------------------------------------------------------------
+// <copyright file="GameStatus.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents the game status which is sent to the opponent player to refresh the game.</summary>
+//-----------------------------------------------------------------------
 
 namespace GameLibrary
 {
+    using Newtonsoft.Json;
+
     /// <summary>
     /// This class is used to update the status of a game on the server and on clients.
     /// It contains the current game status, the current player id, the updated position, the id of the game and the wins of the players.

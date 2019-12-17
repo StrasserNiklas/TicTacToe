@@ -1,7 +1,16 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="UrlService.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents the address for the server URL.</summary>
+//-----------------------------------------------------------------------
 
 namespace Client.Services
 {
+    /// <summary>
+    /// Contains the connection for the azure service the server is hosted on and a connection for a local host.
+    /// </summary>
     public class UrlService
     {
         //public string LobbyAddress => $"https://tictactoefyn.azurewebsites.net/game";

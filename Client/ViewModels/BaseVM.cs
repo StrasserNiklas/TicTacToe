@@ -1,13 +1,16 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿//-----------------------------------------------------------------------
+// <copyright file="BaseVM.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents a base view model.</summary>
+//-----------------------------------------------------------------------
 
 namespace Client.ViewModels
 {
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+
     public class BaseVM : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

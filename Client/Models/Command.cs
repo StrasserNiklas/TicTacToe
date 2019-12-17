@@ -1,12 +1,21 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Command.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents a command class which inherits from the ICommand class.</summary>
+//-----------------------------------------------------------------------
 
 namespace Client.Models
 {
+    using System;
+    using System.Windows.Input;
+
+    /// <summary>
+    /// This class is needed to execute commands.
+    /// The object parameter is needed when a command is called by a XAML object in order to execute code using the object.
+    /// </summary>
+    /// <seealso cref="System.Windows.Input.ICommand" />
     public class Command : ICommand
     {
         /// <summary>
@@ -49,5 +58,4 @@ namespace Client.Models
             this.action(parameter);
         }
     }
-
 }

@@ -1,27 +1,50 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="Game.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents a game which contains all the important information for the game.</summary>
+//-----------------------------------------------------------------------
 
 namespace Server.Models
 {
-    using GameLibrary;
     using System;
     using System.Collections.Generic;
+    using GameLibrary;
+    
 
     public class Game
     {
+        /// <summary>
+        /// This field is used to save player two.
+        /// </summary>
         private Player playerTwo;
 
+        /// <summary>
+        /// This field is used to save player one.
+        /// </summary>
         private Player playerOne;
 
-        private string endGameMessage;
-
+        /// <summary>
+        /// This field is used to save the current player.
+        /// </summary>
         private Player currentPlayer;
 
+        /// <summary>
+        /// This field is used to save the list of win conditions.
+        /// </summary>
         private readonly List<WinCondition> winConditions;
 
+        /// <summary>
+        /// This field is used to save the indexed game.
+        /// </summary>
         private int[] indexedGame = new int[9];
 
-        private bool gameOver;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Game"/> class.
+        /// </summary>
+        /// <param name="one">The one.</param>
+        /// <param name="two">The two.</param>
         public Game(Player one, Player two)
         {
             this.winConditions = new List<WinCondition>()
@@ -49,6 +72,12 @@ namespace Server.Models
             this.GameId = r.Next(999, 1234567) + r.Next(999, 1234567);
         }
 
+        /// <summary>
+        /// Gets the game identifier.
+        /// </summary>
+        /// <value>
+        /// The game identifier.
+        /// </value>
         public int GameId { get; }
 
         public int Turns { get; set; }
@@ -169,17 +198,7 @@ namespace Server.Models
         /// <value>
         /// The end message.
         /// </value>
-        public string EndMessage
-        {
-            get
-            {
-                return endGameMessage;
-            }
-            set
-            {
-                endGameMessage = value;
-            }
-        }
+        public string EndMessage { get; set; }
 
         /// <summary>
         /// Gets or sets the current player.
@@ -187,6 +206,7 @@ namespace Server.Models
         /// <value>
         /// The current player.
         /// </value>
+        /// <exception cref="ArgumentNullException">CurrentPlayer - The current player can´t be null.</exception>
         public Player CurrentPlayer
         {
             get
@@ -195,7 +215,7 @@ namespace Server.Models
             }
             set
             {
-                this.currentPlayer = value;
+                this.currentPlayer = value ?? throw new ArgumentNullException(nameof(this.CurrentPlayer), "The current player can´t be null.");
             }
         }
 
@@ -245,17 +265,7 @@ namespace Server.Models
         /// <value>
         ///   <c>true</c> if game is over; otherwise, <c>false</c>.
         /// </value>
-        public bool GameOver
-        {
-            get
-            {
-                return gameOver;
-            }
-            set
-            {
-                gameOver = value;
-            }
-        }
+        public bool GameOver { get; set; }
 
         /// <summary>
         /// Gets or sets the current game status.
@@ -263,6 +273,7 @@ namespace Server.Models
         /// <value>
         /// The current game status.
         /// </value>
+        /// <exception cref="ArgumentException">CurrentGameStatus - The indexed game array has to be of length 9.</exception>
         public int[] CurrentGameStatus
         {
             get
@@ -271,6 +282,11 @@ namespace Server.Models
             }
             set
             {
+                if (value.Length != 9)
+                {
+                    throw new ArgumentException(nameof(this.CurrentGameStatus), "The indexed game array has to be of length 9.");
+                }
+
                 this.indexedGame = value;
             }
         }

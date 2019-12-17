@@ -1,37 +1,34 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
-
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
-using Client.Models;
-using System.Net.Http;
-using System.Collections.ObjectModel;
-using GameLibrary;
-using Serilog;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MainWindow.xaml.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file contains the interaction logic for MainWindow.</summary>
+//-----------------------------------------------------------------------
 
 namespace Client
 {
+    using System;
+    using System.Windows;
+    using GameLibrary;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Serilog;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// This field is used to save the client instance.
+        /// </summary>
         private readonly ClientVM client;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// Executes dependency injection and sets the data context.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -48,7 +45,7 @@ namespace Client
                 }).Build();
 
             this.client = host.Services.GetService<ClientVM>();
-            
+
             this.DataContext = this.client;
             this.client.ClientPlayer = new PlayerVM(new Player("player"));
         }
