@@ -191,7 +191,7 @@ namespace Server.Hubs
         /// <summary>
         /// Removes the game from the list, send update to the enemy and send game and player list to all clients.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The identifier of the player who left the game.</param>
         /// <param name="enemyId">The enemy identifier.</param>
         /// <returns>A Task that represents the asynchronous method.</returns>
         public async Task ReturnToLobby(string id, string enemyId)
@@ -242,6 +242,18 @@ namespace Server.Hubs
             {
                 if (game.PlayerOne.ConnectionId == id || game.PlayerTwo.ConnectionId == id)
                 {
+                    Player enemyPlayer;
+
+                    if (game.PlayerOne.ConnectionId == id)
+                    {
+                        enemyPlayer = game.PlayerOne;
+                    }
+                    else
+                    {
+                        enemyPlayer = game.PlayerTwo;
+                    }
+
+                    await ReturnToLobby(Context.ConnectionId, enemyPlayer.ConnectionId);
                     await this.mainService.RemoveGameAsync(game);
                 }
             }
