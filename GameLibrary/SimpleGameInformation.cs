@@ -1,4 +1,10 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="SimpleGameInformation.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents some information about the two players inside a game.</summary>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;

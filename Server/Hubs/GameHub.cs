@@ -1,9 +1,9 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ActionVisitor.cs" company="FHWN">
+// <copyright file="GameHub.cs" company="FHWN">
 // Copyright (c) FHWN. All rights reserved.
 // </copyright>
 // <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
-// <summary>This file represents </summary>
+// <summary>This file represents a hub for the game which sends the messages to the players.</summary>
 //-----------------------------------------------------------------------
 
 namespace Server.Hubs

@@ -1,4 +1,10 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="Game.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents a game which contains all the important information for the game.</summary>
+//-----------------------------------------------------------------------
 
 namespace Server.Models
 {

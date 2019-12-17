@@ -1,4 +1,10 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="ClientVM.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents the main view model for the client game.</summary>
+//-----------------------------------------------------------------------
 
 using Client.Models;
 using Client.Services;
@@ -669,7 +675,7 @@ namespace Client
             {
                 if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.ConnectionId && this.myTurn)
                 {
-                    cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker;//this.ClientPlayer.Player.Marker;
+                    cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker; //this.ClientPlayer.Player.Marker;
                     this.myTurn = false;
 
                     var status = new GameStatus

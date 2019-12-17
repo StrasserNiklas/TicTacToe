@@ -1,3 +1,11 @@
+//-----------------------------------------------------------------------
+// <copyright file="TicTacToeTests.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents some test cases for the game.</summary>
+//-----------------------------------------------------------------------
+
 using GameLibrary;
 using NUnit.Framework;
 using Server.Models;

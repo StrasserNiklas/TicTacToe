@@ -1,4 +1,10 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="InverseBooleanToVisibilityConverter.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents an inverse boolean to visibility converter.</summary>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +16,7 @@ using System.Windows.Data;
 namespace Client.Converter
 {
     /// <summary>
-    /// 
+    /// This class represents an inverse boolean to visibility converter.
     /// </summary>
     public class InverseBooleanToVisibilityConverter : IValueConverter
     {

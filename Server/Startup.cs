@@ -1,4 +1,10 @@
-// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+//-----------------------------------------------------------------------
+// <copyright file="Startup.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file represents the startup class.</summary>
+//-----------------------------------------------------------------------
 
 namespace Server
 {

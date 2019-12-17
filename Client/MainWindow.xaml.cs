@@ -1,4 +1,10 @@
-﻿// Niklas Strasser, Felix Brandstetter, Yannick Gruber
+﻿//-----------------------------------------------------------------------
+// <copyright file="MainWindow.xaml.cs" company="FHWN">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Felix Brandstetter, Niklas Strasser, Yannick Gruber</author>
+// <summary>This file contains the interaction logic for MainWindow.</summary>
+//-----------------------------------------------------------------------
 
 using Microsoft.Extensions.Hosting;
 using System;
