@@ -204,7 +204,7 @@
                            Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
                     <!-- Status message -->
-                    <Label Grid.Column="3" Grid.ColumnSpan="3" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="IndianRed" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="2" Grid.ColumnSpan="4" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="IndianRed" HorizontalAlignment="Right"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"

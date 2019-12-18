@@ -68,14 +68,18 @@ namespace Client.ViewModels
                         break;
 
                     case 1:
-                        var brush = new ImageBrush();
-                        brush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/O.png"));
+                        var brush = new ImageBrush
+                        {
+                            ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/O.png"))
+                        };
                         this.CellBackground = brush;
                         break;
 
                     case 2:
-                        var brush1 = new ImageBrush();
-                        brush1.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/X.png"));
+                        var brush1 = new ImageBrush
+                        {
+                            ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/X.png"))
+                        };
                         this.CellBackground = brush1;
                         break;
 

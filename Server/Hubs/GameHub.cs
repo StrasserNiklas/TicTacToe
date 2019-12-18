@@ -102,8 +102,8 @@ namespace Server.Hubs
                 var allRequests = await this.mainService.GetGameRequestsAsync();
 
                 var existingRequest = allRequests.SingleOrDefault(request =>
-                (request.Enemy == gameRequest.Enemy || request.Enemy == gameRequest.RequestingPlayer) && 
-                (request.RequestingPlayer == gameRequest.Enemy || request.RequestingPlayer == gameRequest.RequestingPlayer));
+                (request.Enemy.ConnectionId == gameRequest.Enemy.ConnectionId || request.Enemy.ConnectionId == gameRequest.RequestingPlayer.ConnectionId) && 
+                (request.RequestingPlayer.ConnectionId == gameRequest.Enemy.ConnectionId || request.RequestingPlayer.ConnectionId == gameRequest.RequestingPlayer.ConnectionId));
 
                 if (existingRequest == null)
                 {
@@ -125,6 +125,10 @@ namespace Server.Hubs
                     });
 
                     await Clients.Client(player.ConnectionId).SendAsync("GameRequested", gameRequest);
+                }
+                else
+                {
+                    await Clients.Caller.SendAsync("StatusMessage", "A request already exists.");
                 }
             }
         }
@@ -256,7 +260,7 @@ namespace Server.Hubs
                         enemyPlayer = game.PlayerTwo;
                     }
 
-                    await ReturnToLobby(Context.ConnectionId, enemyPlayer.ConnectionId);
+                    await this.ReturnToLobby(Context.ConnectionId, enemyPlayer.ConnectionId);
                     await this.mainService.RemoveGameAsync(game);
                 }
             }

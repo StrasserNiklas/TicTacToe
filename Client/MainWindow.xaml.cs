@@ -10,6 +10,7 @@ namespace Client
 {
     using System;
     using System.Windows;
+    using Client.ViewModels;
     using GameLibrary;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;

@@ -327,7 +327,7 @@ namespace Tests
             Player player2 = new Player();
 
             Game game1 = new Game(player1, player2);
-            var game = await service.AddGameAsync(game1);
+            await service.AddGameAsync(game1);
 
             var gameList = service.GetGamesAsync().Result.ToList();
             Assert.Contains(game1, gameList);

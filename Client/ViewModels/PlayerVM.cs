@@ -6,12 +6,10 @@
 // <summary>This file represents a view model for a player.</summary>
 //-----------------------------------------------------------------------
 
-namespace Client
+namespace Client.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using Client.Models;
-    using Client.ViewModels;
     using GameLibrary;
 
     /// <summary>

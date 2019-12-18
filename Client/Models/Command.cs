@@ -35,7 +35,11 @@ namespace Client.Models
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged
+        {
+            add { }
+            remove { }
+        }
 
         /// <summary>
         /// Defines the method that determines whether the command can execute in its current state.
