@@ -15,7 +15,6 @@ namespace Tests
     using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
-    using Server.Models;
     using Server.Services;
 
     /// <summary>

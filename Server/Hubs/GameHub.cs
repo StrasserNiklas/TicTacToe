@@ -14,7 +14,6 @@ namespace Server.Hubs
     using System.Threading.Tasks;
     using GameLibrary;
     using Microsoft.AspNetCore.SignalR;
-    using Server.Models;
     using Server.Services;
 
     /// <summary>

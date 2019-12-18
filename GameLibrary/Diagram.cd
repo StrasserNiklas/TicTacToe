@@ -28,14 +28,14 @@
       <FileName>SimpleGameInformation.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Models.WinCondition">
+  <Class Name="GameLibrary.WinCondition">
     <Position X="9.75" Y="5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>WinCondition.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Server.Models.Game">
+  <Class Name="GameLibrary.Game">
     <Position X="13" Y="1.25" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAAgAAASAACACAAAQEAAAAICAUCggCAAEAAgAAAAAg=</HashCode>

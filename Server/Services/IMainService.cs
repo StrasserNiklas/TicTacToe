@@ -11,7 +11,6 @@ namespace Server.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using GameLibrary;
-    using Server.Models;
 
     /// <summary>
     /// Represents an interface for the main service.

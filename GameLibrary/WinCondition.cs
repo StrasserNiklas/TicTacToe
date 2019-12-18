@@ -6,7 +6,7 @@
 // <summary>This file represents a win condition for the game.</summary>
 //-----------------------------------------------------------------------
 
-namespace Server.Models
+namespace GameLibrary
 {
     using System.Collections.Generic;
     using System.Linq;

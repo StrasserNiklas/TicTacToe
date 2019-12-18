@@ -13,7 +13,6 @@ namespace Server.Services
     using System.Threading.Tasks;
     using GameLibrary;
     using Microsoft.Extensions.Logging;
-    using Server.Models;
     
     /// <summary>
     /// This file represents a main service for the game which handles the different requests.

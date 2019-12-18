@@ -6,7 +6,7 @@
 // <summary>This file represents a game which contains all the important information for the game.</summary>
 //-----------------------------------------------------------------------
 
-namespace Server.Models
+namespace GameLibrary
 {
     using System;
     using System.Collections.Generic;
