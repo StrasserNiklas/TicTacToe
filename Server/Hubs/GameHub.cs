@@ -271,6 +271,11 @@ namespace Server.Hubs
         /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task UpdatePlayerSpecificGameStatus(Game game, int updatedPosition, Player player)
         {
+            if (game.GameOver)
+            {
+                return;
+            }
+
             if (game.IsMoveValid(updatedPosition, player))
             {
                 var gameFinished = game.MakeMove(updatedPosition, player);
@@ -279,6 +284,7 @@ namespace Server.Hubs
                 {
                     await Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
                     var oldGameStatus = this.CreateNewGameStatus(game, false, updatedPosition);
+                    game.GameOver = true;
 
                     await Clients.Client(game.CurrentPlayer.ConnectionId).SendAsync("GameStatus", oldGameStatus);
                     await Task.Delay(5000);
@@ -286,6 +292,7 @@ namespace Server.Hubs
                     game.NewGameSetup();
                     var gameStatus = this.CreateNewGameStatus(game, true, updatedPosition);
 
+                    game.GameOver = false;
                     await Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("GameStatus", gameStatus);
                 }
                 else
