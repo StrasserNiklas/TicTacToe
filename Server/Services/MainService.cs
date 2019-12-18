@@ -9,11 +9,12 @@
 namespace Server.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using GameLibrary;
     using Microsoft.Extensions.Logging;
     using Server.Models;
-
+    
     /// <summary>
     /// This file represents a main service for the game which handles the different requests.
     /// </summary>
@@ -181,7 +182,7 @@ namespace Server.Services
         {
             this.logger.LogInformation("[GetPlayersNotInGameAsync]");
 
-            List<Player> playerList = new List<Player>();
+            List<Player> playersInGame = new List<Player>();
 
             if (this.games.Count == 0)
             {
@@ -190,16 +191,11 @@ namespace Server.Services
 
             foreach (var game in this.games)
             {
-                foreach (var player in this.players)
-                {
-                    if (game.PlayerOne.ConnectionId != player.ConnectionId && game.PlayerTwo.ConnectionId != player.ConnectionId)
-                    {
-                        playerList.Add(player);
-                    }
-                }
+                playersInGame.Add(game.PlayerOne);
+                playersInGame.Add(game.PlayerTwo);
             }
 
-            return Task.FromResult<IEnumerable<Player>>(playerList);
+            return Task.FromResult<IEnumerable<Player>>(this.players.Except(playersInGame));
         }
 
         /// <summary>

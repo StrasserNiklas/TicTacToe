@@ -117,6 +117,7 @@ namespace Client
         /// <param name="logger">The logger.</param>
         public ClientVM(UrlService urlService, ILogger<ClientVM> logger)
         {
+            this.timer = new System.Timers.Timer();
             this.logger = logger;
             this.urlService = urlService;
             this.PlayerList = new ObservableCollection<PlayerVM>();
