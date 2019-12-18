@@ -34,25 +34,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!-- Changing between local and online play 
-        Not used as of now!
-        -->
-        <!--<Border Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource borderStyle}" Margin="3">
-            <StackPanel Orientation="Horizontal">
-                <Button MaxHeight="25" Width="70" Height="30"  Content="Local game" Margin="4"
-                        Style="{StaticResource buttonRoundCorner2}" Command="{Binding LocalGameButtonPressed}"
-                        IsEnabled="{Binding OnlineGameSelected}" />
-
-                <Button MaxHeight="25" DockPanel.Dock="Left" Width="80" 
-                        Style="{StaticResource buttonRoundCorner2}" 
-                        Height="30" Content="Online game" Margin="4" 
-                        Command="{Binding OnlineGameButtonPressed}" 
-                        IsEnabled="{Binding LocalGameSelected}"/>
-            </StackPanel>
-        </Border>-->
-
         <!-- Server information -->
-        <!--Visibility="{Binding OnlineGameSelected, Converter={StaticResource booleanToVisibilityConverter}}"-->
         <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3">
             <StackPanel>
                 <DockPanel>
@@ -62,10 +44,9 @@
                     <TextBox Margin="10" Text="{Binding ClientPlayer.PlayerName, ValidatesOnExceptions=True, FallbackValue=Enter your name}" 
                          Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
                 </DockPanel>
-                
+
                 <Button Margin="10" Content="Connect to server" Style="{StaticResource buttonRoundCorner}"
                         Command="{Binding ConnectCommand}" Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}" Background="#ffd769"/>
-                <!--<Button Content="TestConnect" Command="{Binding GetPlayersCommand}"/>-->
                 <TextBlock Margin="10" Text="Server status: Connected" FontWeight="Bold" HorizontalAlignment="Left" Foreground="Green"
                            Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
                 <TextBlock Text="Choose a player name and connect to the server to play against others." TextWrapping="Wrap" Width="160" FontWeight="Bold" TextAlignment="Center"

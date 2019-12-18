@@ -572,10 +572,14 @@ namespace Client
                 this.GameIsActive = true;
             }
 
-            this.myTurn = true;
-            this.timer = new System.Timers.Timer(10000) { AutoReset = false };
-            this.timer.Start();
-            this.timer.Elapsed += this.Timer_Elapsed;
+            if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
+            {
+                this.myTurn = true;
+                this.timer = new System.Timers.Timer(10000) { AutoReset = false };
+                this.timer.Start();
+                this.timer.Elapsed += this.Timer_Elapsed;
+            }
+
             this.CurrentGameStatus = status;
 
             if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
@@ -620,7 +624,7 @@ namespace Client
         {
             if (this.myTurn)
             {
-                this.StatusMessage = "It's your turn. Play, or the game will end in 5 seconds!";
+                this.StatusMessage = "Your turn. Play, or game ends in 5 seconds!";
 
                 Task.Run(() =>
                 {
@@ -629,16 +633,16 @@ namespace Client
 
                     this.timer.Elapsed += async (sender, e) =>
                     {
-                        this.timer.Enabled = false;
+                        this.timer.Stop();
                         this.StatusMessage = "Game ended because of inactivity.";
                         await this.ComputeReturnToLobbyCommand();
                     };
                 });
 
-                this.timer.Enabled = false;
+                this.timer.Stop();
             }
 
-            this.timer.Enabled = false;
+            this.timer.Stop();
         }
 
         /// <summary>
@@ -655,7 +659,7 @@ namespace Client
         /// </summary>
         private void OnEnemyLeftGame()
         {
-            this.timer.Enabled = false;
+            this.timer.Stop();
             this.logger.LogInformation("[OnEnemyLeftGame]");
             this.StatusMessage = "Enemy left the game.";
             this.PlayerOne = new PlayerVM(new Player());
@@ -791,8 +795,9 @@ namespace Client
         /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeReturnToLobbyCommand()
         {
-            this.timer.Enabled = false;
+            this.timer.Stop();
             this.timer = new System.Timers.Timer { AutoReset = false };
+            this.myTurn = false;
 
             this.logger.LogInformation("[ComputeReturnToLobbyCommand]");
 
@@ -827,14 +832,13 @@ namespace Client
         private async Task ComputePlayerClick(GameCellVM cell)
         {
             this.timer.Stop();
-            this.timer.Enabled = false;
 
             this.logger.LogInformation("[ComputePlayerClick] CellIndex: {0}", new object[] { cell.Index });
             if (this.GameIsActive)
             {
                 if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.ConnectionId && this.myTurn)
                 {
-                    cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker; // this.ClientPlayer.Player.Marker;
+                    cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker;
                     this.myTurn = false;
 
                     var status = new GameStatus
