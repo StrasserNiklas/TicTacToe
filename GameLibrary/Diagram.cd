@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="GameLibrary.GameRequest">
+    <Position X="1.25" Y="1.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQgAAAAgAAIQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameLibrary.GameStatus">
+    <Position X="1.25" Y="4.25" Width="8" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIIAAAAAQAAAGAAAAAAAAQAABAAAAAABAAAAA=</HashCode>
+      <FileName>GameStatus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameLibrary.Player">
+    <Position X="9.75" Y="1.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAIAAAAAAAAAgAAEAIYAAAAAAAAAgAAAAIAAAAAA=</HashCode>
+      <FileName>Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameLibrary.SimpleGameInformation">
+    <Position X="5.25" Y="1.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SimpleGameInformation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Models.WinCondition">
+    <Position X="9.75" Y="5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WinCondition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Models.Game">
+    <Position X="13" Y="1.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAASAACACAAAQEAAAAICAUCggCAAEAAgAAAAAg=</HashCode>
+      <FileName>Game.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

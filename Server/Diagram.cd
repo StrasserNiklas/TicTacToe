@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Server.Hubs.GameHub">
+    <Position X="7.25" Y="4.25" Width="6" />
+    <TypeIdentifier>
+      <HashCode>kAAAICAAAAAICAAAAAAAABAAAAAQAAAIAAgAAAABAAA=</HashCode>
+      <FileName>Hubs\GameHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Services.MainService">
+    <Position X="0.75" Y="4" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>IAIAAAAAAAQAAAICAAAAAQBAAAQAAsCAAAAAAMAAgAA=</HashCode>
+      <FileName>Services\MainService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Server.Program">
+    <Position X="7.25" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Startup">
+    <Position X="7.25" Y="2" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAgAAACAAAAAA=</HashCode>
+      <FileName>Startup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Server.Services.IMainService">
+    <Position X="0.75" Y="0.5" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAQAAAIAAAAAAABAAAQAAsCAAAAAAIAAgAA=</HashCode>
+      <FileName>Services\IMainService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

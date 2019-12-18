@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Client.Converter.InverseBooleanToVisibilityConverter">
+    <Position X="9.5" Y="10.5" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Converter\InverseBooleanToVisibilityConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Client.ClientVM">
+    <Position X="0.5" Y="3.5" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>AAWAAoEgCSQLIASSBKIAApDgmYBCEEAArALSAogACAg=</HashCode>
+      <FileName>ViewModels\ClientVM.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.ViewModels.GameCellVM">
+    <Position X="10.75" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAIAAAAAAAAAAEAgAAAAIA=</HashCode>
+      <FileName>ViewModels\GameCellVM.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.ViewModels.PlayerVM">
+    <Position X="7.25" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAIAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAQAAAAA=</HashCode>
+      <FileName>ViewModels\PlayerVM.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.ViewModels.TicTacToeGameRepresentation">
+    <Position X="7.25" Y="7.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\TicTacToeGameRepresentation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.Models.Command">
+    <Position X="9.5" Y="12.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Command.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Client.ViewModels.BaseVM">
+    <Position X="5.5" Y="1" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>ViewModels\BaseVM.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Client.MainWindow">
+    <Position X="7.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Client.Services.UrlService">
+    <Position X="11.75" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Services\UrlService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
