@@ -99,8 +99,11 @@ namespace Server.Hubs
             if (player != null)
             {
                 // wenn der Enemy schon ein request von wem anderen hat, schicken wir Statusnachricht an den Caller
-                var existingRequest = new List<GameRequest>(await this.mainService.GetGameRequestsAsync()).SingleOrDefault(request => (request.Enemy == gameRequest.Enemy || request.Enemy == gameRequest.RequestingPlayer)
-            && (request.RequestingPlayer == gameRequest.Enemy || request.RequestingPlayer == gameRequest.RequestingPlayer));
+                var allRequests = await this.mainService.GetGameRequestsAsync();
+
+                var existingRequest = allRequests.SingleOrDefault(request =>
+                (request.Enemy == gameRequest.Enemy || request.Enemy == gameRequest.RequestingPlayer) && 
+                (request.RequestingPlayer == gameRequest.Enemy || request.RequestingPlayer == gameRequest.RequestingPlayer));
 
                 if (existingRequest == null)
                 {
