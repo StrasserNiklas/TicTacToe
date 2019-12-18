@@ -198,22 +198,32 @@ namespace Tests
             Player player1 = new Player();
             Player player2 = new Player();
             Player player3 = new Player();
+            Player player4 = new Player();
+            Player player5 = new Player();
+            Player player6 = new Player();
 
             player1.ConnectionId = "1";
             player2.ConnectionId = "2";
             player3.ConnectionId = "3";
+            player4.ConnectionId = "4";
+            player5.ConnectionId = "5";
+            player6.ConnectionId = "6";
 
             await service.AddPlayerAsync(player1);
             await service.AddPlayerAsync(player2);
             await service.AddPlayerAsync(player3);
+            await service.AddPlayerAsync(player4);
+            await service.AddPlayerAsync(player5);
+            await service.AddPlayerAsync(player6);
 
             Game game1 = new Game(player1, player2);
             await service.AddGameAsync(game1);
 
-            var playersNotInGame = service.GetPlayersNotInGameAsync().Result.ToList();
-            Assert.AreEqual(1, playersNotInGame.Count);
+            Game game2 = new Game(player3, player5);
+            await service.AddGameAsync(game2);
 
-            Assert.IsTrue(playersNotInGame.Contains(player3));
+            var playersNotInGame = service.GetPlayersNotInGameAsync().Result.ToList();
+            Assert.AreEqual(2, playersNotInGame.Count);
         }
 
         /// <summary>

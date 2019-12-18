@@ -23,7 +23,7 @@ namespace Server.Services
         /// <summary>
         /// This field is used to save the players.
         /// </summary>
-        private readonly List<Player> players = new List<Player>();
+        private readonly List<Player> playersOnServer = new List<Player>();
 
         /// <summary>
         /// This field is used to save the games.
@@ -60,7 +60,7 @@ namespace Server.Services
         {
             this.logger.LogInformation("[AddPlayerAsync] ConnectionId: {0}, PlayerName: {1}", new object[] { player.ConnectionId, player.PlayerName });
 
-            this.players.Add(player);
+            this.playersOnServer.Add(player);
 
             return Task.FromResult(player);
         }
@@ -74,7 +74,7 @@ namespace Server.Services
         public Task<IEnumerable<Player>> GetPlayersAsync()
         {
             this.logger.LogInformation("[GetPlayersAsync]");
-            return Task.FromResult<IEnumerable<Player>>(this.players);
+            return Task.FromResult<IEnumerable<Player>>(this.playersOnServer);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Server.Services
         public Task<Player> RemovePlayerAsync(Player player)
         {
             this.logger.LogInformation("[RemovePlayerAsync] ConnectionId: {0}, PlayerName: {1}", new object[] { player.ConnectionId, player.PlayerName });
-            this.players.Remove(player);
+            this.playersOnServer.Remove(player);
             return Task.FromResult(player);
         }
 
@@ -182,20 +182,32 @@ namespace Server.Services
         {
             this.logger.LogInformation("[GetPlayersNotInGameAsync]");
 
-            List<Player> playersInGame = new List<Player>();
+            List<Player> playersInAGame = new List<Player>();
 
             if (this.games.Count == 0)
             {
-                return Task.FromResult<IEnumerable<Player>>(this.players);
+                return Task.FromResult<IEnumerable<Player>>(this.playersOnServer);
             }
 
             foreach (var game in this.games)
             {
-                playersInGame.Add(game.PlayerOne);
-                playersInGame.Add(game.PlayerTwo);
+                playersInAGame.Add(game.PlayerOne);
+                playersInAGame.Add(game.PlayerTwo);
             }
 
-            return Task.FromResult<IEnumerable<Player>>(this.players.Except(playersInGame));
+            var playersNotInGame = new List<Player>();
+
+            foreach (var playerOnServer in this.playersOnServer)
+            {
+                var player = playersInAGame.SingleOrDefault(x => playerOnServer.ConnectionId == x.ConnectionId);
+
+                if (player == null)
+                {
+                    playersNotInGame.Add(playerOnServer);
+                }
+            }
+
+            return Task.FromResult<IEnumerable<Player>>(playersNotInGame);
         }
 
         /// <summary>

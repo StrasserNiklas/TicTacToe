@@ -19,6 +19,6 @@ namespace Client.Services
         /// <value>
         /// The lobby address.
         /// </value>
-        public string LobbyAddress => $"https://tictactoefyn.azurewebsites.net/game"; // https://localhost:5001/game
+        public string LobbyAddress => $"https://tictactoefyn.azurewebsites.net/game"; // "https://localhost:5001/game"
     }
 }

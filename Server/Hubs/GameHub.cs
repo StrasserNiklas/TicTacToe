@@ -117,6 +117,8 @@ namespace Server.Hubs
 
                         aTimer.Elapsed += async (sender, e) =>
                         {
+                            aTimer.Stop();
+
                             if (!request.Accepted)
                             {
                                 await this.mainService.RemoveRequestAsync(request, false);
@@ -210,10 +212,7 @@ namespace Server.Hubs
                 if (game.PlayerOne.ConnectionId == id || game.PlayerTwo.ConnectionId == id)
                 {
                     await this.mainService.RemoveGameAsync(game);
-
-                    // await base.Clients.Client(enemyId).SendAsync("StatusMessage", "Enemy left the game, please return to lobby.");
                     await Clients.Client(enemyId).SendAsync("EnemyLeftGame");
-
                     var simpleGameInfo = await this.mainService.GetSimpleGameInformationListAsync();
                     await Clients.All.SendAsync("ReceiveGames", simpleGameInfo);
                     await Clients.All.SendAsync("ReceivePlayersAsync", await this.mainService.GetPlayersNotInGameAsync());
