@@ -48,7 +48,7 @@ namespace Client
         /// <summary>
         /// This field is used to save the player list.
         /// </summary>
-        private ObservableCollection<Player> playerList;
+        private ObservableCollection<PlayerVM> playerList;
 
         /// <summary>
         /// This field is used to save the game list.
@@ -88,7 +88,7 @@ namespace Client
         /// <summary>
         /// This field is used to save the requesting or the enemy player.
         /// </summary>
-        private Player requestingorEnemyPlayer;
+        private PlayerVM requestingorEnemyPlayer;
 
         /// <summary>
         /// This field is used to indicate whether it is clients turn.
@@ -98,12 +98,12 @@ namespace Client
         /// <summary>
         /// This field is used to save the first player.
         /// </summary>
-        private Player playerOne;
+        private PlayerVM playerOne;
 
         /// <summary>
         /// This field is used to save the second player.
         /// </summary>
-        private Player playerTwo;
+        private PlayerVM playerTwo;
 
         /// <summary>
         /// This field is used to save the timer.
@@ -119,7 +119,7 @@ namespace Client
         {
             this.logger = logger;
             this.urlService = urlService;
-            this.PlayerList = new ObservableCollection<Player>();
+            this.PlayerList = new ObservableCollection<PlayerVM>();
             this.GameList = new ObservableCollection<SimpleGameInformation>();
             this.ClientConnected = false;
             this.GameIsActive = false;
@@ -212,7 +212,7 @@ namespace Client
         /// <value>
         /// The requesting or enemy player.
         /// </value>
-        public Player RequestingOrEnemyPlayer
+        public PlayerVM RequestingOrEnemyPlayer
         {
             get
             {
@@ -248,7 +248,7 @@ namespace Client
         /// <value>
         /// The player one.
         /// </value>
-        public Player PlayerOne
+        public PlayerVM PlayerOne
         {
             get
             {
@@ -268,7 +268,7 @@ namespace Client
         /// <value>
         /// The player two.
         /// </value>
-        public Player PlayerTwo
+        public PlayerVM PlayerTwo
         {
             get
             {
@@ -420,7 +420,7 @@ namespace Client
         /// <value>
         /// The list of currently available players.
         /// </value>
-        public ObservableCollection<Player> PlayerList
+        public ObservableCollection<PlayerVM> PlayerList
         {
             get
             {
@@ -460,7 +460,7 @@ namespace Client
         /// <value>
         /// The currently selected player in the online player list.
         /// </value>
-        public Player SelectedPlayer { get; set; }
+        public PlayerVM SelectedPlayer { get; set; }
 
         /// <summary>
         /// Gets the game representation.
@@ -561,12 +561,12 @@ namespace Client
                 if (this.ClientPlayer.Player.ConnectionId == status.CurrentPlayerId)
                 {
                     this.PlayerTwo = this.RequestingOrEnemyPlayer;
-                    this.PlayerOne = this.ClientPlayer.Player;
+                    this.PlayerOne = this.ClientPlayer;
                 }
                 else
                 {
                     this.PlayerOne = this.RequestingOrEnemyPlayer;
-                    this.PlayerTwo = this.ClientPlayer.Player;
+                    this.PlayerTwo = this.ClientPlayer;
                 }
 
                 this.GameIsActive = true;
@@ -658,8 +658,8 @@ namespace Client
             this.timer.Enabled = false;
             this.logger.LogInformation("[OnEnemyLeftGame]");
             this.StatusMessage = "Enemy left the game.";
-            this.PlayerOne = new Player();
-            this.PlayerTwo = new Player();
+            this.PlayerOne = new PlayerVM(new Player());
+            this.PlayerTwo = new PlayerVM(new Player());
             this.GameIsActive = false;
             this.ResetField();
         }
@@ -674,7 +674,7 @@ namespace Client
 
             if (gameRequest.Enemy != null)
             {
-                this.RequestingOrEnemyPlayer = gameRequest.RequestingPlayer;
+                this.RequestingOrEnemyPlayer = new PlayerVM(gameRequest.RequestingPlayer);
                 this.GameWasRequested = true;
                 this.RequestID = gameRequest.RequestID;
 
@@ -702,7 +702,7 @@ namespace Client
             if (this.ClientConnected)
             {
                 this.logger.LogInformation("[OnPlayersReceived]");
-                this.PlayerList = new ObservableCollection<Player>(players.Where(id => id.ConnectionId != this.ClientPlayer.Player.ConnectionId));
+                this.PlayerList = this.ConvertPlayerListToPlayerVMCollection(players.Where(id => id.ConnectionId != this.ClientPlayer.Player.ConnectionId).ToList());
             }
         }
 
@@ -798,15 +798,15 @@ namespace Client
 
             Application.Current.Dispatcher.Invoke(new ThreadStart(() =>
             {
-                this.PlayerOne = new Player();
-                this.PlayerTwo = new Player();
+                this.PlayerOne = new PlayerVM(new Player());
+                this.PlayerTwo = new PlayerVM(new Player());
                 this.GameIsActive = false;
                 this.ResetField();
             }));
 
             try
             {
-                await this.hubConnection.SendAsync("ReturnToLobby", this.ClientPlayer.Player.ConnectionId, this.RequestingOrEnemyPlayer.ConnectionId);
+                await this.hubConnection.SendAsync("ReturnToLobby", this.ClientPlayer.Player.ConnectionId, this.RequestingOrEnemyPlayer.Player.ConnectionId);
             }
             catch (HttpRequestException)
             {
@@ -877,7 +877,7 @@ namespace Client
 
                 try
                 {
-                    await this.hubConnection.SendAsync("AddGameRequest", new GameRequest(this.SelectedPlayer, this.ClientPlayer.Player));
+                    await this.hubConnection.SendAsync("AddGameRequest", new GameRequest(this.SelectedPlayer.Player, this.ClientPlayer.Player));
                 }
                 catch (HttpRequestException)
                 {
@@ -888,6 +888,23 @@ namespace Client
                     this.statusMessage = "An unknown error occured. Please try again later.";
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts the player list to a collection of player view models.
+        /// </summary>
+        /// <param name="playerList">The player list.</param>
+        /// <returns>The converted collection.</returns>
+        private ObservableCollection<PlayerVM> ConvertPlayerListToPlayerVMCollection(List<Player> playerList)
+        {
+            var collection = new ObservableCollection<PlayerVM>();
+
+            foreach (var player in playerList)
+            {
+                collection.Add(new PlayerVM(player));
+            }
+
+            return collection;
         }
     }
 }

@@ -19,16 +19,6 @@ namespace Client.ViewModels
     public class PlayerVM : BaseVM
     {
         /// <summary>
-        /// This field is used to save the marked positions.
-        /// </summary>
-        private List<int> markedPositions;
-
-        /// <summary>
-        /// This field is used to save the wins.
-        /// </summary>
-        private int wins;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="PlayerVM"/> class.
         /// </summary>
         /// <param name="player">The player.</param>
@@ -75,13 +65,13 @@ namespace Client.ViewModels
         {
             get
             {
-                return this.wins;
+                return this.Player.Wins;
             }
 
             set
             {
-                this.wins = value;
-                this.FireOnPropertyChanged(nameof(this.Wins));
+                this.Player.Wins = value;
+                this.FireOnPropertyChanged();
             }
         }
 
@@ -96,12 +86,12 @@ namespace Client.ViewModels
         {
             get
             {
-                return this.markedPositions;
+                return this.Player.MarkedPositions;
             }
 
             set
             {
-                this.markedPositions = value ?? throw new ArgumentNullException(nameof(this.MarkedPositions), "The list of marked positions can´t be null.");
+                this.Player.MarkedPositions = value ?? throw new ArgumentNullException(nameof(this.MarkedPositions), "The list of marked positions can´t be null.");
             }
         }
     }

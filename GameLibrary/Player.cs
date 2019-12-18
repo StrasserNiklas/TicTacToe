@@ -10,15 +10,12 @@ namespace GameLibrary
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// This class represents a player.
     /// It contains field for his name, his connection id on the server, his wins, his marked positions and his marker.
     /// </summary>
-    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
-    public class Player : INotifyPropertyChanged
+    public class Player
     {
         /// <summary>
         /// This field is used to save the wins of the player.
@@ -57,11 +54,6 @@ namespace GameLibrary
         {
             this.PlayerName = "Player";
         }
-
-        /// <summary>
-        /// Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Gets or sets the unique connection identifier set by the signalR service.
@@ -137,7 +129,6 @@ namespace GameLibrary
                 }
 
                 this.wins = value;
-                this.FireOnPropertyChanged();
             }
         }
 
@@ -159,15 +150,6 @@ namespace GameLibrary
             {
                 this.markedPositions = value ?? throw new ArgumentNullException(nameof(this.MarkedPositions), "The list of marked positions can´t be null.");
             }
-        }
-
-        /// <summary>
-        /// Fires the property changed event.
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        protected void FireOnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
