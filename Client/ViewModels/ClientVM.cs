@@ -129,7 +129,7 @@ namespace Client
             // object as a command parameter is needed because:
             // when a xaml object calls a command, the object needs to be relayed to the command method.
             this.SetupCommand = new Command(async obj => await this.Setup());
-            this.PlayerClick = new Command(async obj => await this.ComputePlayerClick((GameCellVM)obj));
+            this.PlayerClick = new Command(async obj => await this.ComputePlayerClickAsync((GameCellVM)obj));
             this.AcceptCommand = new Command(async obj => await this.ComputeAcceptCommand());
             this.RequestGameCommand = new Command(async obj => await this.ComputeRequestGameCommand());
             this.DeclineCommand = new Command(async obj => await this.ComputeDeclineCommand());
@@ -327,7 +327,7 @@ namespace Client
                 {
                     Task.Run(async () =>
                     {
-                        await Task.Delay(7000);
+                        await Task.Delay(10000);
                         this.StatusMessage = string.Empty;
                     });
                 }
@@ -724,9 +724,11 @@ namespace Client
             {
                 try
                 {
-                    this.ClientConnected = true;
+                    
 
                     await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
+
+                    this.ClientConnected = true;
                 }
                 catch (HttpRequestException)
                 {
@@ -830,7 +832,7 @@ namespace Client
         /// </summary>
         /// <param name="cell">The cell that was clicked.</param>
         /// <returns>A Task that represents the asynchronous method.</returns>
-        private async Task ComputePlayerClick(GameCellVM cell)
+        private async Task ComputePlayerClickAsync(GameCellVM cell)
         {
             this.timer.Stop();
 
