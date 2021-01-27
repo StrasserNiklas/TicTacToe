@@ -12,11 +12,13 @@ namespace Client.ViewModels
     {
         public LoginVM()
         {
+            this.ErrorHandler = new ErrorHandlerVM();
             this.LoginCommand = new Command(async obj => await this.ComputeLoginCommand());
             this.SignupCommand = new Command(async obj => await this.ComputeSignupCommand());
 
         }
 
+        public ErrorHandlerVM ErrorHandler { get; set; }
 
         public string LoginUsername { get; set; }
 
@@ -45,27 +47,40 @@ namespace Client.ViewModels
         /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeLoginCommand()
         {
-            var placeholder = true;
             //this.logger.LogInformation("[ComputeConnectCommand]");
 
             if (!string.IsNullOrEmpty(this.LoginUsername))
             {
-            //    try
-            //    {
+                this.ErrorHandler.LoginUsernameErrorMessage = "";
 
+                if (!string.IsNullOrEmpty(this.LoginPassword))
+                {
+                    this.ErrorHandler.LoginPasswordErrorMessage = "";
 
-            //        await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
-
-            //        this.ClientConnected = true;
-            //    }
-            //    catch (HttpRequestException)
-            //    {
-            //        this.StatusMessage = "Unable to connect to server.";
-            //    }
-            //    catch (Exception)
-            //    {
-            //        this.statusMessage = "An unknown error occured. Please try again later.";
-            //    }
+                    //    try
+                    //    {
+                    //        await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
+                    //        this.ClientConnected = true;
+                    //    }
+                    //    catch (HttpRequestException)
+                    //    {
+                    //        this.StatusMessage = "Unable to connect to server.";
+                    //    }
+                    //    catch (Exception)
+                    //    {
+                    //        this.statusMessage = "An unknown error occured. Please try again later.";
+                    //    }
+                }
+                else
+                {
+                    this.ErrorHandler.LoginPasswordErrorMessage = "Empty password";
+                    //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
+                }
+            }
+            else
+            {
+                this.ErrorHandler.LoginUsernameErrorMessage = "Enter a username";
+                //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
             }
         }
 
@@ -76,27 +91,40 @@ namespace Client.ViewModels
         /// <returns>A Task that represents the asynchronous method.</returns>
         private async Task ComputeSignupCommand()
         {
-            var placeholder = true;
             //this.logger.LogInformation("[ComputeConnectCommand]");
 
             if (!string.IsNullOrEmpty(this.SignupUsername))
             {
-            //    try
-            //    {
+                this.ErrorHandler.SignupPasswordErrorMessage = "";
 
+                if (!string.IsNullOrEmpty(this.SignupPassword))
+                {
+                    this.ErrorHandler.SignupPasswordErrorMessage = "";
 
-            //        await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
-
-            //        this.ClientConnected = true;
-            //    }
-            //    catch (HttpRequestException)
-            //    {
-            //        this.StatusMessage = "Unable to connect to server.";
-            //    }
-            //    catch (Exception)
-            //    {
-            //        this.statusMessage = "An unknown error occured. Please try again later.";
-            //    }
+                    //    try
+                    //    {
+                    //        await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
+                    //        this.ClientConnected = true;
+                    //    }
+                    //    catch (HttpRequestException)
+                    //    {
+                    //        this.StatusMessage = "Unable to connect to server.";
+                    //    }
+                    //    catch (Exception)
+                    //    {
+                    //        this.statusMessage = "An unknown error occured. Please try again later.";
+                    //    }
+                }
+                else
+                {
+                    this.ErrorHandler.SignupPasswordErrorMessage = "Empty password";
+                    //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
+                }
+            }
+            else
+            {
+                this.ErrorHandler.SignupUsernameErrorMessage = "Enter a username";
+                //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
             }
         }
 

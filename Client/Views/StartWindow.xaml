@@ -77,11 +77,16 @@
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"  >
                     <TextBlock Margin="0,0,0,0" Text="Sign Up" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" />
 
-                    <TextBlock Margin="5" Text="Username" HorizontalAlignment="Center" />
-                    <TextBox Text="{Binding SignupUsername}" Margin="5" Width="140" />
-                    <TextBlock Margin="5" Text="Password" HorizontalAlignment="Center" />
-                    <PasswordBox Margin="5" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=SignupPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <!-- Username -->
+                    <TextBlock Margin="5" Text="Username"  FontWeight="DemiBold" HorizontalAlignment="Center" />
+                    <TextBox Text="{Binding SignupUsername}" Margin="5,0,5,0" Width="140" />
+                    <TextBlock  Foreground="Red" Text="{Binding ErrorHandler.SignupUsernameErrorMessage}" Margin="5,0,0,0" />
 
+                    <!-- Password -->
+                    <TextBlock Margin="5" Text="Password" FontWeight="DemiBold" HorizontalAlignment="Center" />
+                    <PasswordBox Margin="5,0,5,0" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=SignupPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock  Foreground="Red" Text="{Binding ErrorHandler.SignupPasswordErrorMessage}" Margin="5,0,0,0" />
+                    
                     <Button Command="{Binding SignupCommand}" Style="{StaticResource buttonRoundCorner}"   Content="Sign Up" Width="120" Margin="10" />
                 </StackPanel>
             </Border>
@@ -95,12 +100,17 @@
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"  >
                     <TextBlock Margin="0,0,0,0" Text="Login" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" />
 
-                    <TextBlock Margin="5" Text="Username" HorizontalAlignment="Center" />
-                    <TextBox Text="{Binding LoginUsername}" Margin="5" Width="140" />
-                    <TextBlock Margin="5" Text="Password" HorizontalAlignment="Center" />
-                    <PasswordBox Margin="5" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <!-- Username -->
+                    <TextBlock Margin="5" Text="Username" FontWeight="DemiBold" HorizontalAlignment="Center" />
+                    <TextBox Text="{Binding LoginUsername}" Margin="5,0,5,0" Width="140" />
+                    <TextBlock  Foreground="Red" Text="{Binding ErrorHandler.LoginUsernameErrorMessage}" Margin="5,0,0,0" />
+                    
+                    <!-- Password -->
+                    <TextBlock Margin="5" Text="Password" FontWeight="DemiBold" HorizontalAlignment="Center" />
+                    <PasswordBox Margin="5,0,5,0" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock  Foreground="Red" Text="{Binding ErrorHandler.LoginPasswordErrorMessage}" Margin="5,0,0,0" />
 
-                    <Button Command="{Binding SignupCommand}" Style="{StaticResource buttonRoundCorner}"   Content="Login" Width="120" Margin="10" />
+                    <Button Command="{Binding LoginCommand}" Style="{StaticResource buttonRoundCorner}"   Content="Login" Width="120" Margin="10" />
                 </StackPanel>
             </Border>
 
