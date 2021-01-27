@@ -14,6 +14,7 @@ namespace Server.Hubs
     using System.Threading.Tasks;
     using GameLibrary;
     using Microsoft.AspNetCore.SignalR;
+    using Server.Extensions;
     using Server.Services;
 
     /// <summary>
@@ -156,7 +157,12 @@ namespace Server.Hubs
                 else
                 {
                     // existingRequest.Accepted = true;
+
+                    // new game in DB => id, playerOne, playerTwo,
                     var game = new Game(existingRequest.RequestingPlayer, existingRequest.Enemy);
+
+                    // game.CurrentGameStatus.ConvertToString();
+
                     await this.mainService.RemoveRequestAsync(existingRequest, true);
 
                     await this.mainService.AddGameAsync(game);

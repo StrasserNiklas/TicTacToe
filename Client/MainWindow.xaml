@@ -35,7 +35,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Server information -->
-        <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3">
+        <Border Visibility="Collapsed"  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3">
             <StackPanel>
                 <DockPanel>
                     <TextBlock Margin="5,10,0,10" Text="Your name: " />
@@ -56,7 +56,7 @@
         </Border>
 
         <!-- Online players list view and connection -->
-        <Border MinWidth="130" Grid.Row="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" >
+        <Border Visibility="Visible" MinWidth="130" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" >
             <StackPanel>
                 <Label Content="Available players:" Style="{StaticResource labelStyle}" />
 

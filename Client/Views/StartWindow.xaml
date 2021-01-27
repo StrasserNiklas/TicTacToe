@@ -1,0 +1,110 @@
+﻿<Window x:Class="Client.Views.StartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Views" xmlns:local1="clr-namespace:Client.Converter"
+        mc:Ignorable="d"
+        Title="StartWindow" Height="350" Width="530" Background="#ffedbd">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+                    <local1:InverseBooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" />
+                </ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        
+        <!-- Start screen -->
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=ShowLoginScreen}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <TextBlock Text="TicTacToe" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="80" FontWeight="Bold" FontFamily="Bahnschrift SemiLight">
+            </TextBlock>
+
+            <StackPanel Grid.Row="1"  Orientation="Horizontal" HorizontalAlignment="Center" Height="80">
+                <Button Click="PlayBots_Click" Style="{StaticResource buttonRoundCorner}" Margin="10" Content="Play vs Bot" Width="120" />
+                <Button Click="PlayHumans_Click" Style="{StaticResource buttonRoundCorner}"  Content="Play vs Humans" Width="120" Margin="10" />
+
+            </StackPanel>
+        </Grid>
+
+        <!-- Login/Register grid-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=ShowLoginScreen}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <TextBlock Grid.ColumnSpan="3" Text="TicTacToe" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="50" FontWeight="Bold" FontFamily="Bahnschrift SemiLight" />
+
+
+            <!-- Sign Up -->
+            <Border Grid.Row="1" BorderBrush="#FFFFBA00" BorderThickness="1" Width="200" Height="200" CornerRadius="10">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"  >
+                    <TextBlock Margin="0,0,0,0" Text="Sign Up" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" />
+
+                    <TextBlock Margin="5" Text="Username" HorizontalAlignment="Center" />
+                    <TextBox Text="{Binding SignupUsername}" Margin="5" Width="140" />
+                    <TextBlock Margin="5" Text="Password" HorizontalAlignment="Center" />
+                    <PasswordBox Margin="5" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=SignupPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Button Command="{Binding SignupCommand}" Style="{StaticResource buttonRoundCorner}"   Content="Sign Up" Width="120" Margin="10" />
+                </StackPanel>
+            </Border>
+            
+            
+            <Rectangle Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" Width="1" Margin="0,20,0,20" Stroke="#FFFFBA00" />
+
+
+            <!-- Login -->
+            <Border Grid.Row="1" Grid.Column="2" BorderBrush="#FFFFBA00" BorderThickness="1" Width="200" Height="200" CornerRadius="10">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"  >
+                    <TextBlock Margin="0,0,0,0" Text="Login" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" />
+
+                    <TextBlock Margin="5" Text="Username" HorizontalAlignment="Center" />
+                    <TextBox Text="{Binding LoginUsername}" Margin="5" Width="140" />
+                    <TextBlock Margin="5" Text="Password" HorizontalAlignment="Center" />
+                    <PasswordBox Margin="5" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Button Command="{Binding SignupCommand}" Style="{StaticResource buttonRoundCorner}"   Content="Login" Width="120" Margin="10" />
+                </StackPanel>
+            </Border>
+
+            <Button Click="PlayHumans_Click" Grid.Row="2" HorizontalAlignment="Center" Grid.ColumnSpan="3" Style="{StaticResource buttonRoundCorner}"   Content="Back" Width="120" Margin="10"/>
+        </Grid>
+    </Grid>
+</Window>
