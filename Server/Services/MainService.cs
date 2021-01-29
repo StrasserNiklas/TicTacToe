@@ -24,6 +24,8 @@ namespace Server.Services
         /// </summary>
         private readonly List<Player> playersOnServer = new List<Player>();
 
+        private readonly Dictionary<Player, string> registeredPlayers = new Dictionary<Player, string>();
+
         /// <summary>
         /// This field is used to save the games.
         /// </summary>

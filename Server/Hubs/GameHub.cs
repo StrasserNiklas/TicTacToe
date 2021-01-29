@@ -61,6 +61,8 @@ namespace Server.Hubs
         {
             Player newPlayer = new Player(nameForNewPlayer) { ConnectionId = Context.ConnectionId };
 
+            // datenbank
+
             var allPlayers = await this.mainService.GetPlayersAsync();
             bool playerExists = false;
 
