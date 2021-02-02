@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Player]
+﻿CREATE TABLE [dbo].[Users]
 (
 	[Id] INT NOT NULL PRIMARY KEY
 )
