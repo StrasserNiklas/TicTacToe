@@ -58,7 +58,7 @@
                     </ListView.View>
                 </ListView>
 
-                <Button  Width="100" Height="50" Style="{StaticResource buttonRoundCorner}" Content="Back"/>
+                <Button Click="Button_Click"  Width="100" Height="50" Style="{StaticResource buttonRoundCorner}" Content="Back"/>
 
             </StackPanel>
 

@@ -15,6 +15,7 @@ namespace Client
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Serilog;
+    using Server;
 
     /// <summary>
     /// Interaction logic for MainWindow.XAML.
@@ -49,6 +50,15 @@ namespace Client
 
             this.DataContext = this.client;
             this.client.ClientPlayer = new PlayerVM(new Player("player"));
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var man = new DBManager();
+
+            // man.AddNewPlayer("felix", "abcde");
+            man.UpdatePlayerWins(1);
+            man.GetLeaderBoardData();
         }
     }
 }
