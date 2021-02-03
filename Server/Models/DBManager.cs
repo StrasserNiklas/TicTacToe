@@ -13,54 +13,6 @@ namespace Server
 {
     public class DBManager
     {
-        public ApiResponse AddNewPlayer(string username, string passwordHash)
-        {
-            using IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ticData"].ConnectionString);
-
-            if (db.State == ConnectionState.Closed)
-            {
-                db.Open();
-            }
-
-            var query = db.Query<User>($"select * from Users where username='{username}'");
-
-            if (query.Count() >= 1)
-            {
-                return new ApiResponse(true, "", 0);
-            }
-
-            var id = db.QuerySingle<int>("Insert into Users (username, password) OUTPUT INSERTED.Id VALUES (@username, @passwordHash)", new { username, passwordHash });
-
-            return new ApiResponse(false, "", id);
-        }
-
-        public ApiResponse CheckLogin(string username, string passwordHash)
-        {
-            using IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ticData"].ConnectionString);
-
-            if (db.State == ConnectionState.Closed)
-            {
-                db.Open();
-            }
-
-            var query = db.Query<User>($"select * from Users where username='{username}'").ToList();
-
-            if (query.Count() == 0)
-            {
-                return new ApiResponse(true, "", 0);
-            }
-
-            if (query.Count() == 1)
-            {
-                if (query.First().Password != passwordHash)
-                {
-                    return new ApiResponse(true, "", 0);
-                }
-            }
-
-            return new ApiResponse(false, "", query.First().Id); 
-        }
-
         public void UpdatePlayerWins(int userId)
         {
             using IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ticData"].ConnectionString);
@@ -96,5 +48,55 @@ namespace Server
 
             return query;
         }
+
+        //public ApiResponse AddNewPlayer(string username, string passwordHash)
+        //{
+        //    using IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ticData"].ConnectionString);
+
+        //    if (db.State == ConnectionState.Closed)
+        //    {
+        //        db.Open();
+        //    }
+
+        //    var query = db.Query<User>($"select * from Users where username='{username}'");
+
+        //    if (query.Count() >= 1)
+        //    {
+        //        return new ApiResponse(true, "", 0);
+        //    }
+
+        //    var id = db.QuerySingle<int>("Insert into Users (username, password) OUTPUT INSERTED.Id VALUES (@username, @passwordHash)", new { username, passwordHash });
+
+        //    return new ApiResponse(false, "", id);
+        //}
+
+        //public ApiResponse CheckLogin(string username, string passwordHash)
+        //{
+        //    using IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ticData"].ConnectionString);
+
+        //    if (db.State == ConnectionState.Closed)
+        //    {
+        //        db.Open();
+        //    }
+
+        //    var query = db.Query<User>($"select * from Users where username='{username}'").ToList();
+
+        //    if (query.Count() == 0)
+        //    {
+        //        return new ApiResponse(true, "", 0);
+        //    }
+
+        //    if (query.Count() == 1)
+        //    {
+        //        if (query.First().Password != passwordHash)
+        //        {
+        //            return new ApiResponse(true, "", 0);
+        //        }
+        //    }
+
+        //    return new ApiResponse(false, "", query.First().Id); 
+        //}
+
+
     }
 }

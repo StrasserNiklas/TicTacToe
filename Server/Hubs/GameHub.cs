@@ -66,20 +66,20 @@ namespace Server.Hubs
             var allPlayers = await this.mainService.GetPlayersAsync();
             bool playerExists = false;
 
-            foreach (var player in allPlayers)
-            {
-                if (player.PlayerName == nameForNewPlayer)
-                {
-                    playerExists = true;
-                    break;
-                }
-            }
+            //foreach (var player in allPlayers)
+            //{
+            //    if (player.PlayerName == nameForNewPlayer)
+            //    {
+            //        playerExists = true;
+            //        break;
+            //    }
+            //}
 
-            if (playerExists)
-            {
-                await Clients.Caller.SendAsync("DuplicateName");
-                return;
-            }
+            //if (playerExists)
+            //{
+            //    await Clients.Caller.SendAsync("DuplicateName");
+            //    return;
+            //}
 
             await this.mainService.AddPlayerAsync(newPlayer);
             await Clients.Caller.SendAsync("ReturnPlayerInstance", newPlayer);

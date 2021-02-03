@@ -28,8 +28,16 @@ namespace Client.Views
             InitializeComponent();
 
             this.loginManagement = new LoginVM();
+            this.loginManagement.OnSuccessfulAuthentication += LoginManagement_OnSuccessfulAuthentication;
             this.DataContext = this.loginManagement;
 
+        }
+
+        private void LoginManagement_OnSuccessfulAuthentication(object sender, EventArgs e)
+        {
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
+            this.Close();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

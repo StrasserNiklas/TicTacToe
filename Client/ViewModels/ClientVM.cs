@@ -136,7 +136,10 @@ namespace Client
             this.ReturnToLobbyCommand = new Command(async obj => await this.ComputeReturnToLobbyCommand());
             this.ConnectCommand = new Command(async obj => await this.ComputeConnectCommand());
 
-            this.SetupCommand.Execute(new object()); 
+            this.SetupCommand.Execute(new object());
+
+            this.clientPlayer.PlayerName = "nik";
+             this.ComputeAcceptCommand();
         }
 
         /// <summary>
@@ -724,7 +727,6 @@ namespace Client
             {
                 try
                 {
-                    
 
                     await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
 

@@ -1,7 +1,10 @@
 ﻿using Client.Models;
+using Client.Services;
+using GameLibrary;
 using System;
 using System.Collections.Generic;
 using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,6 +20,10 @@ namespace Client.ViewModels
             this.SignupCommand = new Command(async obj => await this.ComputeSignupCommand());
 
         }
+
+        public event EventHandler OnSuccessfulAuthentication;
+
+        private RestService restService = new RestService();
 
         public ErrorHandlerVM ErrorHandler { get; set; }
 
@@ -57,19 +64,17 @@ namespace Client.ViewModels
                 {
                     this.ErrorHandler.LoginPasswordErrorMessage = "";
 
-                    //    try
-                    //    {
-                    //        await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
-                    //        this.ClientConnected = true;
-                    //    }
-                    //    catch (HttpRequestException)
-                    //    {
-                    //        this.StatusMessage = "Unable to connect to server.";
-                    //    }
-                    //    catch (Exception)
-                    //    {
-                    //        this.statusMessage = "An unknown error occured. Please try again later.";
-                    //    }
+                    var hash = this.ComputeSha256Hash(this.LoginPassword);
+                    var response = await this.restService.Login(this.LoginUsername, hash);
+
+                    if (!response.WasSuccessful)
+                    {
+                        this.ErrorHandler.LoginPasswordErrorMessage = "Incorrect credentials.";
+                    }
+                    else
+                    {
+                        this.FireOnSuccessfulAuthentication();
+                    }
                 }
                 else
                 {
@@ -101,19 +106,17 @@ namespace Client.ViewModels
                 {
                     this.ErrorHandler.SignupPasswordErrorMessage = "";
 
-                    //    try
-                    //    {
-                    //        await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
-                    //        this.ClientConnected = true;
-                    //    }
-                    //    catch (HttpRequestException)
-                    //    {
-                    //        this.StatusMessage = "Unable to connect to server.";
-                    //    }
-                    //    catch (Exception)
-                    //    {
-                    //        this.statusMessage = "An unknown error occured. Please try again later.";
-                    //    }
+                    var hash = this.ComputeSha256Hash(this.SignupPassword);
+                    var response = await this.restService.AddUser(this.SignupUsername, hash);
+
+                    if (!response.WasSuccessful)
+                    {
+                        this.ErrorHandler.SignupPasswordErrorMessage = response.ErrorMessage;
+                    }
+                    else
+                    {
+                        this.FireOnSuccessfulAuthentication();
+                    }
                 }
                 else
                 {
@@ -137,5 +140,27 @@ namespace Client.ViewModels
         }
 
 
+        protected virtual void FireOnSuccessfulAuthentication()
+        {
+            this.OnSuccessfulAuthentication?.Invoke(this, new EventArgs());
+        }
+
+        private string ComputeSha256Hash(string rawData)
+        {
+            // Create a SHA256   
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // ComputeHash - returns byte array  
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                // Convert byte array to a string   
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
     }
 }

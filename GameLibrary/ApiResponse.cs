@@ -2,9 +2,9 @@
 {
     public class ApiResponse
     {
-        public ApiResponse(bool errorOccured, string errorMessage, int userId)
+        public ApiResponse(bool wasSuccessful, string errorMessage, int userId)
         {
-            this.ErrorOccured = errorOccured;
+            this.WasSuccessful = wasSuccessful;
             this.ErrorMessage = errorMessage;
             this.UserId = UserId;
         }
@@ -13,7 +13,7 @@
         {
         }
 
-        public bool ErrorOccured { get; set; }
+        public bool WasSuccessful { get; set; }
 
         public string ErrorMessage { get; set; }
 

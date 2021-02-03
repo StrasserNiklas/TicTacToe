@@ -20,5 +20,14 @@ namespace Client.Services
         /// The lobby address.
         /// </value>
         public string LobbyAddress => $"https://ticserver.azurewebsites.net/game"; // https://localhost:5001/game https://tictactoefyn.azurewebsites.net/game
+
+        /// <summary>
+        /// Gets the lobby address.
+        /// </summary>
+        /// <value>
+        /// The lobby address.
+        /// </value>
+        public string ApiAddress => $"https://ticserver.azurewebsites.net/api"; 
+
     }
 }
