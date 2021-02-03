@@ -22,179 +22,221 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- Main grid -->
+   
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="145" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+        <Grid Panel.ZIndex="100" >
 
-        <!-- Server information -->
-        <Border Visibility="Collapsed"  Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3">
+            <Grid Background="Gray" Opacity="0.6"/>
+
+
             <StackPanel>
-                <DockPanel>
-                    <TextBlock Margin="5,10,0,10" Text="Your name: " />
-                    <TextBlock Margin="0,10,0,10" Text="{Binding ClientPlayer.PlayerName}" FontWeight="Bold"
-                           Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
-                    <TextBox Margin="10" Text="{Binding ClientPlayer.PlayerName, ValidatesOnExceptions=True, FallbackValue=Enter your name}" 
-                         Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
-                </DockPanel>
-
-                <Button Margin="10" Content="Connect to server" Style="{StaticResource buttonRoundCorner}"
-                        Command="{Binding ConnectCommand}" Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}" Background="#ffd769"/>
-                <TextBlock Margin="10" Text="Server status: Connected" FontWeight="Bold" HorizontalAlignment="Left" Foreground="Green"
-                           Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
-                <TextBlock Text="Choose a player name and connect to the server to play against others." TextWrapping="Wrap" Width="160" FontWeight="Bold" TextAlignment="Center"
-                           Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
-            </StackPanel>
-            
-        </Border>
-
-        <!-- Online players list view and connection -->
-        <Border Visibility="Visible" MinWidth="130" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" >
-            <StackPanel>
-                <Label Content="Available players:" Style="{StaticResource labelStyle}" />
-
-                <!--Current online player -->
-                <ListView Margin="5,5"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="0" BorderBrush="Black" ItemsSource="{Binding PlayerList}" SelectedItem="{Binding SelectedPlayer, Mode=TwoWay}">
-                    <ListView.View>
-                        <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
-                            <GridViewColumn Header="Name" Width="130"   >
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding PlayerName}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-
-                <Button Style="{StaticResource buttonRoundCorner}" Background="#ffd769" Margin="5" Command="{Binding RequestGameCommand}">
-                    <TextBlock Margin="5,0,5,0" Text="Play with selected player" FontWeight="Medium"/>
-                </Button>
-
-                <Label Content="Current games:" Style="{StaticResource labelStyle}" />
                 
-                <!--Current games -->
-                <ListView Margin="5,5"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="0" BorderBrush="Black" ItemsSource="{Binding GameList}" >
+                <ListView MinHeight="200" Background="#ffd769" MaxWidth="300" BorderThickness="0" Margin="20">
+                    
                     <ListView.View>
-                        <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
-                            <GridViewColumn Header="Player 1" Width="Auto"  >
+                        <GridView ColumnHeaderContainerStyle="{StaticResource secondHeaderStyle}">
+                            <!-- Agent hostname -->
+                            <GridViewColumn Header="Playername"  >
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding PlayerOne}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                                
-                            </GridViewColumn>
-                            <GridViewColumn Header=" vs " Width="Auto"  >
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text=" vs " />
+                                        <TextBlock Text="{Binding AgentModel.AgentProcessManager.HostName, UpdateSourceTrigger=PropertyChanged}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Player 2" Width="Auto"  >
+
+                            <!-- Agent ip address -->
+                            <GridViewColumn Header="Wins" >
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding PlayerTwo}" />
+                                        <TextBlock Text="{Binding IpAddress}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+
 
                         </GridView>
                     </ListView.View>
                 </ListView>
-            </StackPanel>
-        </Border>
 
-        <!-- Current game information MAIN -->
-        <Grid Grid.Row="1" Grid.Column="0">
+                <Button  Width="100" Height="50" Style="{StaticResource buttonRoundCorner}" Content="Back"/>
+
+            </StackPanel>
+
+            </Grid>
+        
+        <!-- Main grid -->
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="80" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="145" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!-- Current player information  -->
-            <Border Height="65" Margin="3" Style="{StaticResource borderStyle}" Background="AliceBlue">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="30" />
-                        <RowDefinition MinHeight="30" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+            <!-- Server information Visibility="Collapsed" -->
+            <Border   Grid.Row="1" Grid.Column="1" Style="{StaticResource borderStyle}" Margin="3">
+                <StackPanel>
+                    <DockPanel>
+                        <TextBlock Margin="5,10,0,10" Text="Your name: " />
+                        <TextBlock Margin="0,10,0,10" Text="{Binding ClientPlayer.PlayerName}" FontWeight="Bold"
+                           Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                        <TextBox Margin="10" Text="{Binding ClientPlayer.PlayerName, ValidatesOnExceptions=True, FallbackValue=Enter your name}" 
+                         Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
+                    </DockPanel>
 
-                    <!-- Player one -->
-                    <Label  Content="{Binding PlayerOne.PlayerName, FallbackValue=Player 1}"   Style="{StaticResource labelStyle}" />
-                    <Ellipse Margin="3" Grid.Column="1" StrokeThickness="1.5" Stroke="#000000" Width="14" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                    <!--<Label Content=":" Margin="-4,-1,0,0" FontWeight="Bold" />-->
-                    <Label Content="{Binding PlayerOne.Wins}" Grid.Column="2" Style="{StaticResource labelStyle}"/>
-                    <Label Grid.Column="3" Content="Wins" Style="{StaticResource labelStyle}" />
+                    <Button Margin="10" Content="Connect to server" Style="{StaticResource buttonRoundCorner}"
+                        Command="{Binding ConnectCommand}" Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}" Background="#ffd769"/>
+                    <TextBlock Margin="10" Text="Server status: Connected" FontWeight="Bold" HorizontalAlignment="Left" Foreground="Green"
+                           Visibility="{Binding ClientConnected, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                    <TextBlock Text="Choose a player name and connect to the server to play against others." TextWrapping="Wrap" Width="160" FontWeight="Bold" TextAlignment="Center"
+                           Visibility="{Binding ClientConnected, Converter={StaticResource inverseBooleanToVisibilityConverter}}"/>
+                </StackPanel>
 
-                    <!-- Player two -->
-                    <Label Grid.Row="1" Content="{Binding PlayerTwo.PlayerName, FallbackValue=Player 2}" FontWeight="Bold" Style="{StaticResource labelStyle}" />
-                    <Canvas Grid.Column="1" Grid.Row="1" Width="15" Height="15"  RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center">
-                        <Canvas.RenderTransform>
-                            <RotateTransform Angle="45"/>
-                        </Canvas.RenderTransform>
-                        <Path Data="M0 1L94 1" Stretch="Fill" Canvas.Top="7" Width="15" Height="2" StrokeThickness="1.5" Stroke="#000000" />
-                        <Path Data="M0 74L0 1" Canvas.Left="7" Width="2" Height="15"  StrokeThickness="2.5" Stroke="#000000" />
-                    </Canvas>
-                    <!--<Label Content=":" Margin="-4,-1,0,0" FontWeight="Bold" />-->
-                    <Label Content="{Binding PlayerTwo.Wins}" Grid.Row="1" Grid.Column="2"  Style="{StaticResource labelStyle}"/>
-                    <Label  Grid.Column="3" Grid.Row="1" Content="Wins"  Style="{StaticResource labelStyle}" />
-                </Grid>
             </Border>
 
-            <!-- Current Game information two -->
-            <Border Grid.Row="1" Margin="3" Style="{StaticResource borderStyle}" Background="AliceBlue">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="30"/>
-                        <RowDefinition MinHeight="40"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+            <!-- Online players list view and connection -->
+            <Border Visibility="Visible" MinWidth="130" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" >
+                <StackPanel>
+                    <Label Content="Available players:" Style="{StaticResource labelStyle}" />
 
-                    <!-- Current player labels -->
-                    <Label Grid.Row="0" Content="{Binding ActivePlayerName}" Style="{StaticResource labelStyle}"
+                    <!--Current online player -->
+                    <ListView Margin="5,5"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="0" BorderBrush="Black" ItemsSource="{Binding PlayerList}" SelectedItem="{Binding SelectedPlayer, Mode=TwoWay}">
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                <GridViewColumn Header="Name" Width="130"   >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding PlayerName}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                    <Button Style="{StaticResource buttonRoundCorner}" Background="#ffd769" Margin="5" Command="{Binding RequestGameCommand}">
+                        <TextBlock Margin="5,0,5,0" Text="Play with selected player" FontWeight="Medium"/>
+                    </Button>
+
+                    <Label Content="Current games:" Style="{StaticResource labelStyle}" />
+
+                    <!--Current games -->
+                    <ListView Margin="5,5"  MaxHeight="200" VerticalAlignment="Top" BorderThickness="0" BorderBrush="Black" ItemsSource="{Binding GameList}" >
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                <GridViewColumn Header="Player 1" Width="Auto"  >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding PlayerOne}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+
+                                </GridViewColumn>
+                                <GridViewColumn Header=" vs " Width="Auto"  >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text=" vs " />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Player 2" Width="Auto"  >
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding PlayerTwo}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Border>
+
+            <!-- Current game information MAIN -->
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="80" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <!-- Current player information  -->
+                <Border Height="65" Margin="3" Style="{StaticResource borderStyle}" Background="AliceBlue">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition MinHeight="30" />
+                            <RowDefinition MinHeight="30" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Player one -->
+                        <Label  Content="{Binding PlayerOne.PlayerName, FallbackValue=Player 1}"   Style="{StaticResource labelStyle}" />
+                        <Ellipse Margin="3" Grid.Column="1" StrokeThickness="1.5" Stroke="#000000" Width="14" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <!--<Label Content=":" Margin="-4,-1,0,0" FontWeight="Bold" />-->
+                        <Label Content="{Binding PlayerOne.Wins}" Grid.Column="2" Style="{StaticResource labelStyle}"/>
+                        <Label Grid.Column="3" Content="Wins" Style="{StaticResource labelStyle}" />
+
+                        <!-- Player two -->
+                        <Label Grid.Row="1" Content="{Binding PlayerTwo.PlayerName, FallbackValue=Player 2}" FontWeight="Bold" Style="{StaticResource labelStyle}" />
+                        <Canvas Grid.Column="1" Grid.Row="1" Width="15" Height="15"  RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center">
+                            <Canvas.RenderTransform>
+                                <RotateTransform Angle="45"/>
+                            </Canvas.RenderTransform>
+                            <Path Data="M0 1L94 1" Stretch="Fill" Canvas.Top="7" Width="15" Height="2" StrokeThickness="1.5" Stroke="#000000" />
+                            <Path Data="M0 74L0 1" Canvas.Left="7" Width="2" Height="15"  StrokeThickness="2.5" Stroke="#000000" />
+                        </Canvas>
+                        <!--<Label Content=":" Margin="-4,-1,0,0" FontWeight="Bold" />-->
+                        <Label Content="{Binding PlayerTwo.Wins}" Grid.Row="1" Grid.Column="2"  Style="{StaticResource labelStyle}"/>
+                        <Label  Grid.Column="3" Grid.Row="1" Content="Wins"  Style="{StaticResource labelStyle}" />
+                    </Grid>
+                </Border>
+
+                <!-- Current Game information two -->
+                <Border Grid.Row="1" Margin="3" Style="{StaticResource borderStyle}" Background="AliceBlue">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition MinHeight="30"/>
+                            <RowDefinition MinHeight="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Current player labels -->
+                        <Label Grid.Row="0" Content="{Binding ActivePlayerName}" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"/>
-                    <Label Grid.Row="0" Grid.Column="1" Content="'s turn"  Margin="-6,0,0,0" 
+                        <Label Grid.Row="0" Grid.Column="1" Content="'s turn"  Margin="-6,0,0,0" 
                            VerticalAlignment="Center" FontWeight="Bold" 
                            Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
-                    <!-- Status message -->
-                    <Label Grid.Column="2" Grid.ColumnSpan="4" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="IndianRed" HorizontalAlignment="Right"/>
+                        <!-- Status message -->
+                        <Label Grid.Column="2" Grid.ColumnSpan="4" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="IndianRed" HorizontalAlignment="Right"/>
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}"
+                        <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
                            Margin=" 0 0 -6 0"/>
-                    <Label Grid.Row="1" Grid.Column="1" Content="wants to play with you" Style="{StaticResource labelStyle}"
+                        <Label Grid.Row="1" Grid.Column="1" Content="wants to play with you" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
-                    <!-- Accept button -->
-                    <Button Grid.Row="1" 
+                        <!-- Accept button -->
+                        <Button Grid.Row="1" 
                             Grid.Column="2" 
                             MaxHeight="25" 
                             Background="#aee024"
@@ -205,9 +247,9 @@
                             Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
                             Command="{Binding AcceptCommand}"
                              />
-                    
-                    <!-- Decline button -->
-                    <Button Grid.Row="1" 
+
+                        <!-- Decline button -->
+                        <Button Grid.Row="1" 
                             Grid.Column="3" 
                             MaxHeight="25" 
                             Background="#fc5d5d"
@@ -218,10 +260,10 @@
                             Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
                             Command="{Binding DeclineCommand}"
                              />
-                    
-                    <!-- Return to lobby button -->
-                    
-                    <Button Grid.Row="1"
+
+                        <!-- Return to lobby button -->
+
+                        <Button Grid.Row="1"
                             Grid.Column="4" 
                             Grid.ColumnSpan="2"
                             MaxHeight="25" 
@@ -234,7 +276,7 @@
                             
                              />
 
-                    <!--<Button Grid.Row="0"
+                        <!--<Button Grid.Row="0"
                             Grid.Column="4"
                             Grid.ColumnSpan="2"
                             Background="#fc5d5d"
@@ -247,30 +289,30 @@
                             Visibility="{Binding GameIsActive, Converter={StaticResource booleanToVisibilityConverter}}"
                             />-->
 
-                    <Label Grid.ColumnSpan="4" HorizontalAlignment="Left" Foreground="Green" FontSize="15"  Grid.Row="1" Content="{Binding CurrentGame.EndMessage}" Style="{StaticResource labelStyle}"/>
-                </Grid>
-            </Border>
-        </Grid>
+                        <Label Grid.ColumnSpan="4" HorizontalAlignment="Left" Foreground="Green" FontSize="15"  Grid.Row="1" Content="{Binding CurrentGame.EndMessage}" Style="{StaticResource labelStyle}"/>
+                    </Grid>
+                </Border>
+            </Grid>
 
-        <!-- Game field -->
-        <Border Margin="3" Grid.Row="2" Grid.Column="0" Style="{StaticResource borderStyle}" MinWidth="150">
-            <ItemsControl x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding GameRepresentation.GameCells}">
+            <!-- Game field -->
+            <Border Margin="3" Grid.Row="2" Grid.Column="0" Style="{StaticResource borderStyle}" MinWidth="150">
+                <ItemsControl x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding GameRepresentation.GameCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                        <UniformGrid Columns="3" />
-                    </ItemsPanelTemplate>
+                            <UniformGrid Columns="3" />
+                        </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                        <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" 
+                            <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" 
                                 Background="{Binding CellBackground}"
                                 Command="{Binding ElementName=gameCells, Path=DataContext.PlayerClick}"
                                 CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            
-            <!--<Grid Background="#ffedbd"  >
+
+                <!--<Grid Background="#ffedbd"  >
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -282,7 +324,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                --><!--<Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But1" Grid.Column="0" Grid.Row="0"  Command="{Binding CurrentGame.PlayerClick}" CommandParameter="0" Click="GameElementClick" />
+                -->
+                <!--<Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But1" Grid.Column="0" Grid.Row="0"  Command="{Binding CurrentGame.PlayerClick}" CommandParameter="0" Click="GameElementClick" />
                 <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But2" Grid.Column="0" Grid.Row="1"  Command="{Binding CurrentGame.PlayerClick}" CommandParameter="1" Click="GameElementClick"/>
                 <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But3" Grid.Column="0" Grid.Row="2"  Command="{Binding CurrentGame.PlayerClick}" CommandParameter="2" Click="GameElementClick"/>
                 <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But4" Grid.Column="1" Grid.Row="0"  Command="{Binding CurrentGame.PlayerClick}" CommandParameter="3" Click="GameElementClick"/>
@@ -290,9 +333,12 @@
                 <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But6" Grid.Column="1" Grid.Row="2"  Command="{Binding CurrentGame.PlayerClick}" CommandParameter="5" Click="GameElementClick"/>
                 <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But7" Grid.Column="2" Grid.Row="0" Command="{Binding CurrentGame.PlayerClick}" CommandParameter="6" Click="GameElementClick"/>
                 <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But8" Grid.Column="2" Grid.Row="1" Command="{Binding CurrentGame.PlayerClick}" CommandParameter="7" Click="GameElementClick"/>
-                <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But9" Grid.Column="2" Grid.Row="2" Command="{Binding CurrentGame.PlayerClick}" CommandParameter="8" Click="GameElementClick"/>--><!--
+                <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" x:Name="But9" Grid.Column="2" Grid.Row="2" Command="{Binding CurrentGame.PlayerClick}" CommandParameter="8" Click="GameElementClick"/>-->
+                <!--
             </Grid>-->
-        </Border >
+            </Border >
 
+        </Grid>
     </Grid>
+    
 </Window>
