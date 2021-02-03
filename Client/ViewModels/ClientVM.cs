@@ -138,8 +138,9 @@ namespace Client
 
             this.SetupCommand.Execute(new object());
 
+            this.clientPlayer = new PlayerVM(new Player("player"));
             this.clientPlayer.PlayerName = "nik";
-             this.ComputeAcceptCommand();
+            this.ComputeAcceptCommand();
         }
 
         /// <summary>

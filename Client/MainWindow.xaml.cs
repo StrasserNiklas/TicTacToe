@@ -49,7 +49,7 @@ namespace Client
             this.client = host.Services.GetService<ClientVM>();
 
             this.DataContext = this.client;
-            this.client.ClientPlayer = new PlayerVM(new Player("player"));
+            //this.client.ClientPlayer = new PlayerVM(new Player("player"));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
