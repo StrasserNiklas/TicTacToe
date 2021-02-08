@@ -110,6 +110,22 @@ namespace Client
         /// </summary>
         private System.Timers.Timer timer;
 
+        private bool activeStatus;
+
+        public bool ActiveStatus
+        {
+            get 
+            { 
+                return this.activeStatus; 
+            }
+            set 
+            { 
+                this.activeStatus = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientVM"/> class.
         /// </summary>
@@ -331,8 +347,14 @@ namespace Client
                 {
                     Task.Run(async () =>
                     {
-                        await Task.Delay(10000);
+                        //NEW
+                        await Task.Delay(5000);
+
+                        //await Task.Delay(10000);
                         this.StatusMessage = string.Empty;
+
+                        //NEW
+                        this.ActiveStatus = false;
                     });
                 }
             }
@@ -355,6 +377,13 @@ namespace Client
             set
             {
                 this.gameWasRequested = value;
+
+                //NEW
+                if (value)
+                {
+                    this.ActiveStatus = true;
+                }
+
                 this.FireOnPropertyChanged();
             }
         }
@@ -765,6 +794,9 @@ namespace Client
             {
                 this.statusMessage = "An unknown error occured. Please try again later.";
             }
+
+            //NEW
+            this.ActiveStatus = false;
         }
 
         /// <summary>
@@ -792,6 +824,9 @@ namespace Client
             }
 
             this.RequestID = 0;
+
+            //NEW
+            this.ActiveStatus = false;
         }
 
         /// <summary>

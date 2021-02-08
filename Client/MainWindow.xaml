@@ -62,7 +62,7 @@
 
             </StackPanel>
 
-            </Grid>
+        </Grid>
         
         <!-- Main grid -->
         <Grid>
@@ -294,23 +294,71 @@
                 </Border>
             </Grid>
 
-            <!-- Game field -->
+            <!-- Game field with overlay grid -->
             <Border Margin="3" Grid.Row="2" Grid.Column="0" Style="{StaticResource borderStyle}" MinWidth="150">
-                <ItemsControl x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding GameRepresentation.GameCells}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="3" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" 
+                <Grid>
+
+                    <!-- Overlay Grid with buttons/status -->
+                    <Grid Panel.ZIndex="5" Visibility="{Binding ActiveStatus, Converter={StaticResource booleanToVisibilityConverter}}">
+                        
+                        <!-- Overlay -->
+                        <Grid  Panel.ZIndex="10" Background="Gray" Opacity="0.4"/>
+
+                        <!-- STATUS and BUTTONS -->
+                        <StackPanel Panel.ZIndex="11" VerticalAlignment="Center">
+
+                            <!-- Status message  -->
+                            <Label FontSize="25" Content="{Binding StatusMessage}" HorizontalAlignment="Center" Style="{StaticResource labelStyle}" Foreground="#FF004BEC" />
+
+                            <!-- Game Request-->
+                            <StackPanel Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
+                                        Orientation="Horizontal" HorizontalAlignment="Center">
+                                
+                                <Label Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}" />
+                                <Label Content="wants to play with you" Style="{StaticResource labelStyle}" />
+                            </StackPanel>
+                            
+                            <!-- Accept/Decline Buttons -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                                
+                                <!-- Accept button -->
+                                <Button MaxHeight="25" Background="#aee024"
+                                    Width="70" Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
+                                    Style="{StaticResource buttonRoundCorner2}"
+                                    Height="30"  VerticalAlignment="Center" Content="Accept" Margin="4" 
+                                    IsEnabled="True" Command="{Binding AcceptCommand}" />
+
+                                <!-- Decline button -->
+                                <Button MaxHeight="25" Background="#fc5d5d"
+                                    Width="70" Style="{StaticResource buttonRoundCorner2}"
+                                    Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Decline" Margin="4" 
+                                    IsEnabled="True"
+                                    Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
+                                    Command="{Binding DeclineCommand}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    
+                    
+                    <!-- Gamefield with cells-->
+                    <ItemsControl  x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding GameRepresentation.GameCells}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Template="{DynamicResource ButtonTemplateNoHover}" Style="{StaticResource elementButton}" 
                                 Background="{Binding CellBackground}"
                                 Command="{Binding ElementName=gameCells, Path=DataContext.PlayerClick}"
                                 CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+                
+                
 
                 <!--<Grid Background="#ffedbd"  >
                 <Grid.RowDefinitions>
