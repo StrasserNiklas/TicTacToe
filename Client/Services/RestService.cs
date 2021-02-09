@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Client.Services
 {
-    public class RestService
+    public class RestService : IRestService
     {
         private static readonly HttpClient httpClient = new HttpClient();
         private static readonly UrlService urlService = new UrlService();
@@ -58,5 +58,25 @@ namespace Client.Services
 
             return new ApiResponse(false, "Try again with a different name.", 0);
         }
+
+        public async Task<List<PlayerData>> GetLeaderboardData()
+        {
+            var response = await httpClient.GetAsync(urlService.ApiAddress + "/wins");
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var data = JsonConvert.DeserializeObject<List<PlayerData>>(responseString);
+
+            return data;
+        }
+    }
+
+    public interface IRestService
+    {
+        Task<ApiResponse> Login(string userName, string hashedPassword);
+
+        Task<ApiResponse> AddUser(string userName, string hashedPassword);
+
+        Task<List<PlayerData>> GetLeaderboardData();
     }
 }

@@ -56,6 +56,11 @@ namespace GameLibrary
         }
 
         /// <summary>
+        /// The unique client id used for the database.
+        /// </summary>
+        public int ClientId { get; set; }
+
+        /// <summary>
         /// Gets or sets the unique connection identifier set by the signalR service.
         /// </summary>
         /// <value>

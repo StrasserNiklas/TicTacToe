@@ -55,6 +55,8 @@ namespace Client
         /// </summary>
         private ObservableCollection<PlayerVM> playerList;
 
+        private ObservableCollection<PlayerData> leaderboardData = new ObservableCollection<PlayerData>();
+
         /// <summary>
         /// This field is used to save the game list.
         /// </summary>
@@ -130,6 +132,22 @@ namespace Client
             }
         }
 
+        private bool leaderboardActive;
+
+        public bool LeaderboardActive
+        {
+            get 
+            { 
+                return this.leaderboardActive; 
+            }
+            set 
+            { 
+                this.leaderboardActive = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+        private RestService restService = new RestService();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientVM"/> class.
@@ -159,10 +177,12 @@ namespace Client
 
             this.SetupCommand.Execute(new object());
 
-            //this.clientPlayer = new PlayerVM(new Player("player"));
-            //this.clientPlayer.PlayerName = "felx";
-            //this.ComputeConnectCommand();
         }
+
+        /// <summary>
+        /// The id needed to update wins accordingly.
+        /// </summary>
+        public int ClientId { get; set; }
 
         /// <summary>
         /// Gets the setup command.
@@ -230,6 +250,49 @@ namespace Client
         /// The connect command.
         /// </value>
         public ICommand ConnectCommand { get; }
+
+        public ICommand LeaderboardCommand 
+        { 
+            get
+            {
+                return new Command(async obj =>
+                {
+                    // API CALL TO GET LEADERBOARD
+                    var playerList = await this.restService.GetLeaderboardData();
+                    playerList = playerList.OrderByDescending(player => player.Wins).ToList();
+                    this.LeaderboardData = new ObservableCollection<PlayerData>(playerList);
+
+                    //TEST
+                    //var list = new List<PlayerData>()
+                    //{
+                    //    new PlayerData("nik", 3),
+                    //    new PlayerData("luk", 10),
+                    //    new PlayerData("me", 8),
+                    //    new PlayerData("felix", 1),
+                    //    new PlayerData("yannik", 6),
+                    //};
+
+                    //list = list.OrderByDescending(player => player.Wins).ToList();
+                    //this.LeaderboardData = new ObservableCollection<PlayerData>(list);
+
+                    this.LeaderboardActive = true;
+                });
+            } 
+        }
+
+        public ICommand ReturnFromLeaderboardCommand
+        {
+            get
+            {
+                return new Command(obj =>
+                {
+                    this.LeaderboardActive = false;
+                });
+            }
+        }
+
+
+
 
         /// <summary>
         /// Gets or sets the player that has sent a request to play with the client or is actively playing with the client.
@@ -452,6 +515,20 @@ namespace Client
                 this.FireOnPropertyChanged();
             }
         }
+
+        public ObservableCollection<PlayerData> LeaderboardData
+        {
+            get 
+            { 
+                return this.leaderboardData; 
+            }
+            set
+            { 
+                this.leaderboardData = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the list of currently available players.
@@ -769,7 +846,7 @@ namespace Client
                 try
                 {
 
-                    await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
+                    await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName, this.ClientId);
 
                     this.ClientConnected = true;
                 }

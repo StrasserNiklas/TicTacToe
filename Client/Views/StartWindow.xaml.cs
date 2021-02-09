@@ -1,4 +1,7 @@
-﻿using Client.ViewModels;
+﻿using Client.Services;
+using Client.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +30,16 @@ namespace Client.Views
             //this.DataContext = this;
             InitializeComponent();
 
-            this.loginManagement = new LoginVM();
+            IHost host = Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<LoginVM>();
+                    //services.AddSingleton<IUrlService, UrlService>();
+                }).Build();
+
+            this.loginManagement = host.Services.GetService<LoginVM>();
+
+            //this.loginManagement = new LoginVM();
             this.loginManagement.OnSuccessfulAuthentication += LoginManagement_OnSuccessfulAuthentication;
             this.DataContext = this.loginManagement;
 
