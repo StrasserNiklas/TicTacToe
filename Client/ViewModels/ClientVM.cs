@@ -41,6 +41,11 @@ namespace Client
         private readonly ILogger<ClientVM> logger;
 
         /// <summary>
+        /// This field is used to save my access token.
+        /// </summary>
+        private string _myAccessToken;
+
+        /// <summary>
         /// This field is used to save the hub connection.
         /// </summary>
         private HubConnection hubConnection;
@@ -531,7 +536,10 @@ namespace Client
             {
                 await this.CloseConnectionAsync();
                 this.hubConnection = new HubConnectionBuilder()
-                    .WithUrl(this.urlService.LobbyAddress)
+                    .WithUrl("https://localhost:5001/game", options =>
+                    {
+                        options.AccessTokenProvider = () => Task.FromResult(this._myAccessToken);
+                    })
                     .Build();
 
                 this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
@@ -545,11 +553,11 @@ namespace Client
 
                 await this.hubConnection.StartAsync();
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException e)
             {
                 this.StatusMessage = "Unable to connect to server.";
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 this.statusMessage = "An unknown error occured. Please try again later.";
             }
