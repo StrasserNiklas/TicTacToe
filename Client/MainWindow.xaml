@@ -24,18 +24,105 @@
 
    
     <Grid>
-        <Grid Panel.ZIndex="100" Visibility="Collapsed">
+        <!-- Score board grid -->
+        <Grid Panel.ZIndex="100" Visibility="{Binding LeaderboardActive, Converter={StaticResource booleanToVisibilityConverter}}" >
 
-            <Grid Background="Gray" Opacity="0.6"/>
-
+            <!-- Overlay -->
+            <Grid Background="Gray"  Opacity="0.6"/>
 
             <StackPanel>
+                <Border MinHeight="200" Background="#ffd769" MaxWidth="300" CornerRadius="10" Margin="20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label FontWeight="Bold" Content="Player name" />
+                        <Label FontWeight="Bold" Content="Wins" Grid.Column="1"/>
+
+                        <Separator Grid.ColumnSpan="2" Grid.Row="1"  Background="Black"/>
+
+                        <!-- Player names list -->
+                        <ListView Grid.Row="2" Background="Transparent" BorderThickness="0" ItemsSource="{Binding LeaderboardData}">
+                            <ListView.View>
+                                <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                    <GridViewColumn >
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Username}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <Border
+                         BorderBrush="Transparent"
+                         BorderThickness="0"
+                         Background="{TemplateBinding Background}">
+                                                    <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="Auto" Margin="0" Content="{TemplateBinding Content}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                        </ListView>
+
+                        <!-- Player wins list -->
+                        <ListView Grid.Row="2" Grid.Column="1" Background="Transparent" BorderThickness="0" ItemsSource="{Binding LeaderboardData}">
+                            <ListView.View>
+                                <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                    <GridViewColumn >
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Wins}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <Border
+                         BorderBrush="Transparent"
+                         BorderThickness="0"
+                         Background="{TemplateBinding Background}">
+                                                    <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="Auto" Margin="0" Content="{TemplateBinding Content}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                        </ListView>
+                    </Grid>
+                </Border>
                 
-                <ListView MinHeight="200" Background="#ffd769" MaxWidth="300" BorderThickness="0" Margin="20">
-                    
+                
+                <!--<ListView MinHeight="200" Background="#ffd769" MaxWidth="300" BorderThickness="0" Margin="20">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource secondHeaderStyle}">
-                            <!-- Agent hostname -->
+
+                            --><!-- Player name --><!--
                             <GridViewColumn Header="Playername"  >
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -44,7 +131,7 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
 
-                            <!-- Agent ip address -->
+                            --><!-- Player wins --><!--
                             <GridViewColumn Header="Wins" >
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -52,16 +139,14 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-
-
                         </GridView>
                     </ListView.View>
-                </ListView>
+                </ListView>-->
 
-                <Button Click="Button_Click"  Width="100" Height="50" Style="{StaticResource buttonRoundCorner}" Content="Back"/>
-
+                <Button Width="100" Content="Back" Style="{StaticResource buttonRoundCorner}" Command="{Binding ReturnFromLeaderboardCommand}" />
             </StackPanel>
 
+            
         </Grid>
         
         <!-- Main grid -->
@@ -100,6 +185,8 @@
             <!-- Online players list view and connection -->
             <Border Visibility="Visible" MinWidth="130" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" >
                 <StackPanel>
+                    <Button Margin="10" Style="{StaticResource elementButton2}" Command="{Binding LeaderboardCommand}" Foreground="White" Content="Leaderboard" VerticalAlignment="Bottom" />
+                    
                     <Label Content="Available players:" Style="{StaticResource labelStyle}" />
 
                     <!--Current online player -->
@@ -154,6 +241,8 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
+
+                    
                 </StackPanel>
             </Border>
 
@@ -229,14 +318,14 @@
                         <!-- Status message -->
                         <Label Grid.Column="2" Grid.ColumnSpan="4" Content="{Binding StatusMessage}" Style="{StaticResource labelStyle}" Foreground="IndianRed" HorizontalAlignment="Right"/>
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}"
+                        <!--<Label Grid.Row="1" Grid.Column="0" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}"
                            Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
                            Margin=" 0 0 -6 0"/>
                         <Label Grid.Row="1" Grid.Column="1" Content="wants to play with you" Style="{StaticResource labelStyle}"
-                           Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                           Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"/>-->
 
                         <!-- Accept button -->
-                        <Button Grid.Row="1" 
+                        <!--<Button Grid.Row="1" 
                             Grid.Column="2" 
                             MaxHeight="25" 
                             Background="#aee024"
@@ -246,10 +335,10 @@
                             IsEnabled="True"
                             Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
                             Command="{Binding AcceptCommand}"
-                             />
+                             />-->
 
                         <!-- Decline button -->
-                        <Button Grid.Row="1" 
+                        <!--<Button Grid.Row="1" 
                             Grid.Column="3" 
                             MaxHeight="25" 
                             Background="#fc5d5d"
@@ -259,7 +348,7 @@
                             IsEnabled="True"
                             Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
                             Command="{Binding DeclineCommand}"
-                             />
+                             />-->
 
                         <!-- Return to lobby button -->
 

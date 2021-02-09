@@ -27,7 +27,9 @@ namespace Client.Services
         /// <value>
         /// The lobby address.
         /// </value>
-        public string ApiAddress => $"https://ticserver.azurewebsites.net/api"; 
+        public string ApiAddress => $"https://ticserver.azurewebsites.net/api";
+
+        public string Test { get; set; }
 
     }
 }

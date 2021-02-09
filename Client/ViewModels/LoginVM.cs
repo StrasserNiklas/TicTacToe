@@ -18,7 +18,6 @@ namespace Client.ViewModels
             this.ErrorHandler = new ErrorHandlerVM();
             this.LoginCommand = new Command(async obj => await this.ComputeLoginCommand());
             this.SignupCommand = new Command(async obj => await this.ComputeSignupCommand());
-
         }
 
         public event EventHandler<AuthenticationEventArgs> OnSuccessfulAuthentication;
