@@ -28,6 +28,8 @@ namespace Server.Hubs
         /// </summary>
         private readonly IMainService mainService;
 
+        private readonly DBManager dBManager = new DBManager();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GameHub"/> class.
         /// </summary>
@@ -57,9 +59,9 @@ namespace Server.Hubs
         /// </summary>
         /// <param name="nameForNewPlayer">The name for the new player.</param>
         /// <returns>A Task that represents the asynchronous method.</returns>
-        public async Task AddPlayer(string nameForNewPlayer)
+        public async Task AddPlayer(string nameForNewPlayer, int clientId)
         {
-            Player newPlayer = new Player(nameForNewPlayer) { ConnectionId = Context.ConnectionId };
+            Player newPlayer = new Player(nameForNewPlayer) { ConnectionId = Context.ConnectionId, ClientId = clientId };
 
             // datenbank
 
@@ -295,6 +297,9 @@ namespace Server.Hubs
 
                 if (gameFinished)
                 {
+                    // db call
+                    this.dBManager.UpdatePlayerWins(player.ClientId);
+
                     await Clients.Clients(game.PlayerOne.ConnectionId, game.PlayerTwo.ConnectionId).SendAsync("StatusMessage", game.EndMessage + " New game in 5 seconds");
                     var oldGameStatus = this.CreateNewGameStatus(game, false, updatedPosition);
                     game.GameOver = true;

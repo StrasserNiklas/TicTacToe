@@ -45,6 +45,7 @@ namespace Client
             this.client = host.Services.GetService<ClientVM>();
 
             this.DataContext = this.client;
+            this.client.ClientId = userID;
             this.client.ClientPlayer = new PlayerVM(new Player(playerName));
             this.client.ConnectCommand.Execute(new { });
         }

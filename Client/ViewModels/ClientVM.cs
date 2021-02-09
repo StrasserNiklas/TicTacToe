@@ -175,6 +175,11 @@ namespace Client
         }
 
         /// <summary>
+        /// The id needed to update wins accordingly.
+        /// </summary>
+        public int ClientId { get; set; }
+
+        /// <summary>
         /// Gets the setup command.
         /// </summary>
         /// <value>
@@ -248,25 +253,22 @@ namespace Client
                 return new Command(async obj =>
                 {
                     // API CALL TO GET LEADERBOARD
-                    //var playerList = await this.restService.GetLeaderboardData();
-
-
-                    //this.LeaderboardData = new ObservableCollection<PlayerData>(playerList);
+                    var playerList = await this.restService.GetLeaderboardData();
+                    playerList = playerList.OrderByDescending(player => player.Wins).ToList();
+                    this.LeaderboardData = new ObservableCollection<PlayerData>(playerList);
 
                     //TEST
+                    //var list = new List<PlayerData>()
+                    //{
+                    //    new PlayerData("nik", 3),
+                    //    new PlayerData("luk", 10),
+                    //    new PlayerData("me", 8),
+                    //    new PlayerData("felix", 1),
+                    //    new PlayerData("yannik", 6),
+                    //};
 
-                    var list = new List<PlayerData>()
-                    {
-                        new PlayerData("nik", 3),
-                        new PlayerData("luk", 10),
-                        new PlayerData("me", 8),
-                        new PlayerData("felix", 1),
-                        new PlayerData("yannik", 6),
-                    };
-
-                    list = list.OrderByDescending(player => player.Wins).ToList();
-
-                    this.LeaderboardData = new ObservableCollection<PlayerData>(list);
+                    //list = list.OrderByDescending(player => player.Wins).ToList();
+                    //this.LeaderboardData = new ObservableCollection<PlayerData>(list);
 
                     this.LeaderboardActive = true;
                 });
@@ -836,7 +838,7 @@ namespace Client
                 try
                 {
 
-                    await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName);
+                    await this.hubConnection.SendAsync("AddPlayer", this.clientPlayer.PlayerName, this.ClientId);
 
                     this.ClientConnected = true;
                 }
