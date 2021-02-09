@@ -21,7 +21,7 @@ namespace Client.ViewModels
 
         }
 
-        public event EventHandler OnSuccessfulAuthentication;
+        public event EventHandler<AuthenticationEventArgs> OnSuccessfulAuthentication;
 
         private RestService restService = new RestService();
 
@@ -73,7 +73,7 @@ namespace Client.ViewModels
                     }
                     else
                     {
-                        this.FireOnSuccessfulAuthentication();
+                        this.FireOnSuccessfulAuthentication(response.UserId, this.LoginUsername);
                     }
                 }
                 else
@@ -115,7 +115,7 @@ namespace Client.ViewModels
                     }
                     else
                     {
-                        this.FireOnSuccessfulAuthentication();
+                        this.FireOnSuccessfulAuthentication(response.UserId, this.SignupUsername);
                     }
                 }
                 else
@@ -140,9 +140,9 @@ namespace Client.ViewModels
         }
 
 
-        protected virtual void FireOnSuccessfulAuthentication()
+        protected virtual void FireOnSuccessfulAuthentication(int id, string playerName)
         {
-            this.OnSuccessfulAuthentication?.Invoke(this, new EventArgs());
+            this.OnSuccessfulAuthentication?.Invoke(this, new AuthenticationEventArgs(id, playerName));
         }
 
         private string ComputeSha256Hash(string rawData)

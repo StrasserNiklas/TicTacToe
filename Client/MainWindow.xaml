@@ -314,23 +314,25 @@
                             <StackPanel Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
                                         Orientation="Horizontal" HorizontalAlignment="Center">
                                 
-                                <Label Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}" />
-                                <Label Content="wants to play with you" Style="{StaticResource labelStyle}" />
+                                <Label FontSize="20" Content="{Binding RequestingOrEnemyPlayer.PlayerName}" Style="{StaticResource labelStyle}" />
+                                <Label FontSize="20" Content="wants to play with you" Style="{StaticResource labelStyle}" />
                             </StackPanel>
                             
                             <!-- Accept/Decline Buttons -->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                                 
                                 <!-- Accept button -->
-                                <Button MaxHeight="25" Background="#aee024"
+                                <Button MaxHeight="25" Background="#aee024" OpacityMask="#FF68BF10"
+                                    Foreground="Black" 
                                     Width="70" Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"
-                                    Style="{StaticResource buttonRoundCorner2}"
+                                    Style="{StaticResource elementButton2}"
                                     Height="30"  VerticalAlignment="Center" Content="Accept" Margin="4" 
                                     IsEnabled="True" Command="{Binding AcceptCommand}" />
 
                                 <!-- Decline button -->
-                                <Button MaxHeight="25" Background="#fc5d5d"
-                                    Width="70" Style="{StaticResource buttonRoundCorner2}"
+                                <Button MaxHeight="25" Background="#fc5d5d" OpacityMask="#FFDE4042"
+                                    Foreground="Black"
+                                    Width="70" Style="{StaticResource  elementButton2}"
                                     Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Decline" Margin="4" 
                                     IsEnabled="True"
                                     Visibility="{Binding GameWasRequested, Converter={StaticResource booleanToVisibilityConverter}}"

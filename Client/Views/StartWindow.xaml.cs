@@ -33,9 +33,9 @@ namespace Client.Views
 
         }
 
-        private void LoginManagement_OnSuccessfulAuthentication(object sender, EventArgs e)
+        private void LoginManagement_OnSuccessfulAuthentication(object sender, Models.AuthenticationEventArgs e)
         {
-            var mainWindow = new MainWindow();
+            var mainWindow = new MainWindow(e.Id, e.PlayerName);
             mainWindow.Show();
             this.Close();
         }

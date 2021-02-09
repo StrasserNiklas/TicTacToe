@@ -154,9 +154,9 @@ namespace Client
 
             this.SetupCommand.Execute(new object());
 
-            this.clientPlayer = new PlayerVM(new Player("player"));
-            this.clientPlayer.PlayerName = "nik";
-            this.ComputeAcceptCommand();
+            //this.clientPlayer = new PlayerVM(new Player("player"));
+            //this.clientPlayer.PlayerName = "felx";
+            //this.ComputeConnectCommand();
         }
 
         /// <summary>
@@ -348,13 +348,13 @@ namespace Client
                     Task.Run(async () =>
                     {
                         //NEW
-                        await Task.Delay(5000);
+                        //await Task.Delay(5000);
 
                         //await Task.Delay(10000);
                         this.StatusMessage = string.Empty;
 
                         //NEW
-                        this.ActiveStatus = false;
+                        //this.ActiveStatus = false;
                     });
                 }
             }
@@ -719,13 +719,16 @@ namespace Client
                 // allow the player to accept or decline a game for 10 seconds (timeout)
                 var task = Task.Run(() =>
                 {
-                    var aTimer = new System.Timers.Timer(9500) { AutoReset = false };
+                    var aTimer = new System.Timers.Timer(95000) { AutoReset = false };
 
                     aTimer.Start();
 
                     aTimer.Elapsed += (sender, e) =>
                     {
                         this.GameWasRequested = false;
+
+                        //NEW
+                        this.ActiveStatus = false;
                     };
                 });
             }
