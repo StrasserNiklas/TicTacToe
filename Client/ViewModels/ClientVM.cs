@@ -43,7 +43,7 @@ namespace Client
         /// <summary>
         /// This field is used to save my access token.
         /// </summary>
-        private string _myAccessToken;
+        private string myAccessToken;
 
         /// <summary>
         /// This field is used to save the hub connection.
@@ -175,7 +175,7 @@ namespace Client
             this.ReturnToLobbyCommand = new Command(async obj => await this.ComputeReturnToLobbyCommand());
             this.ConnectCommand = new Command(async obj => await this.ComputeConnectCommand());
 
-            this.SetupCommand.Execute(new object());
+            //this.SetupCommand.Execute(new object());
 
         }
 
@@ -315,6 +315,18 @@ namespace Client
             }
         }
 
+        public string Token
+        {
+            get
+            {
+                return this.myAccessToken;
+            }
+            set
+            {
+                this.myAccessToken = value;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the current game status.
         /// </summary>
@@ -418,7 +430,7 @@ namespace Client
                         //NEW
                         //await Task.Delay(5000);
 
-                        //await Task.Delay(10000);
+                        await Task.Delay(10000);
                         this.StatusMessage = string.Empty;
 
                         //NEW
@@ -613,9 +625,9 @@ namespace Client
             {
                 await this.CloseConnectionAsync();
                 this.hubConnection = new HubConnectionBuilder()
-                    .WithUrl(this.urlService.LobbyAddress, options =>
+                    .WithUrl(this.urlService.LobbyAddress + "?access_token=" + this.myAccessToken, options =>
                     {
-                        options.AccessTokenProvider = () => Task.FromResult(this._myAccessToken);
+                        options.AccessTokenProvider = () => Task.FromResult(this.myAccessToken);
                     })
                     .Build();
 
@@ -850,11 +862,11 @@ namespace Client
 
                     this.ClientConnected = true;
                 }
-                catch (HttpRequestException)
+                catch (HttpRequestException e)
                 {
                     this.StatusMessage = "Unable to connect to server.";
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     this.statusMessage = "An unknown error occured. Please try again later.";
                 }

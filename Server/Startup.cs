@@ -19,6 +19,7 @@ namespace Server
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
     using Serilog;
+    using Server.Authentication;
     using Server.Hubs;
     using Server.Services;
 
@@ -44,61 +45,74 @@ namespace Server
         /// </value>
         public IConfiguration Configuration { get; }
 
+        private string accessTokenTemp = "";
+
         /// <summary>
         /// This method gets called by the runtime. Adds the required services.
         /// </summary>
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddAuthentication(options =>
-            //{
-            //    // Identity made Cookie authentication the default.
-            //    // However, we want JWT Bearer Auth to be the default.
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //.AddJwtBearer(options =>
-            //{
-            //    // Configure the Authority to the expected value for your authentication provider
-            //    // This ensures the token is appropriately validated
+            services.AddAuthentication(options =>
+            {
+                // Identity made Cookie authentication the default.
+                // However, we want JWT Bearer Auth to be the default.
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                // Configure the Authority to the expected value for your authentication provider
+                // This ensures the token is appropriately validated
 
-            //    // DYNAMISCH MACHEN OHNE HARD CODEN
-            //    //options.Authority = "https://localhost:5001/game";
-            //    //options.Authority = "https://ticserver.azurewebsites.net/game";
+                // DYNAMISCH MACHEN OHNE HARD CODEN
+                options.Authority = "https://ticserver.azurewebsites.net/game";
+                //options.Authority = "https://ticserver.azurewebsites.net/game";
 
-            //    // We have to hook the OnMessageReceived event in order to
-            //    // allow the JWT authentication handler to read the access
-            //    // token from the query string when a WebSocket or 
-            //    // Server-Sent Events request comes in.
+                // We have to hook the OnMessageReceived event in order to
+                // allow the JWT authentication handler to read the access
+                // token from the query string when a WebSocket or 
+                // Server-Sent Events request comes in.
 
-            //    // Sending the access token in the query string is required due to
-            //    // a limitation in Browser APIs. We restrict it to only calls to the
-            //    // SignalR hub in this code.
-            //    // See https://docs.microsoft.com/aspnet/core/signalr/security#access-token-logging
-            //    // for more information about security considerations when using
-            //    // the query string to transmit the access token.
-            //    options.Events = new JwtBearerEvents
-            //    {
-            //        OnMessageReceived = context =>
-            //        {
-            //            var accessToken = context.Request.Query["access_token"];
+                // Sending the access token in the query string is required due to
+                // a limitation in Browser APIs. We restrict it to only calls to the
+                // SignalR hub in this code.
+                // See https://docs.microsoft.com/aspnet/core/signalr/security#access-token-logging
+                // for more information about security considerations when using
+                // the query string to transmit the access token.
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
 
-            //            // If the request is for our hub...
-            //            var path = context.HttpContext.Request.Path;
-            //            if (!string.IsNullOrEmpty(accessToken) &&
-            //                (path.StartsWithSegments("/game")))
-            //            {
-            //                // Read the token out of the query string
-            //                context.Token = accessToken;
-            //            }
-            //            return Task.CompletedTask;
-            //        }
-            //    };
-            //});
+                        if (accessToken.ToString() == string.Empty)
+                        {
+                            accessToken = this.accessTokenTemp;
+                        }
+                        else
+                        {
+                            this.accessTokenTemp = accessToken;
+                        }
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/game")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
             services.AddSignalR();
             services.AddControllers();
             services.AddSingleton<IMainService, MainService>();
+            var key = "pintusharmaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqweqwe";
+            services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
             services.AddLogging(logging =>
             {
                 logging.AddSerilog(new LoggerConfiguration().WriteTo.Debug(Serilog.Events.LogEventLevel.Debug).WriteTo.Console().WriteTo.File(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\")) + "log.txt").CreateLogger());
@@ -135,6 +149,7 @@ namespace Server
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwagger();

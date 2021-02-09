@@ -27,7 +27,7 @@ namespace Client
         /// </summary>
         private readonly ClientVM client;
 
-        public MainWindow(int userID, string playerName)
+        public MainWindow(int userID, string playerName, string token)
         {
             this.InitializeComponent();
 
@@ -46,6 +46,8 @@ namespace Client
 
             this.DataContext = this.client;
             this.client.ClientId = userID;
+            this.client.Token = token;
+            this.client.SetupCommand.Execute(new object());
             this.client.ClientPlayer = new PlayerVM(new Player(playerName));
             this.client.ConnectCommand.Execute(new { });
         }

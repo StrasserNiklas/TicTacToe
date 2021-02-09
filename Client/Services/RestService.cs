@@ -26,9 +26,9 @@ namespace Client.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                var id = JsonConvert.DeserializeObject<int>(responseString);
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseString);
 
-                return new ApiResponse(true, "", id);
+                return apiResponse;
             }
 
             return new ApiResponse(false, "", 0);

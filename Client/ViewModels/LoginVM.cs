@@ -72,7 +72,7 @@ namespace Client.ViewModels
                     }
                     else
                     {
-                        this.FireOnSuccessfulAuthentication(response.UserId, this.LoginUsername);
+                        this.FireOnSuccessfulAuthentication(response.UserId, this.LoginUsername, response.JwToken);
                     }
                 }
                 else
@@ -139,9 +139,9 @@ namespace Client.ViewModels
         }
 
 
-        protected virtual void FireOnSuccessfulAuthentication(int id, string playerName)
+        protected virtual void FireOnSuccessfulAuthentication(int id, string playerName, string token = "")
         {
-            this.OnSuccessfulAuthentication?.Invoke(this, new AuthenticationEventArgs(id, playerName));
+            this.OnSuccessfulAuthentication?.Invoke(this, new AuthenticationEventArgs(id, playerName, token));
         }
 
         private string ComputeSha256Hash(string rawData)

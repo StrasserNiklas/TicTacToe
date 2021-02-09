@@ -9,6 +9,7 @@ using Dapper;
 using GameLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Server.Authentication;
 
 namespace Server.Controllers
 {
@@ -16,9 +17,16 @@ namespace Server.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IJwtAuthenticationManager jwtAuthenticationManager;
+
+        public UserController(IJwtAuthenticationManager jwtAuthenticationManager)
+        {
+            this.jwtAuthenticationManager = jwtAuthenticationManager;
+        }
+
         [HttpPost]
         [Route("api/users/login")]
-        public ActionResult CheckLogin([FromBody] User user)
+        public ActionResult<ApiResponse> CheckLogin([FromBody] User user)
         {
             using IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ticData"].ConnectionString);
 
@@ -47,7 +55,10 @@ namespace Server.Controllers
                 }
             }
 
-            return Ok(query.First().Id);
+            var token = this.jwtAuthenticationManager.Authenticate(user.Username, user.Password);
+
+            //return Ok(new ApiResponse(true, "", query.First().Id, token));
+            return Ok(new ApiResponse(true, "", 0, token));
         }
 
         [HttpPost]

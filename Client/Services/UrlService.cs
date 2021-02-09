@@ -19,7 +19,7 @@ namespace Client.Services
         /// <value>
         /// The lobby address.
         /// </value>
-        public string LobbyAddress => $"https://ticserver.azurewebsites.net/game"; // https://localhost:5001/game https://tictactoefyn.azurewebsites.net/game
+        public string LobbyAddress => $"https://ticserver.azurewebsites.net/game"; // https://localhost:5001/game https://tictactoefyn.azurewebsites.net/game https://ticserver.azurewebsites.net/game
 
         /// <summary>
         /// Gets the lobby address.
@@ -27,9 +27,6 @@ namespace Client.Services
         /// <value>
         /// The lobby address.
         /// </value>
-        public string ApiAddress => $"https://ticserver.azurewebsites.net/api";
-
-        public string Test { get; set; }
-
+        public string ApiAddress => $"https://ticserver.azurewebsites.net/api"; //https://ticserver.azurewebsites.net/api https://localhost:5001/api
     }
 }
