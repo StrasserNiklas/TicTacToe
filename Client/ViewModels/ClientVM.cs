@@ -613,7 +613,7 @@ namespace Client
             {
                 await this.CloseConnectionAsync();
                 this.hubConnection = new HubConnectionBuilder()
-                    .WithUrl("https://localhost:5001/game", options =>
+                    .WithUrl(this.urlService.LobbyAddress, options =>
                     {
                         options.AccessTokenProvider = () => Task.FromResult(this._myAccessToken);
                     })

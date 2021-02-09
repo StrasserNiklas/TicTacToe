@@ -18,7 +18,7 @@ namespace Server.Controllers
     {
         [HttpGet]
         [Route("api/wins")]
-        public ActionResult<PlayerData> GetLeaderboard()
+        public ActionResult<List<PlayerData>> GetLeaderboard()
         {
             var dbManager = new DBManager();
 

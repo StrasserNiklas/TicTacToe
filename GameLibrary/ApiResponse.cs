@@ -6,7 +6,7 @@
         {
             this.WasSuccessful = wasSuccessful;
             this.ErrorMessage = errorMessage;
-            this.UserId = UserId;
+            this.UserId = userId;
         }
 
         public ApiResponse()
