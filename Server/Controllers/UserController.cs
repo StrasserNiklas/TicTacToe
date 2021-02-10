@@ -57,13 +57,13 @@ namespace Server.Controllers
 
             var token = this.jwtAuthenticationManager.Authenticate(user.Username, user.Password);
 
-            //return Ok(new ApiResponse(true, "", query.First().Id, token));
-            return Ok(new ApiResponse(true, "", 0, token));
+            return Ok(new ApiResponse(true, "", query.First().Id, token));
+            //return Ok(new ApiResponse(true, "", 0, token));
         }
 
         [HttpPost]
         [Route("api/users/add")]
-        public ActionResult AddPlayer([FromBody] User user)
+        public ActionResult<ApiResponse> AddPlayer([FromBody] User user)
         {
             using IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["ticData"].ConnectionString);
 
@@ -84,7 +84,10 @@ namespace Server.Controllers
 
             var id = db.QuerySingle<int>("Insert into Users (username, password) OUTPUT INSERTED.Id VALUES (@username, @passwordHash)", new { username, passwordHash });
 
-            return Ok(id);
+            var token = this.jwtAuthenticationManager.Authenticate(user.Username, user.Password);
+
+            return Ok(new ApiResponse(true, "", id, token));
+            //return Ok(new ApiResponse(true, "", 0, token));
         }
     }
 }

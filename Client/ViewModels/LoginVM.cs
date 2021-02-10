@@ -114,7 +114,7 @@ namespace Client.ViewModels
                     }
                     else
                     {
-                        this.FireOnSuccessfulAuthentication(response.UserId, this.SignupUsername);
+                        this.FireOnSuccessfulAuthentication(response.UserId, this.SignupUsername, response.JwToken);
                     }
                 }
                 else

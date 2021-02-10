@@ -66,8 +66,8 @@ namespace Server
                 // This ensures the token is appropriately validated
 
                 // DYNAMISCH MACHEN OHNE HARD CODEN
+                //options.Authority = "https://localhost:5001/api";
                 options.Authority = "https://ticserver.azurewebsites.net/game";
-                //options.Authority = "https://ticserver.azurewebsites.net/game";
 
                 // We have to hook the OnMessageReceived event in order to
                 // allow the JWT authentication handler to read the access
@@ -97,8 +97,7 @@ namespace Server
 
                         // If the request is for our hub...
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) &&
-                            (path.StartsWithSegments("/game")))
+                        if (!string.IsNullOrEmpty(accessToken))
                         {
                             // Read the token out of the query string
                             context.Token = accessToken;
