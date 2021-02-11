@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\loseSound.mp3" />
     <None Remove="Resources\O.png" />
+    <None Remove="Resources\robot.jpg" />
+    <None Remove="Resources\winSound.mp3" />
     <None Remove="Resources\X.png" />
   </ItemGroup>
 
@@ -37,9 +40,19 @@
     <Resource Include="Resources\O.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\robot.jpg" />
     <Resource Include="Resources\X.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\loseSound.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\winSound.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

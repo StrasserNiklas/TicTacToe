@@ -11,7 +11,9 @@ namespace Client
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.IO;
     using System.Linq;
+    using System.Media;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
@@ -152,6 +154,7 @@ namespace Client
 
         private RestService restService = new RestService();
 
+        private SoundManager soundManager = new SoundManager();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientVM"/> class.
@@ -1030,8 +1033,10 @@ namespace Client
                     if (this.botGame.CheckWinConditions())
                      {
                         this.StatusMessage = "You won";
+                        this.soundManager.PlayWinSound();
                         this.StartNewBotgame();
                         return;
+
                     }
 
                     if (this.botGame.IndexedGame.All(x => x != 0))
@@ -1044,7 +1049,7 @@ namespace Client
                     this.botGame.CurrentPlayer = this.botGame.PlayerTwo;
                     // Bot must play here
 
-                    Thread.Sleep(700);
+                    //Thread.Sleep(300);
                     var updatedPosition = this.bot.Play();
 
                     if (updatedPosition >= 0)
@@ -1059,6 +1064,7 @@ namespace Client
                     if (this.botGame.CheckWinConditions())
                     {
                         this.StatusMessage = "Bot won";
+                        this.soundManager.PlayLoseSound();
                         this.StartNewBotgame();
                         return;
                     }
