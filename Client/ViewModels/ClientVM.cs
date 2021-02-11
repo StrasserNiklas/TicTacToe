@@ -122,8 +122,6 @@ namespace Client
         private Bot bot;
         private Game botGame;
 
-        private Game botGame;
-
         public bool ActiveStatus
         {
             get 
@@ -170,7 +168,6 @@ namespace Client
             this.ClientConnected = false;
             this.GameIsActive = false;
             this.GameWasRequested = false;
-            this.bot = new Bot(2);
 
             // object as a command parameter is needed because:
             // when a xaml object calls a command, the object needs to be relayed to the command method.
@@ -1023,15 +1020,20 @@ namespace Client
             {
                 // BOT MODE
 
-                if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0)
+                if (this.botGame.IndexedGame[cell.Index] == 0)
                 {
-                    cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker;
+                    cell.PlayerMark = this.botGame.PlayerOne.Marker;
                     this.myTurn = false;
 
                     // Bot must play here
 
-                    var updatedPosition = 0;
-                    this.GameRepresentation.GameCells[updatedPosition].PlayerMark = this.botGame.PlayerTwo.Marker;
+                    var updatedPosition = this.bot.Play();
+
+                    if (updatedPosition > 0)
+                    {
+                        this.GameRepresentation.GameCells[updatedPosition].PlayerMark = this.botGame.PlayerTwo.Marker;
+
+                    }
 
                     // if win, start new game
                     //this.StartNewBotgame();
@@ -1094,9 +1096,7 @@ namespace Client
 
             this.botGame = new Game(this.clientPlayer.Player, this.PlayerTwo.Player);
 
-            this.bot = new Bot(botGame.PlayerTwo.Marker);
-
-            
+            this.bot = new Bot(botGame);
         }
     }
 }

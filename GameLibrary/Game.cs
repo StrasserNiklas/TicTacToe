@@ -73,6 +73,15 @@ namespace GameLibrary
             this.GameId = r.Next(999, 1234567) + r.Next(999, 1234567);
         }
 
+        public int[] IndexedGame
+        {
+            get 
+            {
+                return this.indexedGame; 
+            }
+        }
+
+
         /// <summary>
         /// Gets the game identifier.
         /// </summary>

@@ -36,52 +36,49 @@ namespace Client.Models
             this.turnCount = 0;
             this.random = new Random();
             this.currentGame = currentGame;
-        }
-
-        public void Play(GameStatus status)
-        {
-            this.turnCount++;
 
             
-
-            this.turnCount++;
         }
 
-        public int MakeBotMove(GameStatus status)
+        public int Play()
+        {
+            this.turnCount++;
+
+            var index = this.MakeBotMove();
+
+            this.turnCount++;
+
+            return index;
+        }
+
+        public int MakeBotMove()
         {
             // make intelligent choice
-            if (this.turnCount > 4)
+            if (this.turnCount > 2)
             {
 
-                var isBotWinnable = this.IsWinningMove(this.currentGame.PlayerTwo, status);
+                var isBotWinnable = this.IsWinningMove(this.currentGame.PlayerTwo);
 
                 if (isBotWinnable.Item2)
                 {
-                    status.IndexedGame[isBotWinnable.Item1] = this.currentGame.PlayerTwo.Marker;
+                    this.currentGame.IndexedGame[isBotWinnable.Item1] = this.currentGame.PlayerTwo.Marker;
                     return isBotWinnable.Item1;
                 }
 
-                var isHumanWinnable = this.IsWinningMove(this.currentGame.PlayerTwo, status);
+                var isHumanWinnable = this.IsWinningMove(this.currentGame.PlayerTwo);
 
                 if (isHumanWinnable.Item2)
                 {
-                    status.IndexedGame[isHumanWinnable.Item1] = this.currentGame.PlayerTwo.Marker;
+                    this.currentGame.IndexedGame[isHumanWinnable.Item1] = this.currentGame.PlayerTwo.Marker;
                     return isHumanWinnable.Item1;
                 }
+
+                return this.MakeRandomMove();
             }
             // make random choice
             else
             {
-                while (true)
-                {
-                    var random = this.random.Next(0, 8);
-
-                    if (status.IndexedGame[random] == 0)
-                    {
-                        status.IndexedGame[random] = this.currentGame.PlayerTwo.Marker;
-                        return random;
-                    }
-                }
+                return this.MakeRandomMove();
             }
             
             //if (isWin)
@@ -98,17 +95,29 @@ namespace Client.Models
             //    this.GameOver = true;
             //    return true;
             //}
-
-            return -1;
         }
 
-        public (int, bool) IsWinningMove(Player player, GameStatus status)
+        public int MakeRandomMove()
+        {
+            while (true)
+            {
+                var random = this.random.Next(0, 8);
+
+                if (this.currentGame.IndexedGame[random] == 0)
+                {
+                    this.currentGame.IndexedGame[random] = this.currentGame.PlayerTwo.Marker;
+                    return random;
+                }
+            }
+        }
+
+        public (int, bool) IsWinningMove(Player player)
         {
             bool isWinnable;
 
-            for (int i = 0; i < status.IndexedGame.Length; i++)
+            for (int i = 0; i < this.currentGame.IndexedGame.Length; i++)
             {
-                if (status.IndexedGame[i] == 0)
+                if (this.currentGame.IndexedGame[i] == 0)
                 {
                     foreach (var condition in this.winConditions)
                     {
