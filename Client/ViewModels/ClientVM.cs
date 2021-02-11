@@ -119,6 +119,8 @@ namespace Client
 
         private bool activeStatus;
 
+        private Bot bot;
+
         public bool ActiveStatus
         {
             get 
@@ -165,6 +167,7 @@ namespace Client
             this.ClientConnected = false;
             this.GameIsActive = false;
             this.GameWasRequested = false;
+            this.bot = new Bot(2);
 
             // object as a command parameter is needed because:
             // when a xaml object calls a command, the object needs to be relayed to the command method.
@@ -1023,7 +1026,7 @@ namespace Client
                     this.myTurn = false;
 
                     // Bot must play here
-
+                    
                 }
             }
 
