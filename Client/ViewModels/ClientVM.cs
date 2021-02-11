@@ -120,6 +120,7 @@ namespace Client
         private bool activeStatus;
 
         private Bot bot;
+        private Game botGame;
 
         private Game botGame;
 
@@ -1028,7 +1029,13 @@ namespace Client
                     this.myTurn = false;
 
                     // Bot must play here
-                    
+
+                    var updatedPosition = 0;
+                    this.GameRepresentation.GameCells[updatedPosition].PlayerMark = this.botGame.PlayerTwo.Marker;
+
+                    // if win, start new game
+                    //this.StartNewBotgame();
+
                 }
             }
 
@@ -1078,6 +1085,18 @@ namespace Client
             }
 
             return collection;
+        }
+
+        public void StartNewBotgame()
+        {
+            this.ResetField();
+            this.PlayerTwo = new PlayerVM(new Player("Bot"));
+
+            this.botGame = new Game(this.clientPlayer.Player, this.PlayerTwo.Player);
+
+            this.bot = new Bot(botGame.PlayerTwo.Marker);
+
+            
         }
     }
 }
