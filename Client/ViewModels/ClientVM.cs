@@ -258,7 +258,8 @@ namespace Client
                 return new Command(async obj =>
                 {
                     // API CALL TO GET LEADERBOARD
-                    var playerList = await this.restService.GetLeaderboardData();
+                    var playerList = await this.restService.GetLeaderboardData() ?? new List<PlayerData>();
+
                     playerList = playerList.OrderByDescending(player => player.Wins).ToList();
                     this.LeaderboardData = new ObservableCollection<PlayerData>(playerList);
 
