@@ -1023,21 +1023,47 @@ namespace Client
                 if (this.botGame.IndexedGame[cell.Index] == 0)
                 {
                     cell.PlayerMark = this.botGame.PlayerOne.Marker;
+                    this.botGame.IndexedGame[cell.Index] = this.botGame.PlayerOne.Marker;
+                    this.botGame.PlayerOne.MarkedPositions.Add(cell.Index);
                     this.myTurn = false;
 
+                    if (this.botGame.CheckWinConditions())
+                     {
+                        this.StatusMessage = "You won";
+                        this.StartNewBotgame();
+                        return;
+                    }
+
+                    if (this.botGame.IndexedGame.All(x => x != 0))
+                    {
+                        this.StatusMessage = "It's a tie";
+                        this.StartNewBotgame();
+                        return;
+                    }
+
+                    this.botGame.CurrentPlayer = this.botGame.PlayerTwo;
                     // Bot must play here
 
+                    Thread.Sleep(700);
                     var updatedPosition = this.bot.Play();
 
-                    if (updatedPosition > 0)
+                    if (updatedPosition >= 0)
                     {
                         this.GameRepresentation.GameCells[updatedPosition].PlayerMark = this.botGame.PlayerTwo.Marker;
-
+                        this.botGame.PlayerTwo.MarkedPositions.Add(updatedPosition);
                     }
 
                     // if win, start new game
                     //this.StartNewBotgame();
 
+                    if (this.botGame.CheckWinConditions())
+                    {
+                        this.StatusMessage = "Bot won";
+                        this.StartNewBotgame();
+                        return;
+                    }
+
+                    this.botGame.CurrentPlayer = this.botGame.PlayerOne;
                 }
             }
 
@@ -1092,7 +1118,17 @@ namespace Client
         public void StartNewBotgame()
         {
             this.ResetField();
-            this.PlayerTwo = new PlayerVM(new Player("Bot"));
+            this.ClientPlayer.Player.MarkedPositions = new List<int>();
+            this.PlayerOne = this.ClientPlayer;
+
+            if (this.PlayerTwo == null)
+            {
+                this.PlayerTwo = new PlayerVM(new Player("Bot"));
+            }
+            else
+            {
+                this.PlayerTwo = new PlayerVM(new Player("Bot")) { Wins = this.PlayerTwo.Wins };
+            }
 
             this.botGame = new Game(this.clientPlayer.Player, this.PlayerTwo.Player);
 

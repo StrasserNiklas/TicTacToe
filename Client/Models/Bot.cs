@@ -43,10 +43,12 @@ namespace Client.Models
         public int Play()
         {
             this.turnCount++;
+            this.currentGame.Turns++;
 
             var index = this.MakeBotMove();
 
             this.turnCount++;
+            this.currentGame.Turns++;
 
             return index;
         }
@@ -65,7 +67,7 @@ namespace Client.Models
                     return isBotWinnable.Item1;
                 }
 
-                var isHumanWinnable = this.IsWinningMove(this.currentGame.PlayerTwo);
+                var isHumanWinnable = this.IsWinningMove(this.currentGame.PlayerOne);
 
                 if (isHumanWinnable.Item2)
                 {
@@ -101,7 +103,7 @@ namespace Client.Models
         {
             while (true)
             {
-                var random = this.random.Next(0, 8);
+                var random = this.random.Next(0, 9);
 
                 if (this.currentGame.IndexedGame[random] == 0)
                 {
