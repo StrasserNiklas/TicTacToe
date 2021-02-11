@@ -74,6 +74,7 @@ namespace Client
             this.client = host.Services.GetService<ClientVM>();
 
             this.DataContext = this.client;
+            this.client.BotMode = true;
             //this.client.ClientPlayer = new PlayerVM(new Player("player"));
         }
     }
