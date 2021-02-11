@@ -149,6 +149,7 @@ namespace Client
 
         private RestService restService = new RestService();
 
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientVM"/> class.
         /// </summary>
@@ -178,6 +179,8 @@ namespace Client
             //this.SetupCommand.Execute(new object());
 
         }
+
+        public bool BotMode { get; set; }
 
         /// <summary>
         /// The id needed to update wins accordingly.
@@ -976,36 +979,55 @@ namespace Client
             this.timer.Stop();
 
             this.logger.LogInformation("[ComputePlayerClick] CellIndex: {0}", new object[] { cell.Index });
-            if (this.GameIsActive)
+
+            if (!this.BotMode)
             {
-                if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.ConnectionId && this.myTurn)
+                if (this.GameIsActive)
+                {
+                    if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0 && this.CurrentGameStatus.CurrentPlayerId == this.ClientPlayer.Player.ConnectionId && this.myTurn)
+                    {
+                        cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker;
+                        this.myTurn = false;
+
+                        var status = new GameStatus
+                        {
+                            CurrentPlayerId = this.ClientPlayer.Player.ConnectionId,
+                            UpdatedPosition = cell.Index,
+                            GameId = this.CurrentGameStatus.GameId
+                        };
+
+                        this.ActivePlayerName = this.RequestingOrEnemyPlayer.PlayerName;
+
+                        try
+                        {
+                            await this.hubConnection.SendAsync("UpdateGameStatus", status);
+                        }
+                        catch (HttpRequestException)
+                        {
+                            this.StatusMessage = "Unable to reach server. Please try again later.";
+                        }
+                        catch (Exception)
+                        {
+                            this.StatusMessage = "An unknown error occured. Please try again later.";
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // BOT MODE
+
+                if (this.CurrentGameStatus.IndexedGame[cell.Index] == 0)
                 {
                     cell.PlayerMark = this.CurrentGameStatus.CurrentPlayerMarker;
                     this.myTurn = false;
 
-                    var status = new GameStatus
-                    {
-                        CurrentPlayerId = this.ClientPlayer.Player.ConnectionId,
-                        UpdatedPosition = cell.Index,
-                        GameId = this.CurrentGameStatus.GameId
-                    };
+                    // Bot must play here
 
-                    this.ActivePlayerName = this.RequestingOrEnemyPlayer.PlayerName;
-
-                    try
-                    {
-                        await this.hubConnection.SendAsync("UpdateGameStatus", status);
-                    }
-                    catch (HttpRequestException)
-                    {
-                        this.StatusMessage = "Unable to reach server. Please try again later.";
-                    }
-                    catch (Exception)
-                    {
-                        this.StatusMessage = "An unknown error occured. Please try again later.";
-                    }
                 }
             }
+
+            
         }
 
         /// <summary>
