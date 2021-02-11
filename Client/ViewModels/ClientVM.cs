@@ -121,6 +121,8 @@ namespace Client
 
         private Bot bot;
 
+        private Game botGame;
+
         public bool ActiveStatus
         {
             get 

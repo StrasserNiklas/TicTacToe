@@ -1,6 +1,7 @@
 ﻿using GameLibrary;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Client.Models
@@ -16,9 +17,9 @@ namespace Client.Models
 
         private Random random;
 
-        private int botMarker;
+        private Game currentGame;
 
-        public Bot(int botMarker)
+        public Bot(Game currentGame)
         {
             this.winConditions = new List<WinCondition>()
             {
@@ -34,7 +35,7 @@ namespace Client.Models
 
             this.turnCount = 0;
             this.random = new Random();
-            this.botMarker = botMarker;
+            this.currentGame = currentGame;
         }
 
         public void Play(GameStatus status)
@@ -46,33 +47,26 @@ namespace Client.Models
             this.turnCount++;
         }
 
-        public bool CheckWinConditions(GameStatus status)
-        {            
-            bool isWin = false;
-
+        public int MakeBotMove(GameStatus status)
+        {
             // make intelligent choice
             if (this.turnCount > 4)
             {
-                foreach (var condition in this.winConditions)
-                {
-                    foreach (var index in condition.Condition)
-                    {
-                        if (this.CurrentPlayer.MarkedPositions.Contains(index))
-                        {
-                            isWin = true;
-                            continue;
-                        }
-                        else
-                        {
-                            isWin = false;
-                            break;
-                        }
-                    }
 
-                    if (isWin)
-                    {
-                        break;
-                    }
+                var isBotWinnable = this.IsWinningMove(this.currentGame.PlayerTwo, status);
+
+                if (isBotWinnable.Item2)
+                {
+                    status.IndexedGame[isBotWinnable.Item1] = this.currentGame.PlayerTwo.Marker;
+                    return isBotWinnable.Item1;
+                }
+
+                var isHumanWinnable = this.IsWinningMove(this.currentGame.PlayerTwo, status);
+
+                if (isHumanWinnable.Item2)
+                {
+                    status.IndexedGame[isHumanWinnable.Item1] = this.currentGame.PlayerTwo.Marker;
+                    return isHumanWinnable.Item1;
                 }
             }
             // make random choice
@@ -84,8 +78,8 @@ namespace Client.Models
 
                     if (status.IndexedGame[random] == 0)
                     {
-                        status.IndexedGame[random] = this.botMarker;
-                        break;
+                        status.IndexedGame[random] = this.currentGame.PlayerTwo.Marker;
+                        return random;
                     }
                 }
             }
@@ -105,7 +99,33 @@ namespace Client.Models
             //    return true;
             //}
 
-            return false;
+            return -1;
+        }
+
+        public (int, bool) IsWinningMove(Player player, GameStatus status)
+        {
+            bool isWinnable;
+
+            for (int i = 0; i < status.IndexedGame.Length; i++)
+            {
+                if (status.IndexedGame[i] == 0)
+                {
+                    foreach (var condition in this.winConditions)
+                    {
+                        var tempList = new List<int>(player.MarkedPositions);
+                        tempList.Add(i);
+
+                        isWinnable = condition.Condition.All(x => tempList.Contains(x));
+
+                        if (isWinnable)
+                        {
+                            return (i, isWinnable);
+                        }
+                    }
+                }
+            }
+
+            return (-1, false);
         }
 
         public bool IsGameOver()
