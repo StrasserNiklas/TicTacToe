@@ -75,7 +75,8 @@ namespace Client
 
             this.DataContext = this.client;
             this.client.BotMode = true;
-            //this.client.ClientPlayer = new PlayerVM(new Player("player"));
+            this.client.ClientPlayer = new PlayerVM(new Player("Human"));
+            this.client.StartNewBotgame();
         }
     }
 }
