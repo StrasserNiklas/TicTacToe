@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -74,5 +75,11 @@ namespace Client.Views
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        //private async void Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var button = (Button)sender;
+        //    await this.Run(button);
+        //}
     }
 }
