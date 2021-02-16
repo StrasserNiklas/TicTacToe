@@ -24,6 +24,14 @@ namespace Client.ViewModels
 
         private RestService restService = new RestService();
 
+        private bool isLoginButtonEnabled = true;
+
+        private string loginButtonContent = "Login";
+
+        private bool isSignUpButtonEnabled = true;
+
+        private string signUpButtonContent = "Sign Up";
+
         public ErrorHandlerVM ErrorHandler { get; set; }
 
         public string LoginUsername { get; set; }
@@ -46,6 +54,46 @@ namespace Client.ViewModels
 
         public ICommand LoginCommand { get; }
 
+        public bool IsLoginButtonEnabled
+        {
+            get { return this.isLoginButtonEnabled; }
+            set
+            {
+                this.isLoginButtonEnabled = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+        public string LoginButtonContent
+        {
+            get { return this.loginButtonContent; }
+            set
+            {
+                this.loginButtonContent = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+        public bool IsSignupButtonEnabled
+        {
+            get { return this.isSignUpButtonEnabled; }
+            set
+            {
+                this.isSignUpButtonEnabled = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
+        public string SignUpButtonContent
+        {
+            get { return this.signUpButtonContent; }
+            set
+            {
+                this.signUpButtonContent = value;
+                this.FireOnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// This command is used when the player types in his username and connects to the server.
         /// A request will be sent to the server containing the client player name.
@@ -63,12 +111,18 @@ namespace Client.ViewModels
                 {
                     this.ErrorHandler.LoginPasswordErrorMessage = "";
 
+                    this.IsLoginButtonEnabled = false;
+                    this.LoginButtonContent = "Logging in...";
+
                     var hash = this.ComputeSha256Hash(this.LoginPassword);
+
                     var response = await this.restService.Login(this.LoginUsername, hash);
 
                     if (!response.WasSuccessful)
                     {
                         this.ErrorHandler.LoginPasswordErrorMessage = "Incorrect credentials.";
+                        this.IsLoginButtonEnabled = true;
+                        this.LoginButtonContent = "Login";
                     }
                     else
                     {
@@ -99,11 +153,14 @@ namespace Client.ViewModels
 
             if (!string.IsNullOrEmpty(this.SignupUsername))
             {
-                this.ErrorHandler.SignupPasswordErrorMessage = "";
+                this.ErrorHandler.SignupUsernameErrorMessage = "";
 
                 if (!string.IsNullOrEmpty(this.SignupPassword))
                 {
                     this.ErrorHandler.SignupPasswordErrorMessage = "";
+
+                    this.IsSignupButtonEnabled = false;
+                    this.SignUpButtonContent = "Signing up ...";
 
                     var hash = this.ComputeSha256Hash(this.SignupPassword);
                     var response = await this.restService.AddUser(this.SignupUsername, hash);
@@ -111,6 +168,8 @@ namespace Client.ViewModels
                     if (!response.WasSuccessful)
                     {
                         this.ErrorHandler.SignupPasswordErrorMessage = response.ErrorMessage;
+                        this.IsSignupButtonEnabled = true;
+                        this.SignUpButtonContent = "Sign Up";
                     }
                     else
                     {

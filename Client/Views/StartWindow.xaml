@@ -20,7 +20,7 @@
     <Grid>
         
         <!-- Start screen -->
-        <Grid >
+        <Grid Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -46,7 +46,7 @@
         </Grid>
 
         <!-- Login/Register grid-->
-        <Grid>
+        <Grid Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
@@ -86,8 +86,8 @@
                     <TextBlock Margin="5" Text="Password" FontWeight="DemiBold" HorizontalAlignment="Center" />
                     <PasswordBox Margin="5,0,5,0" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=SignupPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <TextBlock  Foreground="Red" Text="{Binding ErrorHandler.SignupPasswordErrorMessage}" Margin="5,0,0,0" />
-                    
-                    <Button Command="{Binding SignupCommand}" Style="{StaticResource buttonRoundCorner}"   Content="Sign Up" Width="120" Margin="10" />
+
+                    <Button Command="{Binding SignupCommand}" Style="{StaticResource buttonRoundCorner}"   Content="{Binding SignUpButtonContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="120" Margin="10" IsEnabled="{Binding IsSignupButtonEnabled}"/>
                 </StackPanel>
             </Border>
             
@@ -110,7 +110,7 @@
                     <PasswordBox Margin="5,0,5,0" Width="140"  local:PasswordBoxAssistant.BindPassword="True" local:PasswordBoxAssistant.BoundPassword="{Binding Path=LoginPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <TextBlock  Foreground="Red" Text="{Binding ErrorHandler.LoginPasswordErrorMessage}" Margin="5,0,0,0" />
 
-                    <Button Command="{Binding LoginCommand}" Style="{StaticResource buttonRoundCorner}"   Content="Login" Width="120" Margin="10" />
+                    <Button Command="{Binding LoginCommand}" Style="{StaticResource buttonRoundCorner}" Content="{Binding LoginButtonContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="120" Margin="10" IsEnabled="{Binding IsLoginButtonEnabled}"/>
                 </StackPanel>
             </Border>
 
