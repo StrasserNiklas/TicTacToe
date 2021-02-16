@@ -797,6 +797,15 @@ namespace Client
         /// <param name="message">The message.</param>
         private void OnStatusMessageReceived(string message)
         {
+            if (message.Contains(this.clientPlayer.PlayerName) && message.Contains("wins"))
+            {
+                this.soundManager.PlayWinSound();
+            }
+            else
+            {
+                this.soundManager.PlayLoseSound();
+            }
+
             this.StatusMessage = message;
         }
 
