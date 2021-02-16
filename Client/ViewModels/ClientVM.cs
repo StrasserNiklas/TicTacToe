@@ -634,12 +634,17 @@ namespace Client
             try
             {
                 await this.CloseConnectionAsync();
+
                 this.hubConnection = new HubConnectionBuilder()
-                    .WithUrl(this.urlService.LobbyAddress + "?access_token=" + this.myAccessToken, options =>
-                    {
-                        options.AccessTokenProvider = () => Task.FromResult(this.myAccessToken);
-                    })
+                    .WithUrl(this.urlService.LobbyAddress)
                     .Build();
+
+                //this.hubConnection = new HubConnectionBuilder()
+                //    .WithUrl(this.urlService.LobbyAddress + "?access_token=" + this.myAccessToken, options =>
+                //    {
+                //        options.AccessTokenProvider = () => Task.FromResult(this.myAccessToken);
+                //    })
+                //    .Build();
 
                 this.hubConnection.On<List<Player>>("ReceivePlayersAsync", this.OnPlayersReceived);
                 this.hubConnection.On<List<SimpleGameInformation>>("ReceiveGames", this.OnGamesReceived);

@@ -27,6 +27,6 @@ namespace Client.Services
         /// <value>
         /// The lobby address.
         /// </value>
-        public string ApiAddress => $"https://ticnic.azurewebsites.net/api"; //https://ticserver.azurewebsites.net/api https://localhost:5001/api
+        public string ApiAddress => $"https://ticnic.azurewebsites.net/api"; // https://ticserver.azurewebsites.net/api https://localhost:5001/api
     }
 }

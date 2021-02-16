@@ -23,7 +23,7 @@ namespace Server.Hubs
     /// The SignalR Hub for the Tic-Tac-Toe server.
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.SignalR.Hub" />
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GameHub : Hub
     {
         /// <summary>
