@@ -20,7 +20,7 @@
     <Grid>
         
         <!-- Start screen -->
-        <Grid Visibility="Collapsed">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -46,7 +46,7 @@
         </Grid>
 
         <!-- Login/Register grid-->
-        <Grid Visibility="Visible">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
