@@ -102,43 +102,51 @@ namespace Client.ViewModels
         private async Task ComputeLoginCommand()
         {
             //this.logger.LogInformation("[ComputeConnectCommand]");
-
-            if (!string.IsNullOrEmpty(this.LoginUsername))
+            try
             {
-                this.ErrorHandler.LoginUsernameErrorMessage = "";
-
-                if (!string.IsNullOrEmpty(this.LoginPassword))
+                if (!string.IsNullOrEmpty(this.LoginUsername))
                 {
-                    this.ErrorHandler.LoginPasswordErrorMessage = "";
+                    this.ErrorHandler.LoginUsernameErrorMessage = "";
 
-                    this.IsLoginButtonEnabled = false;
-                    this.LoginButtonContent = "Logging in...";
-
-                    var hash = this.ComputeSha256Hash(this.LoginPassword);
-
-                    var response = await this.restService.Login(this.LoginUsername, hash);
-
-                    if (!response.WasSuccessful)
+                    if (!string.IsNullOrEmpty(this.LoginPassword))
                     {
-                        this.ErrorHandler.LoginPasswordErrorMessage = "Incorrect credentials.";
-                        this.IsLoginButtonEnabled = true;
-                        this.LoginButtonContent = "Login";
+                        this.ErrorHandler.LoginPasswordErrorMessage = "";
+
+                        this.IsLoginButtonEnabled = false;
+                        this.LoginButtonContent = "Logging in...";
+
+                        var hash = this.ComputeSha256Hash(this.LoginPassword);
+
+                        var response = await this.restService.Login(this.LoginUsername, hash);
+
+                        if (!response.WasSuccessful)
+                        {
+                            this.ErrorHandler.LoginPasswordErrorMessage = "Incorrect credentials.";
+                            this.IsLoginButtonEnabled = true;
+                            this.LoginButtonContent = "Login";
+                        }
+                        else
+                        {
+                            this.FireOnSuccessfulAuthentication(response.UserId, this.LoginUsername, response.JwToken);
+                        }
                     }
                     else
                     {
-                        this.FireOnSuccessfulAuthentication(response.UserId, this.LoginUsername, response.JwToken);
+                        this.ErrorHandler.LoginPasswordErrorMessage = "Empty password";
+                        //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
                     }
                 }
                 else
                 {
-                    this.ErrorHandler.LoginPasswordErrorMessage = "Empty password";
+                    this.ErrorHandler.LoginUsernameErrorMessage = "Enter a username";
                     //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
                 }
             }
-            else
+            catch
             {
-                this.ErrorHandler.LoginUsernameErrorMessage = "Enter a username";
-                //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
+                this.ErrorHandler.LoginPasswordErrorMessage = "No connection";
+                this.IsLoginButtonEnabled = true;
+                this.LoginButtonContent = "Login";
             }
         }
 
@@ -150,42 +158,50 @@ namespace Client.ViewModels
         private async Task ComputeSignupCommand()
         {
             //this.logger.LogInformation("[ComputeConnectCommand]");
-
-            if (!string.IsNullOrEmpty(this.SignupUsername))
+            try
             {
-                this.ErrorHandler.SignupUsernameErrorMessage = "";
-
-                if (!string.IsNullOrEmpty(this.SignupPassword))
+                if (!string.IsNullOrEmpty(this.SignupUsername))
                 {
-                    this.ErrorHandler.SignupPasswordErrorMessage = "";
+                    this.ErrorHandler.SignupUsernameErrorMessage = "";
 
-                    this.IsSignupButtonEnabled = false;
-                    this.SignUpButtonContent = "Signing up ...";
-
-                    var hash = this.ComputeSha256Hash(this.SignupPassword);
-                    var response = await this.restService.AddUser(this.SignupUsername, hash);
-
-                    if (!response.WasSuccessful)
+                    if (!string.IsNullOrEmpty(this.SignupPassword))
                     {
-                        this.ErrorHandler.SignupPasswordErrorMessage = response.ErrorMessage;
-                        this.IsSignupButtonEnabled = true;
-                        this.SignUpButtonContent = "Sign Up";
+                        this.ErrorHandler.SignupPasswordErrorMessage = "";
+
+                        this.IsSignupButtonEnabled = false;
+                        this.SignUpButtonContent = "Signing up ...";
+
+                        var hash = this.ComputeSha256Hash(this.SignupPassword);
+                        var response = await this.restService.AddUser(this.SignupUsername, hash);
+
+                        if (!response.WasSuccessful)
+                        {
+                            this.ErrorHandler.SignupPasswordErrorMessage = response.ErrorMessage;
+                            this.IsSignupButtonEnabled = true;
+                            this.SignUpButtonContent = "Sign Up";
+                        }
+                        else
+                        {
+                            this.FireOnSuccessfulAuthentication(response.UserId, this.SignupUsername, response.JwToken);
+                        }
                     }
                     else
                     {
-                        this.FireOnSuccessfulAuthentication(response.UserId, this.SignupUsername, response.JwToken);
+                        this.ErrorHandler.SignupPasswordErrorMessage = "Empty password";
+                        //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
                     }
                 }
                 else
                 {
-                    this.ErrorHandler.SignupPasswordErrorMessage = "Empty password";
+                    this.ErrorHandler.SignupUsernameErrorMessage = "Enter a username";
                     //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
                 }
             }
-            else
+            catch
             {
-                this.ErrorHandler.SignupUsernameErrorMessage = "Enter a username";
-                //this.FireOnPropertyChanged(this.ErrorHandler.LoginUsernameErrorMessage);
+                this.ErrorHandler.SignupPasswordErrorMessage = "No connection";
+                this.IsSignupButtonEnabled = true;
+                this.SignUpButtonContent = "Sign Up";
             }
         }
 
