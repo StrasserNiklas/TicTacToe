@@ -121,6 +121,8 @@ namespace Client
 
         private bool activeStatus;
 
+        private bool botMode;
+
         private Bot bot;
         private Game botGame;
 
@@ -186,7 +188,15 @@ namespace Client
 
         }
 
-        public bool BotMode { get; set; }
+        public bool BotMode
+        {
+            get { return this.botMode; }
+            set
+            {
+                this.botMode = value;
+                this.FireOnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// The id needed to update wins accordingly.
@@ -801,7 +811,7 @@ namespace Client
             {
                 this.soundManager.PlayWinSound();
             }
-            else
+            else if (!message.Contains("draw"))
             {
                 this.soundManager.PlayLoseSound();
             }

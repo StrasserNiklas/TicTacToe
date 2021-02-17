@@ -15,6 +15,7 @@
                 <ResourceDictionary>
                     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
                     <local:InverseBooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" />
+                    <local:InverseBooleanConverter x:Key="inverseBooleanConverter"/>
                 </ResourceDictionary>
                 <ResourceDictionary Source="/Resources/Styles.xaml"/>
 
@@ -185,7 +186,7 @@
             <!-- Online players list view and connection -->
             <Border Visibility="Visible" MinWidth="130" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  Margin="3" Style="{StaticResource borderStyle}" >
                 <StackPanel>
-                    <Button Margin="10" Style="{StaticResource elementButton2}" Command="{Binding LeaderboardCommand}" Foreground="White" Content="Leaderboard" VerticalAlignment="Bottom" />
+                    <Button IsEnabled="{Binding BotMode, Converter={StaticResource inverseBooleanConverter}}" Margin="10" Style="{StaticResource elementButton2}" Command="{Binding LeaderboardCommand}" Foreground="White" Content="Leaderboard" VerticalAlignment="Bottom" />
                     
                     <Label Content="Available players:" Style="{StaticResource labelStyle}" />
 
@@ -205,7 +206,7 @@
                         </ListView.View>
                     </ListView>
 
-                    <Button Style="{StaticResource buttonRoundCorner}" Background="#ffd769" Margin="5" Command="{Binding RequestGameCommand}">
+                    <Button IsEnabled="{Binding BotMode, Converter={StaticResource inverseBooleanConverter}}" Style="{StaticResource buttonRoundCorner}" Background="#ffd769" Margin="5" Command="{Binding RequestGameCommand}">
                         <TextBlock Margin="5,0,5,0" Text="Play with selected player" FontWeight="Medium"/>
                     </Button>
 
@@ -429,8 +430,13 @@
                             </StackPanel>
                         </StackPanel>
                     </Grid>
-                    
-                    
+
+                    <!--<Grid>
+                        <Grid  Panel.ZIndex="10" Background="Gray" Opacity="0.4">
+                            <Label FontSize="25" Content="{Binding StatusMessage}" HorizontalAlignment="Center" Style="{StaticResource labelStyle}" Foreground="#FF004BEC" />
+                        </Grid>
+                    </Grid>-->
+
                     <!-- Gamefield with cells-->
                     <ItemsControl  x:Name="gameCells" Background="#ffedbd" ItemsSource="{Binding GameRepresentation.GameCells}">
                         <ItemsControl.ItemsPanel>
@@ -447,6 +453,8 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
+                    
                 </Grid>
                 
                 
